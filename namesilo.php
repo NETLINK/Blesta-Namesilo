@@ -1060,13 +1060,6 @@ class Namesilo extends Module {
 	/**
 	 * Handle updating nameserver information
 	 *
-	 * @param string $view The view to use
-	 * @param stdClass $package A stdClass object representing the current package
-	 * @param stdClass $service A stdClass object representing the current service
-	 * @param array $get Any GET parameters
-	 * @param array $post Any POST parameters
-	 * @param array $files Any FILES parameters
-	 * @return string The string representing the contents of this tab
 	 */
 	private function manageNameservers($view, $package, $service, array $get=null, array $post=null, array $files=null) {
 		$this->view = new View($view, "default");
@@ -1093,8 +1086,6 @@ class Namesilo extends Module {
 			
 			$args['domain'] = $fields->DomainName;
 			
-			self::debug( $args );
-				
 			$response = $dns->setCustom( $args );
 			$this->processResponse($api, $response);
 			
@@ -1171,7 +1162,7 @@ class Namesilo extends Module {
 	 * Performs a whois lookup on the given domain
 	 *
 	 * @param string $domain The domain to lookup
-	 * @return boolean True if available, false otherwise
+	 * @return boolean true if available, false otherwise
 	 */
 	public function checkAvailability($domain) {
 
@@ -1181,15 +1172,12 @@ class Namesilo extends Module {
 		$domains = new NamesiloDomains($api);
 		$result = $domains->check(array('domains' => $domain));
 		
-		if ($result->status() != "300")
+		if ( self::$codes[$result->status()][1] == "fail" )
 			return false;
 		
 		$response = $result->response();
 		
 		$available = isset( $response->available->{'domain'} ) && $response->available->{'domain'} == $domain;
-		
-		mail( 'julian@netlink.ie', 'API Debug', var_export( $available, true ), "From: info@netlink.ie\n" );
-		
 		return $available;
 	}
 	
