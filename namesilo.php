@@ -5,7 +5,8 @@
  * @package blesta
  * @subpackage blesta.components.modules.namesilo
  * @copyright Copyright (c) 2010, Phillips Data, Inc.
- * @license http://www.blesta.com/license/ The Blesta License Agreement
+ * @link http://www.blesta.com/ Blesta
+ * @copyright Copyright (c) 2015, NETLINK IT SERVICES
  * @link http://www.netlink.ie/ NETLINK
  */
 class Namesilo extends Module {
@@ -13,11 +14,20 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "2.1.1";
+	private static $version = "1.0.0-alpha";
 	/**
-	 * @var string The authors of this module
+	 * @var array The authors of this module
 	 */
-	private static $authors = array(array('name'=>"NETLINK IT SERVICES",'url'=>"http://www.netlink.ie/"));
+	private static $authors = array(
+		array(
+			'name'=> "Phillips Data, Inc.",
+			'url'=>"http://www.blesta.com"
+		),
+		array(
+			'name' => "NETLINK IT SERVICES",
+			'url' => "http://www.netlink.ie/"
+		),
+	);
 	
 	private static $debug_to = "julian@netlink.ie";
 	
