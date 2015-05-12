@@ -1,0 +1,60 @@
+
+    <?php
+    if ($this->Html->ifSet($fields) && !empty($fields)) {
+    ?>
+        <div id="<?php echo $this->Html->safe($this->Html->concat("_", $this->Html->ifSet($module->class), $this->Html->ifSet($module->id)));?>">
+            <?php
+            $i = 0;
+            foreach ($fields as $field) {
+            ?>
+            <div class="form-group">
+                <?php
+                // Draw the primary label/field
+                call_user_func_array(array($this->Form, $field->type), $field->params);
+
+                // Draw each form field associated with this label
+                $tooltips = array();
+                foreach ($field->fields as $input) {
+
+                    // Collect all tooltips to be displayed at the end
+                    if ($input->type == "tooltip") {
+                        $tooltips[] = $input;
+                        continue;
+                    }
+
+                    call_user_func_array(array($this->Form, $input->type), $input->params);
+
+                    // Draw the form field's secondary label if checkbox or radio item
+                    if (($input->type == "fieldCheckbox" || $input->type == "fieldRadio") && isset($input->label)) {
+                        if (isset($input->label->params['attributes']['class'])) {
+                            if (is_array($input->label->params['attributes']['class']))
+                                $input->label->params['attributes']['class'][] = "inline";
+                            else
+                                $input->label->params['attributes']['class'] .= " inline";
+                        }
+                        else
+                            $input->label->params['attributes']['class'] = "inline";
+
+                        call_user_func_array(array($this->Form, "label"), $input->label->params);
+                    }
+                }
+
+                foreach ($tooltips as $tooltip) {
+                ?>
+                <a href="#" data-toggle="tooltip" title="<?php $this->Html->_($tooltip->params['message']);?>"><i class="fa fa-question-circle text-primary"></i></a>
+                <?php
+                }
+                ?>
+            </div>
+            <?php
+            }
+            ?>
+        </div>
+    <?php
+    }
+    ?>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(this).blestaBindToolTips();
+});
+</script>

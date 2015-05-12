@@ -1,0 +1,43 @@
+
+	<?php
+	$this->Form->create();
+	?>
+	<div class="row panel-fix">
+		<div class="col-md-12">
+			<h4><?php $this->_("Namesilo.tab_settings.field_registrar_lock");?></h4>
+			<div class="form-group">
+				<div class="radio">
+					<label>
+						<?php
+						$this->Form->fieldRadio("registrar_lock", "Yes", $this->Html->ifSet($vars->registrar_lock) == "Yes");
+						$this->_("Namesilo.tab_settings.field_registrar_lock_yes");
+						?>
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<?php
+						$this->Form->fieldRadio("registrar_lock", "No", $this->Html->ifSet($vars->registrar_lock) == "No");
+						$this->_("Namesilo.tab_settings.field_registrar_lock_no");
+						?>
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<?php
+						$this->Form->fieldCheckbox("request_epp", "true", $this->Html->ifSet($vars->request_epp) == "true");
+						$this->_("Namesilo.tab_settings.field_request_epp");
+						?>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<button class="btn btn-default pull-right" type="submit">
+		<i class="fa fa-edit"></i> <?php $this->_("Namesilo.tab_settings.field_submit");?>
+	</button>
+	<?php
+	$this->Form->end();
+	?>

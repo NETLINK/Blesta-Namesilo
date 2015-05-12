@@ -1,0 +1,26 @@
+
+	<?php
+	$this->Form->create();
+	?>
+	<div class="row panel-fix">
+		<div class="col-md-12">
+			<?php
+			for ($i=0; $i<5; $i++) {
+			?>
+			<div class="form-group">
+				<?php
+				$this->Form->label($this->_("Namesilo.tab_nameserver.field_ns", true, $i+1), "ns" . $i+1);
+				$this->Form->fieldText("ns[]", $this->Html->ifSet($vars->ns[$i]), array('id' => "ns" . $i+1, 'class'=>"form-control", 'placeholder'=>$this->_("Namesilo.tab_nameserver.field_ns", true, $i+1)));
+				?>
+			</div>
+			<?php
+			}
+			?>
+		</div>
+	</div>
+	<button class="btn btn-default pull-right" type="submit">
+		<i class="fa fa-edit"></i> <?php $this->_("Namesilo.tab_nameservers.field_submit");?>
+	</button>
+	<?php
+	$this->Form->end();
+	?>

@@ -1,0 +1,74 @@
+	
+	<?php
+	$this->Form->create();
+	?>
+	
+	<?php
+	$i=0;
+	foreach ($sections as $key) {
+	?>
+	<div class="title_row<?php echo ($i == 0 ? " first" : "");?>">
+		<h3><?php $this->_("Namesilo.tab_whois.section_" . $key);?></h3>
+	</div>
+	<div class="pad">
+		<ul>
+			<?php
+			foreach ($fields as $field) {
+				if (substr($field->params['for'], 0, strlen($key)) != $key)
+					continue;
+			?>
+			<li>
+				<?php
+				// Draw the primary label/field
+				call_user_func_array(array($this->Form, $field->type), $field->params);
+				
+				// Draw each form field associated with this label
+				$tooltips = array();
+				foreach ($field->fields as $input) {
+					
+					// Collect all tooltips to be displayed at the end
+					if ($input->type == "tooltip") {
+						$tooltips[] = $input;
+						continue;
+					}
+					
+					call_user_func_array(array($this->Form, $input->type), $input->params);
+					
+					// Draw the form field's secondary label if checkbox or radio item
+					if (($input->type == "fieldCheckbox" || $input->type == "fieldRadio") && isset($input->label)) {
+						if (isset($input->label->params['attributes']['class'])) {
+							if (is_array($input->label->params['attributes']['class']))
+								$input->label->params['attributes']['class'][] = "inline";
+							else
+								$input->label->params['attributes']['class'] .= " inline";
+						}
+						else
+							$input->label->params['attributes']['class'] = "inline";
+							
+						call_user_func_array(array($this->Form, "label"), $input->label->params);
+					}
+				}
+				
+				foreach ($tooltips as $tooltip) {
+				?>
+				<span class="tooltip">
+					<?php $this->_("AppController.tooltip.text");?>
+					<div><?php $this->Html->_($tooltip->params['message']);?></div>
+				</span>
+				<?php
+				}
+				?>
+			</li>
+			<?php
+			}
+			?>
+		</ul>
+	</div>
+	<?php
+		$i++;
+	}
+	?>
+	<div class="button_row"><a class="btn_right submit" href="#"><?php $this->_("Namesilo.tab_whois.field_submit");?></a></div>
+	<?php
+	$this->Form->end();
+	?>

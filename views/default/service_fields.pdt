@@ -1,0 +1,62 @@
+    <?php
+    if ($this->Html->ifSet($fields) && !empty($fields)) {
+    ?>
+        <ul class="no_border">
+            <?php
+            $i = 0;
+            foreach ($fields as $field) {
+            ?>
+            <li class="row<?php echo $i++ == 0 ? " first" : "";?>">
+                <?php
+                // Draw the primary label/field
+                call_user_func_array(array($this->Form, $field->type), $field->params);
+
+                // Draw each form field associated with this label
+                $tooltips = array();
+                foreach ($field->fields as $input) {
+
+                    // Collect all tooltips to be displayed at the end
+                    if ($input->type == "tooltip") {
+                        $tooltips[] = $input;
+                        continue;
+                    }
+
+                    call_user_func_array(array($this->Form, $input->type), $input->params);
+
+                    // Draw the form field's secondary label if checkbox or radio item
+                    if (($input->type == "fieldCheckbox" || $input->type == "fieldRadio") && isset($input->label)) {
+                        if (isset($input->label->params['attributes']['class'])) {
+                            if (is_array($input->label->params['attributes']['class']))
+                                $input->label->params['attributes']['class'][] = "inline";
+                            else
+                                $input->label->params['attributes']['class'] .= " inline";
+                        }
+                        else
+                            $input->label->params['attributes']['class'] = "inline";
+
+                        call_user_func_array(array($this->Form, "label"), $input->label->params);
+                    }
+                }
+
+                foreach ($tooltips as $tooltip) {
+                ?>
+                <span class="tooltip">
+                    <?php $this->_("AppController.tooltip.text");?>
+                    <div><?php $this->Html->_($tooltip->params['message']);?></div>
+                </span>
+                <?php
+                }
+                ?>
+            </li>
+            <?php
+            }
+            ?>
+        </ul>
+    <?php
+    }
+    ?>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(this).blestaBindToolTips();
+});
+</script>
