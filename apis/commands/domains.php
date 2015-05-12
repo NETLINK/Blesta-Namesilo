@@ -299,9 +299,7 @@ class NamesiloDomains {
 	/**
 	 * Checks the availability of a domain name.
 	 *
-	 * @param array $vars An array of input params including:
-	 * 	- DomainList One or more comma-separated list of domain to check
-	 * @return NamesiloResponse
+	 * https://www.namesilo.com/api_reference.php#checkRegisterAvailability
 	 */
 	public function check(array $vars) {
 		return $this->api->submit("checkRegisterAvailability", $vars);
