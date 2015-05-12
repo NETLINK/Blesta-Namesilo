@@ -109,7 +109,7 @@ class NamesiloDomainsDns {
 	 *
 	 * @param array $vars An array of input params including:
 	 *	- DomainName Domain name to set Emailforwarding
-	 *	- MailBox[1..n] MailBox for which you wish to set email forwarding. For example:example@namecheap.com
+	 *	- MailBox[1..n] MailBox for which you wish to set email forwarding. For example:example@namesilo.com
 	 *	- ForwardTo[1..n] Email address to forwardto.For example:example@gmail.com
 	 * @return NamesiloResponse
 	 */

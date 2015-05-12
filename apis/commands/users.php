@@ -137,7 +137,7 @@ class NamesiloUsers {
 	 * Gets the status of add funds request.
 	 *
 	 * @param array $vars An array of input params including:
-	 * 	- TokenId The Unique ID that you received after calling namecheap.users.createaddfundsrequest method 
+	 * 	- TokenId The Unique ID that you received after calling namesilo.users.createaddfundsrequest method 
 	 * @return NamesiloResponse
 	 */
 	public function getAddFundsStatus(array $vars) {
@@ -146,8 +146,8 @@ class NamesiloUsers {
 	
 	/**
 	 * Validates the username and password of user accounts you have created
-	 * using the API command namecheap.users.create. You cannot use this
-	 * command to validate user accounts created directly at namecheap.com
+	 * using the API command namesilo.users.create. You cannot use this
+	 * command to validate user accounts created directly at namesilo.com
 	 *
 	 * @param array $vars An array of input params including:
 	 * 	- Password Password of the user account
@@ -167,7 +167,7 @@ class NamesiloUsers {
 	 * 	- FindByValue The username/email address/domain of the user. 
 	 * 	- EmailFromName Enter a different value to overwrite the default value 
 	 * 	- EmailFrom Enter a different value to overwrite the default value
-	 * 	- URLPattern Enter a different URL to overwrite namecheap.com.
+	 * 	- URLPattern Enter a different URL to overwrite namesilo.com.
 	 * @return NamesiloResponse
 	 */
 	public function resetPassword(array $vars) {

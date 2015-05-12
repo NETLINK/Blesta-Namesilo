@@ -14,7 +14,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SE
  *
  * @copyright Copyright (c) 2013, Phillips Data, Inc.
  * @license http://opensource.org/licenses/mit-license.php MIT License
- * @package namecheap
+ * @package namesilo
  */
 class NamesiloApi {
 

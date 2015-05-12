@@ -9,7 +9,7 @@
 class NamesiloDomains {
 	
 	/**
-	 * @var NamecheapApi
+	 * @var NamesiloApi
 	 */
 	private $api;
 	
@@ -40,7 +40,7 @@ class NamesiloDomains {
 	/**
 	 * Returns a list of tlds
 	 * 
-	 * @return NamecheapResponse
+	 * @return NamesiloResponse
 	 */	
 	public function getTldList() {
 		return $this->api->submit("namesilo.domains.getTldList");
@@ -180,7 +180,7 @@ class NamesiloDomains {
 	 *
 	 * @param array $vars An array of input params including:
 	 * 	- DomainName Domain to get contacts
-	 * @return NamecheapResponse
+	 * @return NamesiloResponse
 	 */
 	public function getContacts(array $vars) {
 		return $this->api->submit("contactList", $vars);

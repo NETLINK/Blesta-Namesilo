@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/mit-license.php MIT License
  * @package namesilo.commands
  */
-class NamecheapSsl {
+class NamesiloSsl {
 	
 	/**
 	 * @var NamesiloApi

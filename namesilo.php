@@ -193,7 +193,7 @@ class Namesilo extends Module {
 					$tld = $this->getTld($vars['DomainName']);
 				
 				$whois_fields = Configure::get("Namesilo.whois_fields");
-				$input_fields = array_merge(Configure::get("Namesilo.domain_fields"), $whois_fields, (array)Configure::get("Namecheap.domain_fields" . $tld), array('Years' => true, 'Nameservers' => true));
+				$input_fields = array_merge(Configure::get("Namesilo.domain_fields"), $whois_fields, (array)Configure::get("Namesilo.domain_fields" . $tld), array('Years' => true, 'Nameservers' => true));
 			}
 		}
 		
@@ -213,7 +213,7 @@ class Namesilo extends Module {
 				if (isset($vars['transfer']) || isset($vars['EPPCode'])) {
 					$fields = array_intersect_key($vars, $input_fields);
 					
-					$transfer = new NamecheapDomainsTransfer($api);
+					$transfer = new NamesiloDomainsTransfer($api);
 					$response = $transfer->create($fields);
 					$this->processResponse($api, $response);
 					
@@ -327,17 +327,6 @@ class Namesilo extends Module {
 	/**
 	 * Cancels the service on the remote server. Sets Input errors on failure,
 	 * preventing the service from being canceled.
-	 *
-	 * @param stdClass $package A stdClass object representing the current package
-	 * @param stdClass $service A stdClass object representing the current service
-	 * @param stdClass $parent_package A stdClass object representing the parent service's selected package (if the current service is an addon service)
-	 * @param stdClass $parent_service A stdClass object representing the parent service of the service being canceled (if the current service is an addon service)
-	 * @return mixed null to maintain the existing meta fields or a numerically indexed array of meta fields to be stored for this service containing:
-	 * 	- key The key for this meta field
-	 * 	- value The value for this key
-	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
-	 * @see Module::getModule()
-	 * @see Module::getModuleRow()
 	 */
 	public function cancelService($package, $service, $parent_package=null, $parent_service=null) {
 		return null; // Nothing to do
@@ -346,17 +335,6 @@ class Namesilo extends Module {
 	/**
 	 * Suspends the service on the remote server. Sets Input errors on failure,
 	 * preventing the service from being suspended.
-	 *
-	 * @param stdClass $package A stdClass object representing the current package
-	 * @param stdClass $service A stdClass object representing the current service
-	 * @param stdClass $parent_package A stdClass object representing the parent service's selected package (if the current service is an addon service)
-	 * @param stdClass $parent_service A stdClass object representing the parent service of the service being suspended (if the current service is an addon service)
-	 * @return mixed null to maintain the existing meta fields or a numerically indexed array of meta fields to be stored for this service containing:
-	 * 	- key The key for this meta field
-	 * 	- value The value for this key
-	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
-	 * @see Module::getModule()
-	 * @see Module::getModuleRow()
 	 */
 	public function suspendService($package, $service, $parent_package=null, $parent_service=null) {
 		return null; // Nothing to do
@@ -365,17 +343,6 @@ class Namesilo extends Module {
 	/**
 	 * Unsuspends the service on the remote server. Sets Input errors on failure,
 	 * preventing the service from being unsuspended.
-	 *
-	 * @param stdClass $package A stdClass object representing the current package
-	 * @param stdClass $service A stdClass object representing the current service
-	 * @param stdClass $parent_package A stdClass object representing the parent service's selected package (if the current service is an addon service)
-	 * @param stdClass $parent_service A stdClass object representing the parent service of the service being unsuspended (if the current service is an addon service)
-	 * @return mixed null to maintain the existing meta fields or a numerically indexed array of meta fields to be stored for this service containing:
-	 * 	- key The key for this meta field
-	 * 	- value The value for this key
-	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
-	 * @see Module::getModule()
-	 * @see Module::getModuleRow()
 	 */
 	public function unsuspendService($package, $service, $parent_package=null, $parent_service=null) {
 		return null; // Nothing to do
@@ -403,18 +370,6 @@ class Namesilo extends Module {
 	/**
 	 * Updates the package for the service on the remote server. Sets Input
 	 * errors on failure, preventing the service's package from being changed.
-	 *
-	 * @param stdClass $package_from A stdClass object representing the current package
-	 * @param stdClass $package_to A stdClass object representing the new package
-	 * @param stdClass $service A stdClass object representing the current service
-	 * @param stdClass $parent_package A stdClass object representing the parent service's selected package (if the current service is an addon service)
-	 * @param stdClass $parent_service A stdClass object representing the parent service of the service being changed (if the current service is an addon service)
-	 * @return mixed null to maintain the existing meta fields or a numerically indexed array of meta fields to be stored for this service containing:
-	 * 	- key The key for this meta field
-	 * 	- value The value for this key
-	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
-	 * @see Module::getModule()
-	 * @see Module::getModuleRow()
 	 */
 	public function changeServicePackage($package_from, $package_to, $service, $parent_package=null, $parent_service=null) {
 		return null; // Nothing to do
@@ -498,7 +453,7 @@ class Namesilo extends Module {
 		
 		#
 		#
-		# TODO: add tab to check status of all transfers: check if possible with Namesilo... ref: NamecheapDomainsTransfer->getList()
+		# TODO: add tab to check status of all transfers: check if possible with Namesilo... ref: NamesiloDomainsTransfer->getList()
 		#
 		#
 		
@@ -822,13 +777,13 @@ class Namesilo extends Module {
         if (isset($vars->DomainName)) {
             $tld = $this->getTld($vars->DomainName);
 
-            $extension_fields = Configure::get("Namecheap.domain_fields" . $tld);
+            $extension_fields = Configure::get("Namesilo.domain_fields" . $tld);
             if ($extension_fields) {
                 // Set the fields
                 if ($client)
-                    $fields = array_merge(Configure::get("Namecheap.nameserver_fields"), Configure::get("Namecheap.domain_fields"), $extension_fields);
+                    $fields = array_merge(Configure::get("Namesilo.nameserver_fields"), Configure::get("Namesilo.domain_fields"), $extension_fields);
                 else
-                    $fields = array_merge(Configure::get("Namecheap.domain_fields"), Configure::get("Namecheap.nameserver_fields"), $extension_fields);
+                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), Configure::get("Namesilo.nameserver_fields"), $extension_fields);
 
                 if ($client) {
                     // We should already have the domain name don't make editable
@@ -840,7 +795,7 @@ class Namesilo extends Module {
                 $module_fields = new ModuleFields();
 
                 // Allow AJAX requests
-                $ajax = $module_fields->fieldHidden("allow_ajax", "true", array('id'=>"namecheap_allow_ajax"));
+                $ajax = $module_fields->fieldHidden("allow_ajax", "true", array('id'=>"namesilo_allow_ajax"));
                 $module_fields->setField($ajax);
                 $please_select = array('' => Language::_("AppController.select.please", true));
 
@@ -932,7 +887,7 @@ class Namesilo extends Module {
 		}
 		else {
 			#
-			# TODO: Activate (NamecheapSsl->active()) & uploads CSR, set field data, etc.
+			# TODO: Activate (NamesiloSsl->active()) & uploads CSR, set field data, etc.
 			#
 		}
 	}
@@ -954,7 +909,7 @@ class Namesilo extends Module {
 		}
 		else {
 			#
-			# TODO: Activate (NamecheapSsl->active()) & uploads CSR, set field data, etc.
+			# TODO: Activate (NamesiloSsl->active()) & uploads CSR, set field data, etc.
 			#
 		}
 	}
@@ -1280,7 +1235,7 @@ class Namesilo extends Module {
 	 * @param string $key The key to use when connecting
 	 * @param boolean $sandbox Whether or not to process in sandbox mode (for testing)
 	 * @param string $username The username to execute an API command using
-	 * @return NamecheapApi The NamesiloApi instance
+	 * @return NamesiloApi The NamesiloApi instance
 	 */
 	private function getApi($user, $key, $sandbox, $username = null) {
 		Loader::load(dirname(__FILE__) . DS . "apis" . DS . "namesilo_api.php");
@@ -1291,7 +1246,7 @@ class Namesilo extends Module {
 	/**
 	 * Process API response, setting an errors, and logging the request
 	 *
-	 * @param NamesiloApi $api The namecheap API object
+	 * @param NamesiloApi $api The Namesilo API object
 	 * @param NamesiloResponse $response The Namesilo API response object
 	 */
 	private function processResponse( NamesiloApi $api, NamesiloResponse $response ) {
