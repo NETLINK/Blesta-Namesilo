@@ -1268,15 +1268,11 @@ class Namesilo extends Module {
 	 * @param NamesiloApi $api The Namesilo API object
 	 * @param NamesiloResponse $response The Namesilo API response object
 	 */
-	private function logRequest(NamesiloApi $api, NamesiloResponse $response) {
-		
-		#
-		# TODO: Filter out API key
-		#
-		
+	private function logRequest(NamesiloApi $api, NamesiloResponse $response) {		
 		$last_request = $api->lastRequest();
-		$this->log($last_request['url'], serialize($last_request['args']), "input", true);
-		$this->log($last_request['url'], $response->raw(), "output", self::$codes[$response->status()][1] == "success");
+		$url = substr( $last_request['url'], 0, strpos( $last_request['url'], '?' ) );
+		$this->log( $url, serialize( $last_request['args'] ), "input", true );
+		$this->log( $url, $response->raw(), "output", self::$codes[$response->status()][1] == "success" );
 	}
 	
 	/**
