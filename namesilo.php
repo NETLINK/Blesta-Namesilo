@@ -1085,7 +1085,17 @@ class Namesilo extends Module {
 		$sld = substr($fields->DomainName, 0, -strlen($tld));
 		
 		if (!empty($post)) {
-			$response = $dns->setCustom(array('SLD' => $sld, 'TLD' => ltrim($tld, "."), 'Nameservers' => implode(",", $post['ns'])));
+			$args = array(); $i = 1;
+			foreach( $post['ns'] as $ns ) {
+				$args["ns{$i}"] = $ns;
+				$i++;
+			}
+			
+			$args['domain'] = $fields->DomainName;
+			
+			self::debug( $args );
+				
+			$response = $dns->setCustom( $args );
 			$this->processResponse($api, $response);
 			
 			$vars = (object)$post;

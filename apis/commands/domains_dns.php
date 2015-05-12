@@ -48,7 +48,7 @@ class NamesiloDomainsDns {
 	 * @return NamesiloResponse
 	 */	
 	public function setCustom(array $vars) {
-		return $this->api->submit("namesilo.domains.dns.setCustom", $vars);		
+		return $this->api->submit("changeNameServers", $vars);		
 	}
 	
 	/**
