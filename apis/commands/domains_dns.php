@@ -60,7 +60,7 @@ class NamesiloDomainsDns {
 	 * @return NamesiloResponse
 	 */
 	public function getList(array $vars) {
-		return $this->api->submit("namesilo.domains.dns.getList", $vars);
+		return $this->api->submit("getDomainInfo", $vars);
 	}
 	
 	/**

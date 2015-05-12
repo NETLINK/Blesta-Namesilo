@@ -1069,7 +1069,7 @@ class Namesilo extends Module {
 		$fields = $this->serviceFieldsToObject($service->fields);
 		
 		if (!empty($post)) {
-			$post = array_merge(array('DomainName' => $fields->DomainName), array_intersect_key($post, $whois_fields));
+			$post = array_merge(array('domain' => $fields->DomainName), array_intersect_key($post, $whois_fields));
 			
 			$response = $domains->setContacts($post);
 			$this->processResponse($api, $response);
@@ -1077,10 +1077,11 @@ class Namesilo extends Module {
 			$vars = (object)$post;
 		}
 		else {
-			$response = $domains->getContacts(array('DomainName' => $fields->DomainName));
+			$response = $domains->getContacts(array('domain' => $fields->DomainName));
 		
-			if ($response->status() == "OK") {
-				$data = $response->response()->DomainContactsResult;
+			if ( self::$codes[$response->status()][1] != "fail" ) {
+				$data = $response->response()->contact;
+				self::debug( $data );
 				
 				// Format fields
 				foreach ($data as $section => $element) {
@@ -1135,11 +1136,11 @@ class Namesilo extends Module {
 			$vars = (object)$post;
 		}
 		else {
-			$response = $dns->getList(array('SLD' => $sld, 'TLD' => ltrim($tld, ".")))->response();
+			$response = $dns->getList( array( 'domain' => $fields->DomainName ) )->response();
 			
-			if (isset($response->DomainDNSGetListResult)) {
+			if (isset($response->nameservers)) {
 				$vars->ns = array();
-				foreach ($response->DomainDNSGetListResult->Nameserver as $ns) {
+				foreach ($response->nameservers->nameserver as $ns) {
 					$vars->ns[] = $ns;
 				}
 			}
@@ -1301,7 +1302,7 @@ class Namesilo extends Module {
 		self::debug( $status );
 		
 		// Set errors, if any
-		if ( self::$codes[$status][1] != "success" ) {
+		if ( self::$codes[$status][1] == "fail" ) {
 			//$errors = isset( $response->errors()->Error ) ? $response->errors()->Error : array();
 			$errors = $response->errors() ? $response->errors() : array();
 			$this->Input->setErrors( array( 'errors' => (array)$errors ) );

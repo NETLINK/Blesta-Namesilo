@@ -183,7 +183,7 @@ class NamesiloDomains {
 	 * @return NamecheapResponse
 	 */
 	public function getContacts(array $vars) {
-		return $this->api->submit("namesilo.domains.getContacts", $vars);
+		return $this->api->submit("contactList", $vars);
 	}
 	
 	/**
