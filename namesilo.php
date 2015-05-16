@@ -29,7 +29,7 @@ class Namesilo extends Module {
 		),
 	);
 	
-	private static $debug_to = "julian@netlink.ie";
+	private static $debug_to = "root@localhost";
 	
 	private static $codes;
 
@@ -1220,7 +1220,6 @@ class Namesilo extends Module {
 		}
 		else {
 			$response = $domains->getRegistrarLock(array('domain' => $fields->DomainName))->response();
-			self::debug( $response->locked );
 			if (isset($response->locked))
 				$vars->registrar_lock = $response->locked;
 		}
@@ -1323,8 +1322,6 @@ class Namesilo extends Module {
 		$this->logRequest( $api, $response );
 		
 		$status = $response->status();
-		
-		self::debug( $status );
 		
 		// Set errors, if any
 		if ( self::$codes[$status][1] == "fail" ) {
