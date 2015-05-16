@@ -1075,7 +1075,6 @@ class Namesilo extends Module {
 				
 				// Format fields
 				foreach ( $contacts as $section => $element ) {
-					//self::debug( $element );
 					foreach ( $element as $name => $value ) {
 						// Value must be a string
 						if ( !is_scalar( $value ) )
