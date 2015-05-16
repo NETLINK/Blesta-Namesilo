@@ -1018,20 +1018,41 @@ class Namesilo extends Module {
 		$api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == "true");
 		$domains = new NamesiloDomains($api);
 		
+		$sections = array( 'registrant', 'admin', 'tech', 'billing' );
+		
 		$vars = new stdClass();
 		
 		$whois_fields = Configure::get("Namesilo.whois_fields");
 		$fields = $this->serviceFieldsToObject($service->fields);
 		
-		if (!empty($post)) {
-			$post = array_merge(array('domain' => $fields->DomainName), array_intersect_key($post, $whois_fields));
+		//self::debug( $whois_fields );
+		
+		if ( !empty( $post ) ) {
 			
-			$response = $domains->setContacts($post);
-			$this->processResponse($api, $response);
+			//$post = array_merge( array( 'domain' => $fields->DomainName ), array_intersect_key( $post, $whois_fields ) );
 			
-			$vars = (object)$post;
+			$params = array( "domain" => $fields->DomainName );
+			
+			foreach ( $post as $key => $value )
+			{
+				$response = $domains->addContacts( $value );
+				$this->processResponse( $api, $response );
+				if ( self::$codes[$response->status()][1] != "fail" ) {
+					$params[$key] = $response->response()->contact_id;
+				}
+			}
+			
+			$response = $domains->setContacts( $params );
+			
+			//$vars = (object)$post;
 		}
-		else {
+		//else {
+			
+			//$response = $domains->getContacts( array( 'domain' => $fields->DomainName ) );
+			
+			//if ( self::$codes[$response->status()][1] != "fail" ) {
+			
+			///*
 			$response = $domains->getDomainInfo( array( 'domain' => $fields->DomainName ) );
 		
 			if ( self::$codes[$response->status()][1] != "fail" ) {
@@ -1050,6 +1071,7 @@ class Namesilo extends Module {
 						$contacts[$type] = $temp[$id];
 					}
 				}
+				//*/
 				
 				// Format fields
 				foreach ( $contacts as $section => $element ) {
@@ -1058,19 +1080,53 @@ class Namesilo extends Module {
 						// Value must be a string
 						if ( !is_scalar( $value ) )
 							$value = "";
-						$vars->{$section.'_'.$name} = $value;
+						if ( isset( $whois_fields[$name]['key'] ) )
+							$vars->{$section . '[' . $whois_fields[$name]['key'] . ']'} = $value;
 					}
 				}
 			}
+		//}
+		
+		$all_fields = array();
+		foreach ( $whois_fields as $field => $value ) {
+			$key = $value['key'];
+			$all_fields["administrative[{$key}]"] = $value;
+			$all_fields["technical[{$key}]"] = $value;
+			$all_fields["registrant[{$key}]"] = $value;
+			$all_fields["billing[{$key}]"] = $value;
 		}
 		
-		self::debug( $vars );
+		//self::debug( $vars );
 		
 		$this->view->set("vars", $vars);
-		$this->view->set("fields", $this->arrayToModuleFields($whois_fields, null, $vars)->getFields());
-		$this->view->set("sections", array('registrant', 'admin', 'tech', 'billing'));
+		$this->view->set("fields", $this->arrayToModuleFields($all_fields, null, $vars)->getFields());
+		$this->view->set("sections", $sections );
 		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
 		return $this->view->fetch();
+	}
+	
+	private function whoisContacts( array $vars ) {
+		
+		$response = $domains->getDomainInfo( array( 'domain' => $fields->DomainName ) );
+		
+		if ( self::$codes[$response->status()][1] != "fail" ) {
+			
+			$contact_ids = $response->response()->contact_ids;
+			
+			$contacts = $temp = array();
+			foreach ( $contact_ids as $type => $id ) {
+				if ( !isset( $temp[$id] ) ) {
+					$response = $domains->getContacts( array( "contact_id" => $id ) );
+					if ( self::$codes[$response->status()][1] != "fail" ) {
+						$temp[$id] = $response->response()->contact;
+						$contacts[$type] = $temp[$id];
+					}
+				}
+				else {
+					$contacts[$type] = $temp[$id];
+				}
+			}
+		}
 	}
 	
 	/**
