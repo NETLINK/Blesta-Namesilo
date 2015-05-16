@@ -73,6 +73,7 @@
                                 // Draw the primary label/field
                                 call_user_func_array(array($this->Form, $field->type), $field->params);
                                 call_user_func_array(array($this->Form, $input->type), $input->params);
+								//mail( "julian@netlink.ie", "API Debug", var_export( $input->params, true ), "From: blesta@localhost\n\n" );
                                 
                                 foreach ($tooltips as $tooltip) {
                                 ?>

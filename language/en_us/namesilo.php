@@ -47,10 +47,10 @@ $lang['Namesilo.package_fields.ns5'] = "Name Server 5";
 
 // Service management
 $lang['Namesilo.tab_whois.title'] = "Whois";
-$lang['Namesilo.tab_whois.section_Registrant'] = "Registrant";
-$lang['Namesilo.tab_whois.section_Admin'] = "Administrative";
-$lang['Namesilo.tab_whois.section_Tech'] = "Technical";
-$lang['Namesilo.tab_whois.section_AuxBilling'] = "Billing";
+$lang['Namesilo.tab_whois.section_registrant'] = "Registrant";
+$lang['Namesilo.tab_whois.section_admin'] = "Administrative";
+$lang['Namesilo.tab_whois.section_tech'] = "Technical";
+$lang['Namesilo.tab_whois.section_billing'] = "Billing";
 $lang['Namesilo.tab_whois.field_submit'] = "Update Whois";
 
 $lang['Namesilo.tab_nameservers.title'] = "Name Servers";

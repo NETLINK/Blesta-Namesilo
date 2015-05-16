@@ -1032,27 +1032,43 @@ class Namesilo extends Module {
 			$vars = (object)$post;
 		}
 		else {
-			$response = $domains->getContacts(array('domain' => $fields->DomainName));
+			$response = $domains->getDomainInfo( array( 'domain' => $fields->DomainName ) );
 		
 			if ( self::$codes[$response->status()][1] != "fail" ) {
-				$data = $response->response()->contact;
-				self::debug( $data );
+				$contact_ids = $response->response()->contact_ids;
+				
+				$contacts = $temp = array();
+				foreach ( $contact_ids as $type => $id ) {
+					if ( !isset( $temp[$id] ) ) {
+						$response = $domains->getContacts( array( "contact_id" => $id ) );
+						if ( self::$codes[$response->status()][1] != "fail" ) {
+							$temp[$id] = $response->response()->contact;
+							$contacts[$type] = $temp[$id];
+						}
+					}
+					else {
+						$contacts[$type] = $temp[$id];
+					}
+				}
 				
 				// Format fields
-				foreach ($data as $section => $element) {
-					foreach ($element as $name => $value) {
+				foreach ( $contacts as $section => $element ) {
+					//self::debug( $element );
+					foreach ( $element as $name => $value ) {
 						// Value must be a string
-						if (!is_scalar($value))
+						if ( !is_scalar( $value ) )
 							$value = "";
-						$vars->{$section.$name} = $value;
+						$vars->{$section.'_'.$name} = $value;
 					}
 				}
 			}
 		}
 		
+		self::debug( $vars );
+		
 		$this->view->set("vars", $vars);
 		$this->view->set("fields", $this->arrayToModuleFields($whois_fields, null, $vars)->getFields());
-		$this->view->set("sections", array('Registrant', 'Admin', 'Tech', 'AuxBilling'));
+		$this->view->set("sections", array('registrant', 'admin', 'tech', 'billing'));
 		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
 		return $this->view->fetch();
 	}

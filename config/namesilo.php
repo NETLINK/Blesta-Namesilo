@@ -93,163 +93,163 @@ Configure::set("Namesilo.nameserver_fields", array(
 
 // Whois fields
 Configure::set("Namesilo.whois_fields", array(
-	'RegistrantFirstName' => array(
+	'registrant_first_name' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantFirstName", true),
 		'type' => "text"
 	),
-	'RegistrantLastName' => array(
+	'registrant_last_name' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantLastName", true),
 		'type' => "text"
 	),
-	'RegistrantAddress1' => array(
+	'registrant_address' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantAddress1", true),
 		'type' => "text"
 	),
-	'RegistrantAddress2' => array(
+	'registrant_address2' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantAddress2", true),
 		'type' => "text"
 	),
-	'RegistrantCity' => array(
+	'registrant_city' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantCity", true),
 		'type' => "text"
 	),
-	'RegistrantStateProvince' => array(
+	'registrant_state' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantStateProvince", true),
 		'type' => "text"
 	),
-	'RegistrantPostalCode' => array(
+	'registrant_zip' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantPostalCode", true),
 		'type' => "text"
 	),
-	'RegistrantCountry' => array(
+	'registrant_country' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantCountry", true),
 		'type' => "text"
 	),
-	'RegistrantPhone' => array(
+	'registrant_phone' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantPhone", true),
 		'type' => "text"
 	),
-	'RegistrantEmailAddress' => array(
+	'registrant_email' => array(
 		'label' => Language::_("Namesilo.whois.RegistrantEmailAddress", true),
 		'type' => "text"
 	),
-	'TechFirstName' => array(
+	'technical_first_name' => array(
 		'label' => Language::_("Namesilo.whois.TechFirstName", true),
 		'type' => "text"
 	),
-	'TechLastName' => array(
+	'technical_last_name' => array(
 		'label' => Language::_("Namesilo.whois.TechLastName", true),
 		'type' => "text"
 	),
-	'TechAddress1' => array(
+	'technical_address' => array(
 		'label' => Language::_("Namesilo.whois.TechAddress1", true),
 		'type' => "text"
 	),
-	'TechAddress2' => array(
+	'technical_address2' => array(
 		'label' => Language::_("Namesilo.whois.TechAddress2", true),
 		'type' => "text"
 	),
-	'TechCity' => array(
+	'technical_city' => array(
 		'label' => Language::_("Namesilo.whois.TechCity", true),
 		'type' => "text"
 	),
-	'TechStateProvince' => array(
+	'technical_state' => array(
 		'label' => Language::_("Namesilo.whois.TechStateProvince", true),
 		'type' => "text"
 	),
-	'TechPostalCode' => array(
+	'technical_zip' => array(
 		'label' => Language::_("Namesilo.whois.TechPostalCode", true),
 		'type' => "text"
 	),
-	'TechCountry' => array(
+	'technical_country' => array(
 		'label' => Language::_("Namesilo.whois.TechCountry", true),
 		'type' => "text"
 	),
-	'TechPhone' => array(
+	'technical_phone' => array(
 		'label' => Language::_("Namesilo.whois.TechPhone", true),
 		'type' => "text"
 	),
-	'TechEmailAddress' => array(
+	'technical_email' => array(
 		'label' => Language::_("Namesilo.whois.TechEmailAddress", true),
 		'type' => "text"
 	),
-	'AdminFirstName' => array(
+	'administrative_first_name' => array(
 		'label' => Language::_("Namesilo.whois.AdminFirstName", true),
 		'type' => "text"
 	),
-	'AdminLastName' => array(
+	'administrative_last_name' => array(
 		'label' => Language::_("Namesilo.whois.AdminLastName", true),
 		'type' => "text"
 	),
-	'AdminAddress1' => array(
+	'administrative_address' => array(
 		'label' => Language::_("Namesilo.whois.AdminAddress1", true),
 		'type' => "text"
 	),
-	'AdminAddress2' => array(
+	'administrative_address2' => array(
 		'label' => Language::_("Namesilo.whois.AdminAddress2", true),
 		'type' => "text"
 	),
-	'AdminCity' => array(
+	'administrative_city' => array(
 		'label' => Language::_("Namesilo.whois.AdminCity", true),
 		'type' => "text"
 	),
-	'AdminStateProvince' => array(
+	'administrative_state' => array(
 		'label' => Language::_("Namesilo.whois.AdminStateProvince", true),
 		'type' => "text"
 	),
-	'AdminPostalCode' => array(
+	'administrative_zip' => array(
 		'label' => Language::_("Namesilo.whois.AdminPostalCode", true),
 		'type' => "text"
 	),
-	'AdminCountry' => array(
+	'administrative_country' => array(
 		'label' => Language::_("Namesilo.whois.AdminCountry", true),
 		'type' => "text"
 	),
-	'AdminPhone' => array(
+	'administrative_phone' => array(
 		'label' => Language::_("Namesilo.whois.AdminPhone", true),
 		'type' => "text"
 	),
-	'AdminEmailAddress' => array(
+	'administrative_email' => array(
 		'label' => Language::_("Namesilo.whois.AdminEmailAddress", true),
 		'type' => "text"
 	),
-	'AuxBillingFirstName' => array(
+	'billing_first_name' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingFirstName", true),
 		'type' => "text"
 	),
-	'AuxBillingLastName' => array(
+	'billing_last_name' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingLastName", true),
 		'type' => "text"
 	),
-	'AuxBillingAddress1' => array(
+	'billing_address' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingAddress1", true),
 		'type' => "text"
 	),
-	'AuxBillingAddress2' => array(
+	'billing_address2' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingAddress2", true),
 		'type' => "text"
 	),
-	'AuxBillingCity' => array(
+	'billing_city' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingCity", true),
 		'type' => "text"
 	),
-	'AuxBillingStateProvince' => array(
+	'billing_state' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingStateProvince", true),
 		'type' => "text"
 	),
-	'AuxBillingPostalCode' => array(
+	'billing_zip' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingPostalCode", true),
 		'type' => "text"
 	),
-	'AuxBillingCountry' => array(
+	'billing_country' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingCountry", true),
 		'type' => "text"
 	),
-	'AuxBillingPhone' => array(
+	'billing_phone' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingPhone", true),
 		'type' => "text"
 	),
-	'AuxBillingEmailAddress' => array(
+	'billing_email' => array(
 		'label' => Language::_("Namesilo.whois.AuxBillingEmailAddress", true),
 		'type' => "text"
 	)
