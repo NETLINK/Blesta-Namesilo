@@ -92,7 +92,7 @@ $lang['Namesilo.nameserver.ns5'] = "Name Server 5";
 //$lang['Namesilo.domain.AddFreePositiveSSL'] = "";
 
 // Whois Fields
-//$lang['Namesilo.whois.RegistrantOrganizationName'] = "Organization";
+$lang['Namesilo.whois.Organization'] = "Organization";
 //$lang['Namesilo.whois.RegistrantJobTitle'] = "Job Title";
 $lang['Namesilo.whois.Nickname'] = "Nickname";
 $lang['Namesilo.whois.FirstName'] = "First Name";

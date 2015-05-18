@@ -110,6 +110,11 @@ Configure::set("Namesilo.whois_fields", array(
 		'type' => "text",
 		'key' => 'ln',
 	),
+	'company' => array(
+		'label' => Language::_("Namesilo.whois.Organization", true),
+		'type' => "text",
+		'key' => 'cp',
+	),
 	'address' => array(
 		'label' => Language::_("Namesilo.whois.Address1", true),
 		'type' => "text",
