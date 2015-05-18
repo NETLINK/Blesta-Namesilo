@@ -1025,11 +1025,19 @@ class Namesilo extends Module {
 		$whois_fields = Configure::get("Namesilo.whois_fields");
 		$fields = $this->serviceFieldsToObject($service->fields);
 		
-		//self::debug( $whois_fields );
+		$domainInfo = $domains->getDomainInfo( array( 'domain' => $fields->DomainName ) );
+		if ( self::$codes[$domainInfo->status()][1] == "fail" ) {
+			$this->processResponse( $api, $domainInfo );
+			return false;
+		}
+		
+		$contact_ids = $domainInfo->response( true )['contact_ids'];
 		
 		if ( !empty( $post ) ) {
 			
 			//$post = array_merge( array( 'domain' => $fields->DomainName ), array_intersect_key( $post, $whois_fields ) );
+			
+			$new_ids = $delete_ids = array();
 			
 			$params = array( "domain" => $fields->DomainName );
 			
@@ -1037,54 +1045,47 @@ class Namesilo extends Module {
 			{
 				$response = $domains->addContacts( $value );
 				$this->processResponse( $api, $response );
-				if ( self::$codes[$response->status()][1] != "fail" ) {
-					$params[$key] = $response->response()->contact_id;
+				if ( self::$codes[$response->status()][1] == "success" ) {
+					$new_ids[$key] = $params[$key] = $response->response()->contact_id;
+					$delete_ids[] = $contact_ids[$key];
 				}
 			}
 			
 			$response = $domains->setContacts( $params );
+			if ( self::$codes[$response->status()][1] == "success" ) {
+				// Delete old contact IDs and set new ones
+				foreach( $delete_ids as $id ) $domains->deleteContacts( array( 'contact_id' => $id ) );
+				$contact_ids = array_replace( $contact_ids, $new_ids );
+			}
 			
 			//$vars = (object)$post;
-		}
-		//else {
+		}			
 			
-			//$response = $domains->getContacts( array( 'domain' => $fields->DomainName ) );
-			
-			//if ( self::$codes[$response->status()][1] != "fail" ) {
-			
-			///*
-			$response = $domains->getDomainInfo( array( 'domain' => $fields->DomainName ) );
-		
-			if ( self::$codes[$response->status()][1] != "fail" ) {
-				$contact_ids = $response->response()->contact_ids;
-				
-				$contacts = $temp = array();
-				foreach ( $contact_ids as $type => $id ) {
-					if ( !isset( $temp[$id] ) ) {
-						$response = $domains->getContacts( array( "contact_id" => $id ) );
-						if ( self::$codes[$response->status()][1] != "fail" ) {
-							$temp[$id] = $response->response()->contact;
-							$contacts[$type] = $temp[$id];
-						}
-					}
-					else {
-						$contacts[$type] = $temp[$id];
-					}
+		$contacts = $temp = array();
+		foreach ( $contact_ids as $type => $id ) {
+			if ( !isset( $temp[$id] ) ) {
+				$response = $domains->getContacts( array( "contact_id" => $id ) );
+				if ( self::$codes[$response->status()][1] != "fail" ) {
+					$temp[$id] = $response->response()->contact;
+					$contacts[$type] = $temp[$id];
 				}
-				//*/
-				
-				// Format fields
-				foreach ( $contacts as $section => $element ) {
-					foreach ( $element as $name => $value ) {
-						// Value must be a string
-						if ( !is_scalar( $value ) )
-							$value = "";
-						if ( isset( $whois_fields[$name]['key'] ) )
-							$vars->{$section . '[' . $whois_fields[$name]['key'] . ']'} = $value;
-					}
+				else {
+					$contacts[$type] = $temp[$id];
 				}
 			}
-		//}
+			//*/
+			
+			// Format fields
+			foreach ( $contacts as $section => $element ) {
+				foreach ( $element as $name => $value ) {
+					// Value must be a string
+					if ( !is_scalar( $value ) )
+						$value = "";
+					if ( isset( $whois_fields[$name]['key'] ) )
+						$vars->{$section . '[' . $whois_fields[$name]['key'] . ']'} = $value;
+				}
+			}
+		}
 		
 		$all_fields = array();
 		foreach ( $whois_fields as $field => $value ) {

@@ -113,6 +113,18 @@ class NamesiloDomains {
 	}
 	
 	/**
+	 * Delete a contact profile in your account. Please remember
+	 * that the only contact profiles that can be deleted are those
+	 * that are not the account default and are not associated with
+	 * any active domains or order profiles. 
+	 *
+	 * https://www.namesilo.com/api_reference.php#contactDelete
+	 */
+	public function deleteContacts( array $vars ) {
+		return $this->api->submit( "contactDelete", $vars );
+	}
+	
+	/**
 	 * Checks the availability of a domain name.
 	 *
 	 * https://www.namesilo.com/api_reference.php#checkRegisterAvailability

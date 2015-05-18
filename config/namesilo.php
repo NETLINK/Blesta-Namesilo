@@ -93,6 +93,13 @@ Configure::set("Namesilo.nameserver_fields", array(
 
 // Whois fields
 Configure::set("Namesilo.whois_fields", array(
+	/*
+	'nickname' => array(
+		'label' => Language::_("Namesilo.whois.Nickname", true),
+		'type' => "text",
+		'key' => 'nn',
+	),
+	*/
 	'first_name' => array(
 		'label' => Language::_("Namesilo.whois.FirstName", true),
 		'type' => "text",

@@ -38,9 +38,9 @@ class NamesiloResponse {
 	 *
 	 * @return stdClass A stdClass object representing the CommandResponses, null if invalid response
 	 */
-	public function response() {
+	public function response( $assoc = false ) {
 		if ($this->xml && $this->xml instanceof SimpleXMLElement) {
-			return $this->formatResponse($this->xml->reply);
+			return $this->formatResponse( $this->xml->reply, $assoc );
 		}
 		return null;
 	}
@@ -97,8 +97,8 @@ class NamesiloResponse {
 	 * @param mixed $data The data to convert to a stdClass object
 	 * @return stdClass $data in a stdClass object form
 	 */
-	private function formatResponse($data) {
-		return json_decode(json_encode($data));
+	private function formatResponse( $data, $assoc = false ) {
+		return json_decode( json_encode( $data ), $assoc );
 	}
 }
 ?>
