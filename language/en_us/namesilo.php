@@ -71,11 +71,11 @@ $lang['Namesilo.!error.key.valid_connection'] = "The user and key combination ap
 
 
 // Domain Transfer Fields
-$lang['Namesilo.transfer.DomainName'] = "Domain Name";
+$lang['Namesilo.transfer.domain'] = "Domain Name";
 $lang['Namesilo.transfer.EPPCode'] = "EPP Code";
 
 // Domain Fields
-$lang['Namesilo.domain.DomainName'] = "Domain Name";
+$lang['Namesilo.domain.domain'] = "Domain Name";
 $lang['Namesilo.domain.Years'] = "Years";
 
 // Nameserver Fields

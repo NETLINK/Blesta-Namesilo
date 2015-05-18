@@ -49,8 +49,8 @@ Configure::set("Namesilo.tlds", array(
 
 // Transfer fields
 Configure::set("Namesilo.transfer_fields", array(
-	'DomainName' => array(
-		'label' => Language::_("Namesilo.transfer.DomainName", true),
+	'domain' => array(
+		'label' => Language::_("Namesilo.transfer.domain", true),
 		'type' => "text"
 	),
 	'EPPCode' => array(
@@ -61,8 +61,8 @@ Configure::set("Namesilo.transfer_fields", array(
 
 // Domain fields
 Configure::set("Namesilo.domain_fields", array(
-	'DomainName' => array(
-		'label' => Language::_("Namesilo.domain.DomainName", true),
+	'domain' => array(
+		'label' => Language::_("Namesilo.domain.domain", true),
 		'type' => "text"
 	),
 ));
@@ -103,57 +103,68 @@ Configure::set("Namesilo.whois_fields", array(
 	'first_name' => array(
 		'label' => Language::_("Namesilo.whois.FirstName", true),
 		'type' => "text",
-		'key' => 'fn',
+		'rp' => 'fn',
+		'lp' => 'first_name',
 	),
 	'last_name' => array(
 		'label' => Language::_("Namesilo.whois.LastName", true),
 		'type' => "text",
-		'key' => 'ln',
+		'rp' => 'ln',
+		'lp' => 'last_name',
 	),
 	'company' => array(
 		'label' => Language::_("Namesilo.whois.Organization", true),
 		'type' => "text",
-		'key' => 'cp',
+		'rp' => 'cp',
+		'lp' => 'company',
 	),
 	'address' => array(
 		'label' => Language::_("Namesilo.whois.Address1", true),
 		'type' => "text",
-		'key' => 'ad',
+		'rp' => 'ad',
+		'lp' => 'address1',
 	),
 	'address2' => array(
 		'label' => Language::_("Namesilo.whois.Address2", true),
 		'type' => "text",
-		'key' => 'ad2',
+		'rp' => 'ad2',
+		'lp' => 'address2',
 	),
 	'city' => array(
 		'label' => Language::_("Namesilo.whois.City", true),
 		'type' => "text",
-		'key' => 'cy',
+		'rp' => 'cy',
+		'lp' => 'city',
 	),
 	'state' => array(
 		'label' => Language::_("Namesilo.whois.StateProvince", true),
 		'type' => "text",
-		'key' => 'st',
+		'rp' => 'st',
+		'lp' => 'state',
 	),
 	'zip' => array(
 		'label' => Language::_("Namesilo.whois.PostalCode", true),
 		'type' => "text",
-		'key' => 'zp',
+		'rp' => 'zp',
+		'lp' => 'zip',
 	),
 	'country' => array(
 		'label' => Language::_("Namesilo.whois.Country", true),
 		'type' => "text",
-		'key' => 'ct',
+		'rp' => 'ct',
+		'lp' => 'country',
 	),
 	'phone' => array(
 		'label' => Language::_("Namesilo.whois.Phone", true),
 		'type' => "text",
-		'key' => 'ph',
+		'rp' => 'ph',
+		'lp' => 'phone',
 	),
 	'email' => array(
 		'label' => Language::_("Namesilo.whois.EmailAddress", true),
 		'type' => "text",
-		'key' => 'em',
+		'rp' => 'em',
+		'lp' => 'email',
 	),
 ));
 

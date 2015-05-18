@@ -8,10 +8,10 @@
 				<?php
 				$this->Form->label($this->_("Namesilo.tab_settings.field_registrar_lock", true), "registrar_lock");
 				
-				$this->Form->fieldRadio("registrar_lock", "true", $this->Html->ifSet($vars->registrar_lock) == "Yes", array('id' => "registrar_lock_yes"));
+				$this->Form->fieldRadio("registrar_lock", "Yes", $this->Html->ifSet($vars->registrar_lock) == "Yes", array('id' => "registrar_lock_yes"));
 				$this->Form->label($this->_("Namesilo.tab_settings.field_registrar_lock_yes", true), "registrar_lock_yes", array('class' => "inline"));
 				
-				$this->Form->fieldRadio("registrar_lock", "false", $this->Html->ifSet($vars->registrar_lock) == "No", array('id' => "registrar_lock_no"));
+				$this->Form->fieldRadio("registrar_lock", "No", $this->Html->ifSet($vars->registrar_lock) == "No", array('id' => "registrar_lock_no"));
 				$this->Form->label($this->_("Namesilo.tab_settings.field_registrar_lock_no", true), "registrar_lock_no", array('class' => "inline"));
 				?>
 			</li>
