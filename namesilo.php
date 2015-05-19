@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.0-alpha";
+	private static $version = "1.0.1-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
@@ -180,6 +180,7 @@ class Namesilo extends Module {
 		
 		#
 		# TODO: Handle validation checks
+		# TODO: Fix nameservers
 		#
 		
 		$tld = NULL;
@@ -193,7 +194,7 @@ class Namesilo extends Module {
 					$tld = $this->getTld( $vars['domain'] );
 				
 				$whois_fields = Configure::get( "Namesilo.whois_fields" );
-				$input_fields = array_merge( Configure::get( "Namesilo.domain_fields" ), $whois_fields, (array)Configure::get( "Namesilo.domain_fields" . $tld ), array( 'years' => true, 'Nameservers' => true ) );
+				$input_fields = array_merge( Configure::get( "Namesilo.domain_fields" ), (array)Configure::get( "Namesilo.domain_fields" . $tld ), array( 'years' => true, 'Nameservers' => true ) );
 			}
 		}
 		
@@ -239,11 +240,13 @@ class Namesilo extends Module {
                         $contact_numbers = $this->Contacts->getNumbers( $client->contact_id );
 						
 					foreach ( $whois_fields as $key => $value ) {
+						$input_fields[$value['rp']] = true;
 						if ( strpos( $key, "phone" ) !== false ) {
-							$vars[$key] = $this->formatPhone( isset( $contact_numbers[0] ) ? $contact_numbers[0]->number : null, $client->country );
+							$vars[$value['rp']] = $this->formatPhone( isset( $contact_numbers[0] ) ? $contact_numbers[0]->number : null, $client->country );
 						}
 						else {
-							$vars[$value['rp']] = isset( $value['lp'] ) ? $client->{$value['lp']} : NULL;
+							if ( empty( $value['lp'] ) ) $this->debug( $vars[$value['rp']] );
+							$vars[$value['rp']] = ( isset( $value['lp'] ) && !empty( $value['lp'] ) ) ? $client->{$value['lp']} : 'NA';
 						}
 					}
 					
@@ -257,13 +260,12 @@ class Namesilo extends Module {
 					if ( !empty( $nameservers ) )
 						$vars['Nameservers'] = $nameservers;
 					
-					if ( $tld == ".asia" )
-						$vars['ASIACCLocality'] = $client->country;
-					
 					$fields = array_intersect_key( $vars, $input_fields );
 					
 					$domains = new NamesiloDomains( $api );
-					$this->debug( $vars );
+					//$this->debug( $fields );
+					//$this->Input->setErrors( array( 'errors' => array( 'test' ) ) );
+					//return;
 					$response = $domains->create( $fields );
 					$this->processResponse( $api, $response );
 					
