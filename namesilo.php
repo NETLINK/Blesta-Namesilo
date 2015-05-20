@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.1-alpha";
+	private static $version = "1.0.2-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
