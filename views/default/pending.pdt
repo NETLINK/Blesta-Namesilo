@@ -1,0 +1,2 @@
+
+	<p><?php $this->_("Namesilo.notice.StatusPending"); ?></p>
