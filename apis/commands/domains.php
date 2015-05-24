@@ -145,16 +145,18 @@ class NamesiloDomains {
 	}
 	
 	/**
-	 * Renews an expiring domain.
+	 * Renews a domain.
 	 *
 	 * @param array $vars An array of input params including:
-	 * 	- DomainName DomainName to renew
-	 * 	- Years Number of years to renew
-	 * 	- PromotionCode Promotional (coupon) code for renewing the domain 
+	 * 	- domain DomainName to renew
+	 * 	- years Number of years to renew
+	 * 	- coupon Promotional (coupon) code for renewing the domain 
 	 * @return NamesiloResponse
+	 *
+	 * https://www.namesilo.com/api_reference.php#renewDomain
 	 */
 	public function renew(array $vars) {
-		return $this->api->submit("namesilo.domains.renew", $vars);
+		return $this->api->submit("renewDomain", $vars);
 	}
 	
 	/**
