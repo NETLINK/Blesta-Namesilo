@@ -31,8 +31,10 @@ class Namesilo extends Module {
 	
 	private static $debug_to = "root@localhost";
 	
+	// Namesilo response codes (array)
 	private static $codes;
 	
+	// Pending statutes (array)
 	private static $pending = array( 'in_review', 'pending' );
 
 	/**
