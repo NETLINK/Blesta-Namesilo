@@ -353,6 +353,43 @@ class Namesilo extends Module {
 	 * @see Module::getModuleRow()
 	 */
 	public function renewService($package, $service, $parent_package=null, $parent_service=null) {
+		$row = $this->getModuleRow( $package->module_row );
+		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+
+		// Renew domain /* renewDomain?version=1&type=xml&key=12345&domain=namesilo.com&years=2 */
+		if ($package->meta->type == "domain") {
+			$fields = $this->serviceFieldsToObject($service->fields);
+
+			$vars = array(
+				'domain' => $fields->{'domain'},
+				'period' => 1
+			);
+
+			foreach ($package->pricing as $pricing) {
+				if ($pricing->id == $service->pricing_id) {
+					$vars['period'] = $pricing->term;
+					break;
+				}
+			}
+
+			$vars['years'] = $vars['period'];
+			
+			$domains = new NamesiloDomains( $api );
+			$response = $domains->renew( $fields );
+			$this->processResponse( $api, $response );
+					
+
+			if ($this->Input->errors())
+				return;
+
+
+		}
+		else {
+			#
+			# TODO: SSL Cert: Set cancelation date of service?
+			#
+		}
+
 		return null;
 	}
 	
@@ -689,16 +726,57 @@ class Namesilo extends Module {
 				# TODO: Select TLD, then display additional fields
 				#
 				
-				$module_fields = $this->arrayToModuleFields(array_merge(Configure::get("Namesilo.domain_fields"), Configure::get("Namesilo.nameserver_fields")), null, $vars);
+				$fields = array(
+					'transfer' => array(
+						'label' => "Domain Action",
+						'type' => "radio",
+						'value' => "1",
+						'options' => array(
+							'1' => "Register",
+							'2' => "Transfer",
+						)
+					),    
+					'domain' => array(
+						'label' => Language::_("Namesilo.transfer.domain", true),
+						'type' => "text"
+					),
+					'auth' => array(
+						'label' => Language::_("Namesilo.transfer.EPPCode", true),
+						'type' => "text"
+					)
+				);
 				
-                // Build the domain fields
-                $fields = $this->buildDomainModuleFields($vars);
-                if ($fields)
-                    $module_fields = $fields;
+				$module_fields = $this->arrayToModuleFields(array_merge($fields, Configure::get("Namesilo.nameserver_fields")), null, $vars);
+				
+				// $module_fields = $this->arrayToModuleFields(array_merge(Configure::get("Namesilo.domain_fields"), Configure::get("Namesilo.nameserver_fields")), null, $vars);
+				
+				$module_fields->setHtml("
+					<script type=\"text/javascript\">
+						$(document).ready(function() {
+							$('#transfer_id_0').prop('checked', true);
+							$('#auth_id').closest('li').hide();
+							// Set whether to show or hide the ACL option
+							$('#auth').closest('li').hide();
+							if ($('input[name=\"transfer\"]:checked').val() == '2')
+								$('#auth_id').closest('li').show();
+								
+							$('input[name=\"transfer\"]').change(function() {
+								if ($(this).val() == '2')
+									$('#auth_id').closest('li').show();
+								else
+									$('#auth_id').closest('li').hide();
+							});
+						});
+					</script>");
+	
+		                // Build the domain fields
+		                $fields = $this->buildDomainModuleFields($vars);
+		                if ($fields)
+		                    $module_fields = $fields;
 			}
 		}
         
-        return (isset($module_fields) ? $module_fields : new ModuleFields());
+        	return (isset($module_fields) ? $module_fields : new ModuleFields());
 	}
 	
 	/**
