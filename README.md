@@ -7,4 +7,4 @@ This module interfaces with Namesilo's domain API to allow domain registrations,
 
 www.blesta.com
 
-www.naemsilo.com
+www.namesilo.com
