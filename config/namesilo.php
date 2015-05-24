@@ -19,10 +19,15 @@ Configure::set("Namesilo.transfer_fields", array(
 		'label' => Language::_("Namesilo.transfer.domain", true),
 		'type' => "text"
 	),
-	'EPPCode' => array(
+	'auth' => array(
 		'label' => Language::_("Namesilo.transfer.EPPCode", true),
 		'type' => "text"
-	)
+	),
+	'private' => array(
+		'label' => Language::_("Namesilo.transfer.WhoisPrivacy", true),
+		'type' => "checkbox",
+		'options' => array( '1' => "Yes" ),
+	),
 ));
 
 // Domain fields

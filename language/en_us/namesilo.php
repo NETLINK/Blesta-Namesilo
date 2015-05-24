@@ -76,6 +76,7 @@ $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you
 // Domain Transfer Fields
 $lang['Namesilo.transfer.domain'] = "Domain Name";
 $lang['Namesilo.transfer.EPPCode'] = "EPP Code";
+$lang['Namesilo.transfer.WhoisPrivacy'] = "Whois Privacy";
 
 // Domain Fields
 $lang['Namesilo.domain.domain'] = "Domain Name";

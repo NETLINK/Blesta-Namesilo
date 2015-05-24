@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.2-alpha";
+	private static $version = "1.0.3-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
@@ -32,6 +32,8 @@ class Namesilo extends Module {
 	private static $debug_to = "root@localhost";
 	
 	private static $codes;
+	
+	private static $pending = array( 'in_review', 'pending' );
 
 	/**
 	 * Initializes the module
@@ -187,7 +189,7 @@ class Namesilo extends Module {
 		$input_fields = array();
 		
 		if ( $package->meta->type == "domain" ) {
-			if ( array_key_exists( "EPPCode", $vars ) )
+			if ( array_key_exists( "auth", $vars ) )
 				$input_fields = array_merge( Configure::get( "Namesilo.transfer_fields" ), array( 'years' => true ) );
 			else {
 				if ( isset( $vars['domain'] ) )
@@ -217,7 +219,7 @@ class Namesilo extends Module {
 				}
 				
 				// Handle transfer
-				if ( isset( $vars['transfer'] ) || isset( $vars['EPPCode'] ) ) {
+				if ( isset( $vars['transfer'] ) || isset( $vars['auth'] ) ) {
 					
 					$fields = array_intersect_key( $vars, $input_fields );
 					
@@ -677,7 +679,7 @@ class Namesilo extends Module {
 			}
 			
 			// Handle transfer request
-			if (isset($vars->transfer) || isset($vars->EPPCode)) {
+			if (isset($vars->transfer) || isset($vars->auth)) {
 				return $this->arrayToModuleFields(Configure::get("Namesilo.transfer_fields"), null, $vars);
 			}
 			// Handle domain registration
@@ -723,7 +725,7 @@ class Namesilo extends Module {
 			}
 			
 			// Handle transfer request
-			if (isset($vars->transfer) || isset($vars->EPPCode)) {
+			if (isset($vars->transfer) || isset($vars->auth)) {
 				$fields = Configure::get("Namesilo.transfer_fields");
 				
 				// We should already have the domain name don't make editable
@@ -991,7 +993,7 @@ class Namesilo extends Module {
 		
 		$vars = new stdClass();
 		
-		if ( $service->status == "in_review" ) {
+		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
 			$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
 			return $this->view->fetch();
@@ -1126,7 +1128,7 @@ class Namesilo extends Module {
 		
 		$vars = new stdClass();
 		
-		if ( $service->status == "in_review" ) {
+		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
 		}
 		else {
@@ -1191,7 +1193,7 @@ class Namesilo extends Module {
 		
 		$vars = new stdClass();
 		
-		if ( $service->status == "in_review" ) {
+		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
 		}
 		else {

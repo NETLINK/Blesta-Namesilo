@@ -23,24 +23,23 @@ class NamesiloDomainsTransfer {
 	}
 	
 	/**
-	 * Transfers a domain to Namesilo. You can only transfer .com, .net, .org,
-	 * .info, .biz, .us, .ca, .cc, .cn, .com.cn, .net.cn, .org.cn, .co.uk,
-	 * .org.uk .me.uk and .mobi domains at this time.
+	 * Transfers a domain to Namesilo.
 	 *
 	 * @param array $vars An array of input params including:
-	 * 	- DomainName Domain name to transfer
-	 * 	- Years Number of years to renew after a successful transfer
+	 * 	- domain Domain name to transfer
+	 * 	- years Number of years to renew after a successful transfer
 	 * 	- EPPCode The EPPCode is required for transferring .com, .net, .de, .org, .biz, .info, .mobi, .cn , .co, .ca and .us domains only.
 	 * 	- PromotionCode Promotional (coupon) code for transfer
 	 * 	- AddFreeWhoisguard Adds free Whoisguard for the domain
 	 * 	- WGEnable Promotional (coupon) code for transfer
 	 * @return NamesiloResponse
+	 *
+	 * https://www.namesilo.com/api_reference.php#transferDomain
 	 */
-	public function create(array $vars) {
-		if (isset($vars['EPPCode']) && substr($vars['EPPCode'], 0, 7) != "base64:")
-			$vars['EPPCode'] = "base64:" . base64_encode($vars['EPPCode']);
-			
-		return $this->api->submit("namesilo.domains.transfer.create", $vars);
+	public function create( array $vars ) {
+		if ( isset( $vars['auth'] ) && substr( $vars['auth'], 0, 7 ) != "base64:" )
+			$vars['auth'] = "base64:" . base64_encode( $vars['auth'] );
+		return $this->api->submit( "transferDomain", $vars );
 	}
 	
 	/**
@@ -65,8 +64,8 @@ class NamesiloDomainsTransfer {
 	 * 	- TransferID The unique Transfer ID which you get after placing a transfer request
 	 * @return NamesiloResponse
 	 */
-	public function getStatus(array $vars) {
-		return $this->api->submit("namesilo.domains.transfer.create", $vars);
+	public function getStatus( array $vars ) {
+		return $this->api->submit( "checkTransferStatus", $vars );
 	}
 	
 	/**
