@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.6-alpha";
+	private static $version = "1.0.7-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
@@ -177,7 +177,7 @@ class Namesilo extends Module {
 	 * @see Module::getModule()
 	 * @see Module::getModuleRow()
 	 */
-	public function addService( $package, array $vars=null, $parent_package=null, $parent_service=null, $status="pending" ) {
+	public function addService( $package, array $vars = null, $parent_package = null, $parent_service = null, $status = "pending" ) {
 		
 		$row = $this->getModuleRow( $package->module_row );
 		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
@@ -189,23 +189,6 @@ class Namesilo extends Module {
 		
 		$tld = NULL;
 		$input_fields = array();
-		
-		if ( $package->meta->type == "domain" ) {
-			if ( array_key_exists( "auth", $vars ) )
-				$input_fields = array_merge( Configure::get( "Namesilo.transfer_fields" ), array( 'years' => true ) );
-			else {
-				if ( isset( $vars['domain'] ) )
-					$tld = $this->getTld( $vars['domain'] );
-				
-				$whois_fields = Configure::get( "Namesilo.whois_fields" );
-				$input_fields = array_merge(
-					Configure::get( "Namesilo.domain_fields" ),
-					(array)Configure::get( "Namesilo.domain_fields" . $tld ),
-					(array)Configure::get( "Namesilo.nameserver_fields" ),
-					array( 'years' => true )
-				);
-			}
-		}
 		
 		if ( isset( $vars['use_module'] ) && $vars['use_module'] == "true" ) {
 			
@@ -221,7 +204,9 @@ class Namesilo extends Module {
 				}
 				
 				// Handle transfer
-				if ( isset( $vars['transfer'] ) || isset( $vars['auth'] ) ) {
+				if ( isset( $vars['transfer'] ) && $vars['transfer'] == '2' ) {
+					
+					$input_fields = array_merge( Configure::get( "Namesilo.transfer_fields" ), array( 'years' => true ) );
 					
 					$fields = array_intersect_key( $vars, $input_fields );
 					
@@ -236,6 +221,18 @@ class Namesilo extends Module {
 				}
 				// Handle registration
 				else {
+					
+					if ( isset( $vars['domain'] ) ) {
+						$tld = $this->getTld( $vars['domain'] );
+					}
+					
+					$whois_fields = Configure::get( "Namesilo.whois_fields" );
+					$input_fields = array_merge(
+						Configure::get( "Namesilo.domain_fields" ),
+						(array) Configure::get( "Namesilo.domain_fields" . $tld ),
+						(array) Configure::get( "Namesilo.nameserver_fields" ),
+						array( 'years' => true )
+					);
 					
 					// Set all whois info from client ($vars['client_id'])
 					if ( !isset( $this->Clients ) )
@@ -272,12 +269,6 @@ class Namesilo extends Module {
 					
 					return array( array( 'key' => "domain", 'value' => $vars['domain'], 'encrypted' => 0 ) );
 				}
-			}
-			else {
-				
-				#
-				# TODO: we'll see...
-				#
 			}
 		}
 		
@@ -1073,6 +1064,17 @@ class Namesilo extends Module {
 	 * @return string The string representing the contents of this tab
 	 */
 	public function tabClientSettings($package, $service, array $get=null, array $post=null, array $files=null) {
+		if ( !isset( $this->Clients ) )
+			Loader::loadModels( $this, array( "Clients" ) );
+		foreach ( $this->Clients->getCustomFieldValues( $service->{'client_id'} ) as $key => $value ) {
+			if ( $value->{'name'} == "Disable Domain Transfers"
+				&& $value->{'value'} == "Yes" )
+			{
+				$this->view = new View( "whois_disabled", "client/NETLINK" );
+				$this->view->setDefaultView( "app" . DS );
+				return $this->view->fetch();
+			}
+		}
 		return $this->manageSettings("tab_client_settings", $package, $service, $get, $post, $files);
 	}
 	
