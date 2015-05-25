@@ -254,7 +254,6 @@ class Namesilo extends Module {
 							$vars[$value['rp']] = $this->formatPhone( isset( $contact_numbers[0] ) ? $contact_numbers[0]->number : null, $client->country );
 						}
 						else {
-							if ( empty( $value['lp'] ) ) $this->debug( $vars[$value['rp']] );
 							$vars[$value['rp']] = ( isset( $value['lp'] ) && !empty( $value['lp'] ) ) ? $client->{$value['lp']} : 'NA';
 						}
 					}
@@ -750,24 +749,21 @@ class Namesilo extends Module {
 				# TODO: Select TLD, then display additional fields
 				#
 				
-				$fields = array(
-					'transfer' => array(
-						'label' => "Domain Action",
-						'type' => "radio",
-						'value' => "1",
-						'options' => array(
-							'1' => "Register",
-							'2' => "Transfer",
-						)
-					), 
-					'domain' => array(
-						'label' => Language::_( "Namesilo.transfer.domain", true ),
-						'type' => "text"
+				$fields = Configure::get( "Namesilo.transfer_fields" );
+				
+				$fields["transfer"] = array(
+					'label' => Language::_( "Namesilo.domain.DomainAction", true ),
+					'type' => "radio",
+					'value' => "1",
+					'options' => array(
+						'1' => "Register",
+						'2' => "Transfer",
 					),
-					'auth' => array(
-						'label' => Language::_( "Namesilo.transfer.EPPCode", true ),
-						'type' => "text"
-					)
+				);
+				
+				$fields["auth"] = array(
+					"label" => Language::_( "Namesilo.transfer.EPPCode", true ),
+					"type" => "text",
 				);
 				
 				$module_fields = $this->arrayToModuleFields( array_merge( $fields, Configure::get( "Namesilo.nameserver_fields" ) ), null, $vars );
@@ -1095,8 +1091,6 @@ class Namesilo extends Module {
 		
 		$vars = new stdClass();
 		
-		$this->debug( $view );
-		
 		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
 			$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
@@ -1111,8 +1105,6 @@ class Namesilo extends Module {
 		$this->view = new View($view, "default");
 		// Load the helpers required for this view
 		Loader::loadHelpers($this, array("Form", "Html"));
-		
-		$this->debug( $service );
 
 		$row = $this->getModuleRow($package->module_row);
 		$api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == "true");
@@ -1195,8 +1187,6 @@ class Namesilo extends Module {
 			$all_fields["registrant[{$key}]"] = $value;
 			$all_fields["billing[{$key}]"] = $value;
 		}
-		
-		//self::debug( $vars );
 		
 		$this->view->set("vars", $vars);
 		$this->view->set("fields", $this->arrayToModuleFields($all_fields, null, $vars)->getFields());
