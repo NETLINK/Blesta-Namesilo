@@ -1095,8 +1095,15 @@ class Namesilo extends Module {
 		
 		$vars = new stdClass();
 		
+		$this->debug( $view );
+		
 		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
+			$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+			return $this->view->fetch();
+		}
+		else if ( $view == "tab_client_whois" && $service->status == "suspended" ) {
+			$this->view = new View( 'suspended', "default" );
 			$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
 			return $this->view->fetch();
 		}
@@ -1233,6 +1240,9 @@ class Namesilo extends Module {
 		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
 		}
+		else if ( $view == "tab_client_nameservers" && $service->status == "suspended" ) {
+			$this->view = new View( 'suspended', "default" );
+		}
 		else {
 		
 			$this->view = new View($view, "default");
@@ -1297,6 +1307,9 @@ class Namesilo extends Module {
 		
 		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
+		}
+		else if ( $view == "tab_client_settings" && $service->status == "suspended" ) {
+			$this->view = new View( 'suspended', "default" );
 		}
 		else {
 			

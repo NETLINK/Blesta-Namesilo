@@ -71,6 +71,7 @@ $lang['Namesilo.!error.key.valid_connection'] = "The user and key combination ap
 
 // Notices
 $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you are trying to access will become available once the order has been activated successfully.";
+$lang['Namesilo.notice.StatusSuspended'] = "This domain name has been suspended; domain management features are therefore currently unavailable. Please contact your service provider for more details or to reinstate service.";
 
 
 // Domain Transfer Fields

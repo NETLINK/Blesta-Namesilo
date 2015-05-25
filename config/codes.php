@@ -30,7 +30,7 @@ Configure::set( 'Namesilo.status.codes', array(
     '251' => array( 'Domain is already set not to AutoRenew - No update made.', 'info' ),
     '252' => array( 'Domain is already Locked - No update made.', 'info' ),
     '253' => array( 'Domain is already Unlocked - No update made.', 'info' ),
-    '254' => array( 'NameServer update cannot be made. (details provided in response)', 'fail' ),
+    '254' => array( 'Nameserver update cannot be made. (details provided in response)', 'fail' ),
     '255' => array( 'Domain is already Private - No update made.', 'info' ),
     '256' => array( 'Domain is already Not Private - No update made.', 'info' ),
     '261' => array( 'Domain processing error (details provided in response)', 'fail' ),
