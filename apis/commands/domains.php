@@ -174,12 +174,25 @@ class NamesiloDomains {
 	 * Sets the RegistrarLock status for a domain.
 	 *
 	 * @param array $vars An array of input params including:
-	 * 	- DomainName DomainName to set status
+	 * 	- domain Domain name to set status
 	 * 	- LockAction Possible values are LOCK and UNLOCK 
 	 * @return NamesiloResponse
 	 */
 	public function setRegistrarLock( $lock_action, array $vars ) {
 		return $this->api->submit( "domain{$lock_action}", $vars );
+	}
+	
+	/**
+	 * Sets the Auto Renew for a domain.
+	 *
+	 * @param array $vars An array of input params including:
+	 * 	- domain Domain name to set status
+	 * 	- action "true" to enable auto renewal, "false" to disable
+	 * @return NamesiloResponse
+	 */
+	public function setAutoRenewal( $domain, $autorenew = false ) {		
+		if ( !$autorenew ) $action = "remove"; else $action = "add";
+		return $this->api->submit( "{$action}AutoRenewal", array( "domain" => $domain ) );
 	}
 }
 ?>
