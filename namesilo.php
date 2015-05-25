@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.4-alpha";
+	private static $version = "1.0.5-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
@@ -36,7 +36,7 @@ class Namesilo extends Module {
 	
 	// Pending statutes (array)
 	private static $pending = array( 'in_review', 'pending' );
-
+	
 	/**
 	 * Initializes the module
 	 */
@@ -319,8 +319,24 @@ class Namesilo extends Module {
 	 * Cancels the service on the remote server. Sets Input errors on failure,
 	 * preventing the service from being canceled.
 	 */
-	public function cancelService($package, $service, $parent_package=null, $parent_service=null) {
-		return null; // Nothing to do
+	public function cancelService( $package, $service, $parent_package = null, $parent_service = null ) {
+		
+		$row = $this->getModuleRow( $package->module_row );
+		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+
+		if ( $package->meta->type == "domain" ) {
+			
+			$fields = $this->serviceFieldsToObject( $service->fields );
+			
+			$domains = new NamesiloDomains( $api );
+			$response = $domains->setAutoRenewal( $fields->{"domain"}, false );
+			$this->processResponse( $api, $response );
+			
+			if ( $this->Input->errors() )
+				return;
+			
+		}
+		return;
 	}
 	
 	/**
@@ -328,7 +344,24 @@ class Namesilo extends Module {
 	 * preventing the service from being suspended.
 	 */
 	public function suspendService($package, $service, $parent_package=null, $parent_service=null) {
-		return null; // Nothing to do
+		
+		$row = $this->getModuleRow( $package->module_row );
+		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+
+		if ( $package->meta->type == "domain" ) {
+			
+			$fields = $this->serviceFieldsToObject( $service->fields );
+			
+			// Make sure auto renew is off
+			$domains = new NamesiloDomains( $api );
+			$response = $domains->setAutoRenewal( $fields->{"domain"}, false );
+			$this->processResponse( $api, $response );
+			
+			if ( $this->Input->errors() )
+				return;
+			
+		}
+		return;
 	}
 	
 	/**
@@ -354,39 +387,34 @@ class Namesilo extends Module {
 	 * @see Module::getModule()
 	 * @see Module::getModuleRow()
 	 */
-	public function renewService($package, $service, $parent_package=null, $parent_service=null) {
+	public function renewService( $package, $service, $parent_package = null, $parent_service = null ) {
+		
 		$row = $this->getModuleRow( $package->module_row );
 		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
 
 		// Renew domain /* renewDomain?version=1&type=xml&key=12345&domain=namesilo.com&years=2 */
 		if ( $package->meta->type == "domain" ) {
+			
 			$fields = $this->serviceFieldsToObject( $service->fields );
 
 			$vars = array(
-				'domain' => $fields->{'domain'},
-				'period' => 1
+				"domain" => $fields->{"domain"},
+				"years" => 1
 			);
 
 			foreach ( $package->pricing as $pricing ) {
 				if ( $pricing->id == $service->pricing_id ) {
-					$vars['period'] = $pricing->term;
+					$vars['years'] = $pricing->term;
 					break;
 				}
 			}
-
-			$vars['years'] = $vars['period'];
 			
 			$domains = new NamesiloDomains( $api );
-			$response = $domains->renew( $fields );
+			$response = $domains->renew( $vars );
 			$this->processResponse( $api, $response );
-					
 
 			if ( $this->Input->errors() )
 				return;
-			
-		}
-		else {
-			
 		}
 
 		return null;
@@ -655,7 +683,7 @@ class Namesilo extends Module {
 				$(document).ready(function() {
 					toggleTldOptions($('#namesilo_type').val());
 				
-					// Re-fetch module options to pull cPanel packages and ACLs
+					// Re-fetch module options
 					$('#namesilo_type').change(function() {
 						toggleTldOptions($(this).val());
 					});
