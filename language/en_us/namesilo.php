@@ -77,11 +77,12 @@ $lang['Namesilo.notice.StatusSuspended'] = "This domain name has been suspended;
 // Domain Transfer Fields
 $lang['Namesilo.transfer.domain'] = "Domain Name";
 $lang['Namesilo.transfer.EPPCode'] = "EPP Code";
-$lang['Namesilo.transfer.WhoisPrivacy'] = "Whois Privacy";
 
 // Domain Fields
 $lang['Namesilo.domain.domain'] = "Domain Name";
 $lang['Namesilo.domain.Years'] = "Years";
+$lang['Namesilo.domain.WhoisPrivacy'] = "Whois Privacy";
+$lang["Namesilo.domain.DomainAction"] = "Domain Action";
 
 // Nameserver Fields
 $lang['Namesilo.nameserver.ns1'] = "Name Server 1";

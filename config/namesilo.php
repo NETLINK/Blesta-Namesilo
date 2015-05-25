@@ -24,7 +24,7 @@ Configure::set("Namesilo.transfer_fields", array(
 		'type' => "text"
 	),
 	'private' => array(
-		'label' => Language::_("Namesilo.transfer.WhoisPrivacy", true),
+		'label' => Language::_("Namesilo.domain.WhoisPrivacy", true),
 		'type' => "checkbox",
 		'options' => array( '1' => "Yes" ),
 	),
@@ -35,6 +35,11 @@ Configure::set("Namesilo.domain_fields", array(
 	'domain' => array(
 		'label' => Language::_("Namesilo.domain.domain", true),
 		'type' => "text"
+	),
+	'private' => array(
+		"label" => Language::_("Namesilo.domain.WhoisPrivacy", true),
+		"type" => "checkbox",
+		"options" => array ( '1' => "Yes" ),
 	),
 ));
 
