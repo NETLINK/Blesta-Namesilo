@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.7-alpha";
+	private static $version = "1.0.8-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
@@ -255,8 +255,6 @@ class Namesilo extends Module {
 						}
 					}
 					
-					$fields = array_intersect_key( $vars, $input_fields );
-					
 					$domains = new NamesiloDomains( $api );
 					//$this->debug( $fields );
 					//$this->Input->setErrors( array( 'errors' => array( 'Test' ) ) );
@@ -272,17 +270,7 @@ class Namesilo extends Module {
 			}
 		}
 		
-		$meta = array();
-		$fields = array_intersect_key( $vars, $input_fields );
-		foreach ( $fields as $key => $value ) {
-			$meta[] = array(
-				'key' => $key,
-				'value' => $value,
-				'encrypted' => 0
-			);
-		}
-
-		return $meta;
+		return array( array( 'key' => "domain", 'value' => $vars['domain'], 'encrypted' => 0 ) );
 	}
 	
 	/**
