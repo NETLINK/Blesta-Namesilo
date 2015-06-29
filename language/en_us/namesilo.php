@@ -64,6 +64,8 @@ $lang['Namesilo.tab_settings.field_registrar_lock_no'] = "Release the registrar 
 $lang['Namesilo.tab_settings.field_request_epp'] = "Request EPP Code/Transfer Key";
 $lang['Namesilo.tab_settings.field_submit'] = "Update Settings";
 
+$lang['Namesilo.manage.manual_renewal'] = "Manually Renew (select years)";
+
 // Errors
 $lang['Namesilo.!error.user.valid'] = "Please enter a user";
 $lang['Namesilo.!error.key.valid'] = "Please enter a key";
