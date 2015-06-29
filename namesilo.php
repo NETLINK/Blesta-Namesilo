@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.8-alpha";
+	private static $version = "1.0.9-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
@@ -289,7 +289,12 @@ class Namesilo extends Module {
 	 * @see Module::getModule()
 	 * @see Module::getModuleRow()
 	 */
-	public function editService($package, $service, array $vars=array(), $parent_package=null, $parent_service=null) {
+	public function editService( $package, $service, array $vars = array(), $parent_package = null, $parent_service = null ) {
+		$renew = isset( $vars["renew"] ) ? (int) $vars["renew"] : 0;
+		if ( $renew > 0 && $vars["use_module"] == 'true' ) {
+			$this->renewService( $package, $service, $parent_package, $parent_service, $renew );
+			unset( $vars['renew'] );
+		}
 		return null; // All this handled by admin/client tabs instead
 	}
 	
@@ -365,7 +370,7 @@ class Namesilo extends Module {
 	 * @see Module::getModule()
 	 * @see Module::getModuleRow()
 	 */
-	public function renewService( $package, $service, $parent_package = null, $parent_service = null ) {
+	public function renewService( $package, $service, $parent_package = NULL, $parent_service = NULL, $years = NULL ) {
 		
 		$row = $this->getModuleRow( $package->module_row );
 		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
@@ -379,12 +384,18 @@ class Namesilo extends Module {
 				"domain" => $fields->{"domain"},
 				"years" => 1
 			);
-
-			foreach ( $package->pricing as $pricing ) {
-				if ( $pricing->id == $service->pricing_id ) {
-					$vars['years'] = $pricing->term;
-					break;
+			
+			if ( !$years )
+			{
+				foreach ( $package->pricing as $pricing ) {
+					if ( $pricing->id == $service->pricing_id ) {
+						$vars['years'] = $pricing->term;
+						break;
+					}
 				}
+			}
+			else {
+				$vars["years"] = $years;
 			}
 			
 			$domains = new NamesiloDomains( $api );
@@ -904,7 +915,22 @@ class Namesilo extends Module {
 	 * @return ModuleFields A ModuleFields object, containg the fields to render as well as any additional HTML markup to include
 	 */	
 	public function getAdminEditFields( $package, $vars = NULL ) {
-		return new ModuleFields();
+		
+		Loader::loadHelpers( $this, array( "Html" ) );
+		
+		$fields = new ModuleFields();
+		
+		//fieldSelect($name, $options=array(), $selected_value=null, $attributes=array(), $option_attributes=array(), ModuleField $label=null)
+		
+		// Create domain label
+		//$domain = $fields->label( Language::_( "Cpanel.service_field.domain", true ), "cpanel_domain" );
+		$domain = $fields->label( "Renew", "renew" );
+		// Create domain field and attach to domain label
+		$domain->attach( $fields->fieldSelect( "renew", array( 0 => 0, 1 => "1 year", 2 => "2 years" ), $this->Html->ifSet( $vars->renew ), array( 'id'=>"renew" ) ) );
+		// Set the label as a field
+		$fields->setField( $domain );
+		
+		return $fields;
 	}
 	
 	/**
