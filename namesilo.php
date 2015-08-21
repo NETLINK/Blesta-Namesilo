@@ -14,7 +14,7 @@ class Namesilo extends Module {
 	/**
 	 * @var string The version of this module
 	 */
-	private static $version = "1.0.9-alpha";
+	private static $version = "1.0.10-alpha";
 	/**
 	 * @var array The authors of this module
 	 */
@@ -254,6 +254,8 @@ class Namesilo extends Module {
 							$vars[$value['rp']] = ( isset( $value['lp'] ) && !empty( $value['lp'] ) ) ? $client->{$value['lp']} : 'NA';
 						}
 					}
+					
+					$fields = array_intersect_key( $vars, $input_fields );
 					
 					$domains = new NamesiloDomains( $api );
 					//$this->debug( $fields );
