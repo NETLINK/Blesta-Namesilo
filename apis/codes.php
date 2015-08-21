@@ -1,0 +1,51 @@
+<?php
+
+Configure::set( 'Namesilo.status.codes', array(
+
+	'101' => array( 'HTTPS not used', 'fail' ),
+	'102' => array( 'No version specified', 'fail' ),
+    '103' => array( 'Invalid API version', 'fail' ),
+    '104' => array( 'No type specified', 'fail' ),
+    '105' => array( 'Invalid API type', 'fail' ),
+    '106' => array( 'No operation specified', 'fail' ),
+    '107' => array( 'Invalid API operation', 'fail' ),
+    '108' => array( 'Missing parameters for the specified operation', 'fail' ),
+    '109' => array( 'No API key specified', 'fail' ),
+    '110' => array( 'Invalid API key', 'fail' ),
+    '111' => array( 'Invalid User', 'fail' ),
+    '112' => array( 'API not available to Sub-Accounts', 'fail' ),
+    '113' => array( 'This API account cannot be accessed from your IP', 'fail' ),
+    '114' => array( 'Invalid Domain Syntax', 'fail' ),
+    '115' => array( 'Central Registry Not Responding - try again later', 'fail' ),
+    '116' => array( 'Invalid sandbox account', 'fail' ),
+    '117' => array( 'The provided credit card profile either does not exist, or is not associated with your account', 'fail' ),
+    '118' => array( 'The provided credit card profile has not been verified', 'fail' ),
+    '119' => array( 'Insufficient account funds for requested transaction', 'fail' ),
+    '120' => array( 'API key must be passed as a GET', 'fail' ),
+
+    '200' => array( 'Domain is not active, or does not belong to this user', 'fail' ),
+    '201' => array( 'Internal system error', 'fail' ),
+    '210' => array( 'General error (details provided in response)', 'fail' ),
+    '250' => array( 'Domain is already set to AutoRenew - No update made.', 'fail' ),
+    '251' => array( 'Domain is already set not to AutoRenew - No update made.', 'fail' ),
+    '252' => array( 'Domain is already Locked - No update made.', 'fail' ),
+    '253' => array( 'Domain is already Unlocked - No update made.', 'fail' ),
+    '254' => array( 'NameServer update cannot be made. (details provided in response)', 'fail' ),
+    '255' => array( 'Domain is already Private - No update made.', 'fail' ),
+    '256' => array( 'Domain is already Not Private - No update made.', 'fail' ),
+    '261' => array( 'Domain processing error (details provided in response)', 'fail' ),
+    '262' => array( 'This domain is already active within our system and therefore cannot be processed.', 'fail' ),
+    '263' => array( 'Invalid number of years, or no years provided.', 'fail' ),
+    '264' => array( 'Domain cannot be renewed for specified number of years (details provided in response)', 'fail' ),
+    '265' => array( 'Domain cannot be transferred at this time (details provided in response)', 'fail' ),
+    '266' => array( 'No domain transfer exists for this user for this domain', 'fail' ),
+    '267' => array( 'Invalid domain name, or we do not support the provided extension/TLD.', 'fail' ),
+    '280' => array( 'DNS modification error', 'fail' ),
+
+    '300' => array( 'Successful API operation', 'success' ),
+    '301' => array( 'Successful registration, but not all provided hosts were valid, resulting in our nameservers being used', 'success' ),
+    '302' => array( 'Successful order, but there was an error with the contact information provided so your account default contact profile was used', 'success' ),
+
+    '400' => array( 'Existing API request is still processing - request will need to be re-submitted', 'fail' ),
+
+));
