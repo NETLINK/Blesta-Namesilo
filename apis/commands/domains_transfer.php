@@ -37,8 +37,8 @@ class NamesiloDomainsTransfer {
 	 * https://www.namesilo.com/api_reference.php#transferDomain
 	 */
 	public function create( array $vars ) {
-		if ( isset( $vars['auth'] ) && substr( $vars['auth'], 0, 7 ) != "base64:" )
-			$vars['auth'] = "base64:" . base64_encode( $vars['auth'] );
+		if ( isset( $vars['auth'] ) /*&& substr( $vars['auth'], 0, 7 ) != "base64:"*/ )
+			$vars['auth'] = /*"base64:" .*/ urlencode( $vars['auth'] );
 		return $this->api->submit( "transferDomain", $vars );
 	}
 	
