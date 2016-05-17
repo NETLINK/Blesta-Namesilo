@@ -19,19 +19,22 @@ class Namesilo extends Module {
 	// Pending statutes (array)
 	private static $pending = array( 'in_review', 'pending' );
 	
+	private static $defaultModuleView;
+	
 	/**
 	 * Initializes the module
 	 */
 	public function __construct() {
-		// Load components required by this module
-		Loader::loadComponents( $this, array ( "Input" ) );
-		
-		// Load the language required by this module
+		# Load components required by this module
+		Loader::loadComponents( $this, array ( "Input" ) );		
+		# Load the language required by this module
 		Language::loadLang( "namesilo", null, __DIR__ . DS . "language" . DS );
-		
-		Configure::load("namesilo", __DIR__ . DS . "config" . DS);
-		
+		# Load configuration
+		Configure::load( "namesilo", __DIR__ . DS . "config" . DS );
+		# Get Namesilo response codes
 		self::$codes = Configure::get( 'Namesilo.status.codes' );
+		# Set default module view
+		self::$defaultModuleView = "components" . DS . "modules" . DS . "namesilo" . DS;
 	}
 
 	/**
@@ -458,7 +461,7 @@ class Namesilo extends Module {
 		// Load the view into this object, so helpers can be automatically added to the view
 		$this->view = new View("manage", "default");
 		$this->view->base_uri = $this->base_uri;
-		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+		$this->view->setDefaultView( self::$defaultModuleView );
 		
 		#
 		#
@@ -484,10 +487,10 @@ class Namesilo extends Module {
 		// Load the view into this object, so helpers can be automatically added to the view
 		$this->view = new View("add_row", "default");
 		$this->view->base_uri = $this->base_uri;
-		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+		$this->view->setDefaultView( self::$defaultModuleView );
 		
 		// Load the helpers required for this view
-		Loader::loadHelpers($this, array("Form", "Html", "Widget"));
+		Loader::loadHelpers( $this, array ( "Form", "Html", "Widget" ) );
 		
 		// Set unspecified checkboxes
 		if (!empty($vars)) {
@@ -495,7 +498,7 @@ class Namesilo extends Module {
 				$vars['sandbox'] = "false";
 		}
 		
-		$this->view->set("vars", (object)$vars);
+		$this->view->set( "vars", (object)$vars );
 		return $this->view->fetch();	
 	}
 
@@ -510,10 +513,10 @@ class Namesilo extends Module {
 		// Load the view into this object, so helpers can be automatically added to the view
 		$this->view = new View("edit_row", "default");
 		$this->view->base_uri = $this->base_uri;
-		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+		$this->view->setDefaultView( self::$defaultModuleView );
 		
 		// Load the helpers required for this view
-		Loader::loadHelpers($this, array("Form", "Html", "Widget"));
+		Loader::loadHelpers( $this, array ( "Form", "Html", "Widget" ) );
 		
 		if (empty($vars))
 			$vars = $module_row->meta;
@@ -523,7 +526,7 @@ class Namesilo extends Module {
 				$vars['sandbox'] = "false";
 		}
 		
-		$this->view->set("vars", (object)$vars);
+		$this->view->set( "vars", (object)$vars );
 		return $this->view->fetch();
 	}
 	
@@ -1042,15 +1045,18 @@ class Namesilo extends Module {
 	 * @param array $files Any FILES parameters
 	 * @return string The string representing the contents of this tab
 	 */
-	public function tabClientSettings($package, $service, array $get=null, array $post=null, array $files=null) {
-		if ( !isset( $this->Clients ) )
+	public function tabClientSettings( $package, $service, array $get = null, array $post = null, array $files = null ) {
+		if ( !isset( $this->Clients ) ) {
 			Loader::loadModels( $this, array( "Clients" ) );
+		}
 		foreach ( $this->Clients->getCustomFieldValues( $service->{'client_id'} ) as $key => $value ) {
 			if ( $value->{'name'} == "Disable Domain Transfers"
 				&& $value->{'value'} == "Yes" )
 			{
-				$this->view = new View( "whois_disabled", "client/NETLINK" );
-				$this->view->setDefaultView( "app" . DS );
+				//$this->view = new View( "whois_disabled", "client/NETLINK" );
+				//$this->view->setDefaultView( "app" . DS );
+				$this->view = new View( "whois_disabled", "default" );
+				$this->view->setDefaultView( self::$defaultModuleView );
 				return $this->view->fetch();
 			}
 		}
@@ -1068,35 +1074,35 @@ class Namesilo extends Module {
 	 * @param array $files Any FILES parameters
 	 * @return string The string representing the contents of this tab
 	 */
-	private function manageWhois($view, $package, $service, array $get=null, array $post=null, array $files=null) {
+	private function manageWhois( $view, $package, $service, array $get = null, array $post = null, array $files = null ) {
 		
 		$vars = new stdClass();
 		
 		if ( in_array( $service->status, self::$pending ) ) {
 			$this->view = new View( 'pending', "default" );
-			$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+			$this->view->setDefaultView( self::$defaultModuleView );
 			return $this->view->fetch();
 		}
 		else if ( $view == "tab_client_whois" && $service->status == "suspended" ) {
 			$this->view = new View( 'suspended', "default" );
-			$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+			$this->view->setDefaultView( self::$defaultModuleView );
 			return $this->view->fetch();
 		}
 		
-		$this->view = new View($view, "default");
+		$this->view = new View( $view, "default" );
 		// Load the helpers required for this view
-		Loader::loadHelpers($this, array("Form", "Html"));
+		Loader::loadHelpers( $this, array ( "Form", "Html" ) );
 
-		$row = $this->getModuleRow($package->module_row);
-		$api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == "true");
-		$domains = new NamesiloDomains($api);
+		$row = $this->getModuleRow( $package->module_row );
+		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+		$domains = new NamesiloDomains( $api );
 		
 		$sections = array( 'registrant', 'admin', 'tech', 'billing' );
 		
 		$vars = new stdClass();
 		
-		$whois_fields = Configure::get("Namesilo.whois_fields");
-		$fields = $this->serviceFieldsToObject($service->fields);
+		$whois_fields = Configure::get( "Namesilo.whois_fields" );
+		$fields = $this->serviceFieldsToObject( $service->fields );
 		
 		$domainInfo = $domains->getDomainInfo( array( 'domain' => $fields->domain ) );
 		if ( self::$codes[$domainInfo->status()][1] == "fail" ) {
@@ -1169,10 +1175,10 @@ class Namesilo extends Module {
 			$all_fields["billing[{$key}]"] = $value;
 		}
 		
-		$this->view->set("vars", $vars);
-		$this->view->set("fields", $this->arrayToModuleFields($all_fields, null, $vars)->getFields());
-		$this->view->set("sections", $sections );
-		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+		$this->view->set( "vars", $vars );
+		$this->view->set( "fields", $this->arrayToModuleFields( $all_fields, null, $vars )->getFields());
+		$this->view->set( "sections", $sections );
+		$this->view->setDefaultView( self::$defaultModuleView );
 		return $this->view->fetch();
 	}
 	
@@ -1257,7 +1263,7 @@ class Namesilo extends Module {
 		}
 		
 		$this->view->set( "vars", $vars );
-		$this->view->setDefaultView( "components" . DS . "modules" . DS . "namesilo" . DS );
+		$this->view->setDefaultView( self::$defaultModuleView );
 		return $this->view->fetch();
 	}
 	
@@ -1310,14 +1316,15 @@ class Namesilo extends Module {
 				$vars = (object)$post;
 			}
 			else {
-				$response = $domains->getRegistrarLock(array('domain' => $fields->domain))->response();
-				if (isset($response->locked))
+				$response = $domains->getRegistrarLock( array ( 'domain' => $fields->domain ) )->response();
+				if ( isset ( $response->locked ) ) {
 					$vars->registrar_lock = $response->locked;
+				}
 			}
 		}
 		
-		$this->view->set("vars", $vars);
-		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+		$this->view->set( "vars", $vars );
+		$this->view->setDefaultView( self::$defaultModuleView );
 		return $this->view->fetch();
 	}
 	
@@ -1327,16 +1334,17 @@ class Namesilo extends Module {
 	 * @param string $domain The domain to lookup
 	 * @return boolean true if available, false otherwise
 	 */
-	public function checkAvailability($domain) {
+	public function checkAvailability( $domain ) {
 
 		$row = $this->getModuleRow();
-		$api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == "true");
+		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
 		
 		$domains = new NamesiloDomains($api);
-		$result = $domains->check(array('domains' => $domain));
+		$result = $domains->check( array ( 'domains' => $domain ) );
 		
-		if ( self::$codes[$result->status()][1] == "fail" )
+		if ( self::$codes[$result->status()][1] == "fail" ) {
 			return false;
+		}
 		
 		$response = $result->response();
 		
