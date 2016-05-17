@@ -11,24 +11,6 @@
  */
 class Namesilo extends Module {
 	
-	/**
-	 * @var string The version of this module
-	 */
-	private static $version = "1.1-alpha";
-	/**
-	 * @var array The authors of this module
-	 */
-	private static $authors = array(
-		array(
-			'name'=> "Phillips Data, Inc.",
-			'url'=>"http://www.blesta.com"
-		),
-		array(
-			'name' => "NETLINK IT SERVICES",
-			'url' => "http://www.netlink.ie/"
-		),
-	);
-	
 	private static $debug_to = "root@localhost";
 	
 	// Namesilo response codes (array)
@@ -42,12 +24,12 @@ class Namesilo extends Module {
 	 */
 	public function __construct() {
 		// Load components required by this module
-		Loader::loadComponents($this, array("Input"));
+		Loader::loadComponents( $this, array ( "Input" ) );
 		
 		// Load the language required by this module
-		Language::loadLang("namesilo", null, dirname(__FILE__) . DS . "language" . DS);
+		Language::loadLang( "namesilo", null, __DIR__ . DS . "language" . DS );
 		
-		Configure::load("namesilo", dirname(__FILE__) . DS . "config" . DS);
+		Configure::load("namesilo", __DIR__ . DS . "config" . DS);
 		
 		self::$codes = Configure::get( 'Namesilo.status.codes' );
 	}
@@ -58,25 +40,7 @@ class Namesilo extends Module {
 	 * @return string The common name of this module
 	 */
 	public function getName() {
-		return Language::_("Namesilo.name", true);
-	}
-	
-	/**
-	 * Returns the version of this module
-	 *
-	 * @return string The current version of this module
-	 */
-	public function getVersion() {
-		return self::$version;
-	}
-
-	/**
-	 * Returns the name and URL for the authors of this module
-	 *
-	 * @return array A numerically indexed array that contains an array with key/value pairs for 'name' and 'url', representing the name and URL of the authors of this module
-	 */
-	public function getAuthors() {
-		return self::$authors;
+		return Language::_( "Namesilo.name", true );
 	}
 	
 	/**
@@ -85,10 +49,11 @@ class Namesilo extends Module {
 	 * @param stdClass $service A stdClass object representing the service
 	 * @return string A value used to identify this service amongst other similar services
 	 */
-	public function getServiceName($service) {
-		foreach ($service->fields as $field) {
-			if ($field->key == "domain")
+	public function getServiceName( $service ) {
+		foreach ( $service->fields as $field ) {
+			if ( $field->key == "domain" ) {
 				return $field->value;
+			}
 		}
 		return null;
 	}
@@ -99,7 +64,7 @@ class Namesilo extends Module {
 	 * @return string The noun used to refer to a module row
 	 */
 	public function moduleRowName() {
-		return Language::_("Namesilo.module_row", true);
+		return Language::_( "Namesilo.module_row", true );
 	}
 	
 	/**
@@ -1239,7 +1204,7 @@ class Namesilo extends Module {
 	 * Handle updating nameserver information
 	 *
 	 */
-	private function manageNameservers($view, $package, $service, array $get=null, array $post=null, array $files=null) {
+	private function manageNameservers( $view, $package, $service, array $get = null, array $post = null, array $files = null ) {
 		
 		$vars = new stdClass();
 		
@@ -1251,20 +1216,20 @@ class Namesilo extends Module {
 		}
 		else {
 		
-			$this->view = new View($view, "default");
+			$this->view = new View( $view, "default" );
 			// Load the helpers required for this view
-			Loader::loadHelpers($this, array("Form", "Html"));
+			Loader::loadHelpers( $this, array ( "Form", "Html" ) );
 			
-			$row = $this->getModuleRow($package->module_row);
-			$api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == "true");
-			$dns = new NamesiloDomainsDns($api);
+			$row = $this->getModuleRow( $package->module_row );
+			$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+			$dns = new NamesiloDomainsDns( $api );
 			
-			$fields = $this->serviceFieldsToObject($service->fields);
+			$fields = $this->serviceFieldsToObject( $service->fields );
 			
-			$tld = $this->getTld($fields->domain);
-			$sld = substr($fields->domain, 0, -strlen($tld));
+			$tld = $this->getTld( $fields->domain );
+			$sld = substr( $fields->domain, 0, -strlen( $tld ) );
 			
-			if (!empty($post)) {
+			if ( ! empty ( $post ) ) {
 				$args = array(); $i = 1;
 				foreach( $post['ns'] as $ns ) {
 					$args["ns{$i}"] = $ns;
@@ -1274,16 +1239,16 @@ class Namesilo extends Module {
 				$args['domain'] = $fields->domain;
 				
 				$response = $dns->setCustom( $args );
-				$this->processResponse($api, $response);
+				$this->processResponse( $api, $response );
 				
 				$vars = (object)$post;
 			}
 			else {
 				$response = $dns->getList( array( 'domain' => $fields->domain ) )->response();
 				
-				if (isset($response->nameservers)) {
+				if ( isset ( $response->nameservers ) ) {
 					$vars->ns = array();
-					foreach ($response->nameservers->nameserver as $ns) {
+					foreach ( $response->nameservers->nameserver as $ns ) {
 						$vars->ns[] = $ns;
 					}
 				}
@@ -1291,8 +1256,8 @@ class Namesilo extends Module {
 			
 		}
 		
-		$this->view->set("vars", $vars);
-		$this->view->setDefaultView("components" . DS . "modules" . DS . "namesilo" . DS);
+		$this->view->set( "vars", $vars );
+		$this->view->setDefaultView( "components" . DS . "modules" . DS . "namesilo" . DS );
 		return $this->view->fetch();
 	}
 	
