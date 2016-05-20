@@ -3,6 +3,7 @@
 Configure::set("Namesilo.tlds", array(
 	".biz",
 	".cc",
+	".co",
 	".com",
 	".info",
 	".me",
@@ -171,4 +172,5 @@ Configure::set("Namesilo.domain_fields.us", array(
 ));
 
 
-require_once dirname( __FILE__ ) . '/codes.php';
+require_once __DIR__ . '/codes.php';
+require_once __DIR__ . '/notices.php';

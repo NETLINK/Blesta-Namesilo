@@ -1,0 +1,29 @@
+
+	<?php $this->Form->create(); ?>
+	
+	<div class="pad">
+		<ul>
+			<?php /*
+			<li>
+				<?php $this->Form->label( "From", "email_from" ); ?>
+				<?php $this->Form->fieldText( "email_from", $this->Html->ifSet( $vars->company->email, "info@" . $_SERVER['HTTP_HOST'] ), array ( 'id' => "email_from", "style" => 'padding: 4px;', "onfocus" => "javascript:select();" ) ); ?>
+			</li>
+			<li>
+				<?php
+				//$this->Form->label( $this->_( "Namesilo.tab_settings.field_registrar_lock", true ), "registrar_lock" );
+				
+				$this->Form->label( "To", "email_to" );
+				$this->Form->fieldText( "email_to", $this->Html->ifSet( $vars->email_to, $this->Html->ifSet( $vars->client->email, "johndoe@example.com" ) ), array ( 'id' => "email_to", "style" => 'padding: 4px;', "onfocus" => "javascript:select();" ) );
+				?>
+			</li>
+			//*/ ?>
+			<li>
+				<?php $this->Form->label( "What would you like to send?", "notice" ); ?>
+				<?php $this->Form->fieldSelect( "notice", $vars->options, $this->Html->ifSet( $test ) == "Yes", array ( 'id' => "notice" ) ); ?>
+			</li>
+		</ul>
+	</div>
+	<div class="button_row"><a class="btn_right submit" href="#"><?php $this->_( "Namesilo.tab_communication.field_submit" ); ?></a></div>
+	
+	<?php $this->Form->end(); ?>
+	

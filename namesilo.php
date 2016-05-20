@@ -25,6 +25,8 @@ class Namesilo extends Module {
 	 * Initializes the module
 	 */
 	public function __construct() {
+		# Load config.json
+		$this->loadConfig( __DIR__ . DS . "config.json" );
 		# Load components required by this module
 		Loader::loadComponents( $this, array ( "Input" ) );		
 		# Load the language required by this module
@@ -203,10 +205,12 @@ class Namesilo extends Module {
 					);
 					
 					// Set all whois info from client ($vars['client_id'])
-					if ( !isset( $this->Clients ) )
+					if ( !isset( $this->Clients ) ) {
 						Loader::loadModels( $this, array( "Clients" ) );
-                    if ( !isset( $this->Contacts ) )
+					}
+                    if ( !isset( $this->Contacts ) ) {
                         Loader::loadModels( $this, array( "Contacts" ) );
+					}
 						
 					$client = $this->Clients->get( $vars['client_id'] );
 					
@@ -296,7 +300,7 @@ class Namesilo extends Module {
 	 * Suspends the service on the remote server. Sets Input errors on failure,
 	 * preventing the service from being suspended.
 	 */
-	public function suspendService($package, $service, $parent_package=null, $parent_service=null) {
+	public function suspendService( $package, $service, $parent_package = null, $parent_service = null ) {
 		
 		$row = $this->getModuleRow( $package->module_row );
 		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
@@ -305,13 +309,14 @@ class Namesilo extends Module {
 			
 			$fields = $this->serviceFieldsToObject( $service->fields );
 			
-			// Make sure auto renew is off
+			# Make sure auto renew is off
 			$domains = new NamesiloDomains( $api );
 			$response = $domains->setAutoRenewal( $fields->{"domain"}, false );
 			$this->processResponse( $api, $response );
 			
-			if ( $this->Input->errors() )
+			if ( $this->Input->errors() ) {
 				return;
+			}
 			
 		}
 		return;
@@ -457,9 +462,9 @@ class Namesilo extends Module {
 	 * @param array $vars An array of post data submitted to or on the manage module page (used to repopulate fields after an error)
 	 * @return string HTML content containing information to display when viewing the manager module page
 	 */
-	public function manageModule($module, array &$vars) {
+	public function manageModule( $module, array &$vars ) {
 		// Load the view into this object, so helpers can be automatically added to the view
-		$this->view = new View("manage", "default");
+		$this->view = new View( "manage", "default" );
 		$this->view->base_uri = $this->base_uri;
 		$this->view->setDefaultView( self::$defaultModuleView );
 		
@@ -470,9 +475,9 @@ class Namesilo extends Module {
 		#
 		
 		// Load the helpers required for this view
-		Loader::loadHelpers($this, array("Form", "Html", "Widget"));
+		Loader::loadHelpers( $this, array ( "Form", "Html", "Widget" ) );
 
-		$this->view->set("module", $module);
+		$this->view->set( "module", $module );
 		
 		return $this->view->fetch();
 	}
@@ -631,10 +636,10 @@ class Namesilo extends Module {
 		
 		// Set nameservers
 		for ($i=1; $i<=5; $i++) {
-			$type = $fields->label(Language::_("Namesilo.package_fields.ns" . $i, true), "namesilo_ns" . $i);
-			$type->attach($fields->fieldText("meta[ns][]",
-				$this->Html->ifSet($vars->meta['ns'][$i-1]), array('id'=>"namesilo_ns" . $i)));
-			$fields->setField($type);
+			$type = $fields->label( Language::_( "Namesilo.package_fields.ns" . $i, true ), "namesilo_ns" . $i );
+			$type->attach( $fields->fieldText( "meta[ns][]",
+				$this->Html->ifSet( $vars->meta['ns'][$i-1] ), array ( 'id' => "namesilo_ns" . $i ) ) );
+			$fields->setField( $type );
 		}	
 		
 		$fields->setHtml("
@@ -674,7 +679,7 @@ class Namesilo extends Module {
 	 * @see Modules::editService()
 	 */
 	public function getEmailTags() {
-		return array('service' => array('domain'));
+		return array( 'service' => array ( 'domain' ) );
 	}
 
 	/**
@@ -800,17 +805,18 @@ class Namesilo extends Module {
 				$fields['domain']['type'] = "hidden";
 				$fields['domain']['label'] = null;
 				
-				$module_fields = $this->arrayToModuleFields($fields, null, $vars);
+				$module_fields = $this->arrayToModuleFields( $fields, null, $vars );
 				
                 // Build the domain fields
-                $domain_fields = $this->buildDomainModuleFields($vars, true);
-                if ($domain_fields)
+                $domain_fields = $this->buildDomainModuleFields( $vars, true );
+                if ( $domain_fields ) {
                     $module_fields = $domain_fields;
+				}
 			}
 		}
 
         // Determine whether this is an AJAX request
-        return (isset($module_fields) ? $module_fields : new ModuleFields());
+        return ( isset ( $module_fields ) ? $module_fields : new ModuleFields() );
 	}
 
     /**
@@ -932,12 +938,13 @@ class Namesilo extends Module {
 	 * @param stdClass $package A stdClass object representing the selected package
 	 * @return array An array of tabs in the format of method => title. Example: array('methodName' => "Title", 'methodName2' => "Title2")
 	 */
-	public function getAdminTabs($package) {
-		if ($package->meta->type == "domain") {
+	public function getAdminTabs( $package ) {
+		if ( $package->meta->type == "domain" ) {
 			return array(
-				'tabWhois' => Language::_("Namesilo.tab_whois.title", true),
-				'tabNameservers' => Language::_("Namesilo.tab_nameservers.title", true),
-				'tabSettings' => Language::_("Namesilo.tab_settings.title", true)
+				'tabWhois' => Language::_( "Namesilo.tab_whois.title", true ),
+				'tabNameservers' => Language::_( "Namesilo.tab_nameservers.title", true ),
+				'tabSettings' => Language::_( "Namesilo.tab_settings.title", true ),
+				'tabCommunication' => Language::_( "Namesilo.tab_communication.title", true ),
 			);
 		}
 		else {
@@ -952,12 +959,12 @@ class Namesilo extends Module {
 	 * @param stdClass $package A stdClass object representing the selected package
 	 * @return array An array of tabs in the format of method => title. Example: array('methodName' => "Title", 'methodName2' => "Title2")
 	 */
-	public function getClientTabs($package) {
-		if ($package->meta->type == "domain") {
+	public function getClientTabs( $package ) {
+		if ( $package->meta->type == "domain" ) {
 			return array(
-				'tabClientWhois' => Language::_("Namesilo.tab_whois.title", true),
-				'tabClientNameservers' => Language::_("Namesilo.tab_nameservers.title", true),
-				'tabClientSettings' => Language::_("Namesilo.tab_settings.title", true)
+				'tabClientWhois' => Language::_( "Namesilo.tab_whois.title", true ),
+				'tabClientNameservers' => Language::_( "Namesilo.tab_nameservers.title", true ),
+				'tabClientSettings' => Language::_( "Namesilo.tab_settings.title", true ),
 			);
 		}
 		else {
@@ -1061,6 +1068,40 @@ class Namesilo extends Module {
 			}
 		}
 		return $this->manageSettings("tab_client_settings", $package, $service, $get, $post, $files);
+	}
+	
+	/**
+	 * Admin Communication tab
+	 *
+	 * @param stdClass $package A stdClass object representing the current package
+	 * @param stdClass $service A stdClass object representing the current service
+	 * @param array $get Any GET parameters
+	 * @param array $post Any POST parameters
+	 * @param array $files Any FILES parameters
+	 * @return string The string representing the contents of this tab
+	 */
+	public function tabCommunication( $package, $service, array $get = null, array $post = null, array $files = null ) {
+		
+		$vars = new stdClass();
+		
+		Loader::load( __DIR__ . DS . "includes" . DS . "communication.php" );
+		
+		$communication = new Communication( $service );
+		
+		$vars->options = $communication->getNotices();
+		
+		if ( !empty ( $post ) && !empty ( $post['notice'] ) ) {
+			$communication->send( $post );
+		}
+		
+		$this->view = new View( 'tab_admin_communication', "default" );
+		
+		Loader::loadHelpers( $this, array ( "Form", "Html" ) );
+		
+		$this->view->set( "vars", $vars );
+		$this->view->setDefaultView( self::$defaultModuleView );
+		
+		return $this->view->fetch();
 	}
 	
 	/**
@@ -1409,10 +1450,10 @@ class Namesilo extends Module {
 	 * @param string $username The username to execute an API command using
 	 * @return NamesiloApi The NamesiloApi instance
 	 */
-	private function getApi($user, $key, $sandbox, $username = null) {
-		Loader::load(dirname(__FILE__) . DS . "apis" . DS . "namesilo_api.php");
+	private function getApi( $user, $key, $sandbox, $username = null ) {
+		Loader::load( __DIR__ . DS . "apis" . DS . "namesilo_api.php" );
 		
-		return new NamesiloApi($user, $key, $sandbox, $username);
+		return new NamesiloApi( $user, $key, $sandbox, $username );
 	}
 	
 	/**

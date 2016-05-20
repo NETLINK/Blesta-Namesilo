@@ -64,6 +64,9 @@ $lang['Namesilo.tab_settings.field_registrar_lock_no'] = "Release the registrar 
 $lang['Namesilo.tab_settings.field_request_epp'] = "Request EPP Code/Transfer Key";
 $lang['Namesilo.tab_settings.field_submit'] = "Update Settings";
 
+$lang['Namesilo.tab_communication.title'] = "Communication";
+$lang['Namesilo.tab_communication.field_submit'] = "Send Selected Notice";
+
 $lang['Namesilo.manage.manual_renewal'] = "Manually Renew (select years)";
 
 // Errors
@@ -277,4 +280,5 @@ $lang['Namesilo.!error.FRRegistrantJoDateDec.format'] = "Please set the Journal 
 $lang['Namesilo.!error.FRRegistrantJoDatePub.format'] = "Please set the Journal Publication Date in the format: YYYY-MM-DD";
 $lang['Namesilo.!error.FRRegistrantJoNumber.format'] = "Please set the Journal Number.";
 $lang['Namesilo.!error.FRRegistrantJoPage.format'] = "Please set the Journal Announcement Page Number.";
-?>
+
+require_once __DIR__ . '/notices.php';
