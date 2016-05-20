@@ -10,7 +10,7 @@ $lang['Namesilo.notices.overdue_payment.text'] = "Hi, {first_name}! Payment for 
 
 $lang['Namesilo.notices.expiry_notice'] = "Expiry Notice";
 $lang['Namesilo.notices.expiry_notice.subject'] = "Your domain {domain} has expired!";
-$lang['Namesilo.notices.expiry_notice.text'] = "Hi, {first_name}! We wanted to let you know that your domain name, {domain}, has expied.\n\nIf you don't want to lose this domain, it's important that you renew it as soon as possible. If not renewed, the domain will get deleted by the registry and will then be open to registration by third parties on a first-come, first-served basis.\n\nPlease log in at http://{client_url}/client to renew your domain, or simply reply to this email for assistance.\n\nPlease contact us with any questions or concerns.\n\nBest regards,\n{from_name}";
+$lang['Namesilo.notices.expiry_notice.text'] = "Hi, {first_name}! We wanted to let you know that your domain name, {domain}, has expired.\n\nIf you don't want to lose this domain, it's important that you renew it as soon as possible. If not renewed, the domain will get deleted by the registry and will then be open to registration by third parties on a first-come, first-served basis.\n\nPlease log in at http://{client_url}/client to renew your domain, or simply reply to this email for assistance.\n\nPlease contact us with any questions or concerns.\n\nBest regards,\n{from_name}";
 
 $lang['Namesilo.notices.suspension_notice'] = "Suspension Notice";
 $lang['Namesilo.notices.suspension_notice.subject'] = "Your domain {domain} has been suspended!";
