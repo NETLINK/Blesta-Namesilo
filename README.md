@@ -18,3 +18,7 @@ Enable the Namesilo module and go to Manage to enter your Namesilo user ID and A
 **[Get your Namesilo account here](https://www.namesilo.com/pricing.php?rid=1456f77tg)**
 
 [![Namesilo](http://www.namesilo.com/affiliate/banner_gen.php?aid=1456f77tg&bid=53 "Namesilo")](http://www.namesilo.com/?rid=1456f77tg)
+
+**Changelog**
+
+1.4-beta - Added domain extensions: .club, .online, .pub, .pro
