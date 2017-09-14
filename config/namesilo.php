@@ -5,6 +5,7 @@ Configure::set("Namesilo.tlds", array(
 	".cc",
 	".co",
 	".com",
+	'.cloud',
 	'.club',
 	".info",
 	".me",
