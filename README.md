@@ -21,5 +21,5 @@ Enable the Namesilo module and go to Manage to enter your Namesilo user ID and A
 
 **Changelog**
 
-*1.4-beta - Added domain extensions: .club, .online, .pub, .pro
-*1.5-beta - Added domain extensions: .cloud
+*1.4-beta - Added domain extensions: .club, .online, .pub, .pro  
+*1.5-beta - Added domain extensions: .cloud  
