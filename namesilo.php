@@ -6,7 +6,7 @@
  * @subpackage blesta.components.modules.namesilo
  * @copyright Copyright (c) 2010, Phillips Data, Inc.
  * @link http://www.blesta.com/ Blesta
- * @copyright Copyright (c) 2015, NETLINK IT SERVICES
+ * @copyright Copyright (c) 2015-2018, NETLINK IT SERVICES
  * @link http://www.netlink.ie/ NETLINK
  */
 class Namesilo extends Module {

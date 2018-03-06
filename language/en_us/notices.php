@@ -2,7 +2,7 @@
 
 $lang['Namesilo.notices.renewal_reminder'] = "Renewal Reminder";
 $lang['Namesilo.notices.renewal_reminder.subject'] = "Renewal Reminder: {domain}";
-$lang['Namesilo.notices.renewal_reminder.text'] = "Hi, {first_name}! We wanted to remind you that your domain name, {domain}, is due for renewal on {expiry_date}. To renew this domain, avoid service interruption, and to make sure you don't lose control over it, please visit http://{client_url}/client as oon as possible, or simply reply to this email for assistance.\n\nPlease contact us with any questions or concerns.\n\nBest regards,\n{from_name}";
+$lang['Namesilo.notices.renewal_reminder.text'] = "Hi, {first_name}! We wanted to remind you that your domain name, {domain}, is due for renewal on {expiry_date}. To renew this domain, avoid service interruption, and to make sure you don't lose control over it, please visit http://{client_url}/client as soon as possible, or simply reply to this email for assistance.\n\nPlease contact us with any questions or concerns.\n\nBest regards,\n{from_name}";
 
 $lang['Namesilo.notices.overdue_payment'] = "Overdue Payment Notice";
 $lang['Namesilo.notices.overdue_payment.subject'] = "Renewal Reminder: {domain}";
