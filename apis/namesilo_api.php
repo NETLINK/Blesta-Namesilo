@@ -1,11 +1,12 @@
 <?php
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "namesilo_response.php";
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains.php";
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_dns.php";
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_ns.php";
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_transfer.php";
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "users.php";
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "users_address.php";
+
+require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "namesilo_response.php";
+require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains.php";
+require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_dns.php";
+require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_ns.php";
+require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_transfer.php";
+require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "account_information.php";
+require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "users_address.php";
 
 /**
  * Namesilo API processor
@@ -59,13 +60,15 @@ class NamesiloApi {
 	 * @param string $username The username to execute an API command using
 	 */
 	public function __construct($user, $key, $sandbox = true, $username = null) {
+		
 		$this->user = $user;
 		$this->key = $key;
-		$this->sandbox = $sandbox;
+		
+		$this->sandbox = filter_var( $sandbox, FILTER_VALIDATE_BOOLEAN );
 		
 		if (!$username)
 			$username = $user;
-			
+		
 		$this->username = $username;
 	}
 	

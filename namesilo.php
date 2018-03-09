@@ -21,6 +21,8 @@ class Namesilo extends Module {
 	
 	private static $defaultModuleView;
 	
+	private static $api;
+	
 	/**
 	 * Initializes the module
 	 */
@@ -28,7 +30,7 @@ class Namesilo extends Module {
 		# Load config.json
 		$this->loadConfig( __DIR__ . DS . "config.json" );
 		# Load components required by this module
-		Loader::loadComponents( $this, array ( "Input" ) );		
+		Loader::loadComponents( $this, array ( "Input" ) );
 		# Load the language required by this module
 		Language::loadLang( "namesilo", null, __DIR__ . DS . "language" . DS );
 		# Load configuration
@@ -211,7 +213,7 @@ class Namesilo extends Module {
                     if ( !isset( $this->Contacts ) ) {
                         Loader::loadModels( $this, array( "Contacts" ) );
 					}
-						
+					
 					$client = $this->Clients->get( $vars['client_id'] );
 					
                     if ( $client )
@@ -452,7 +454,7 @@ class Namesilo extends Module {
 			}
 		}
 		
-		return $meta;	
+		return $meta;
 	}
 	
 	/**
@@ -513,7 +515,7 @@ class Namesilo extends Module {
 	 * @param stdClass $module_row The stdClass representation of the existing module row
 	 * @param array $vars An array of post data submitted to or on the edit module row page (used to repopulate fields after an error)
 	 * @return string HTML content containing information to display when viewing the edit module row page
-	 */	
+	 */
 	public function manageEditRow($module_row, array &$vars) {
 		// Load the view into this object, so helpers can be automatically added to the view
 		$this->view = new View("edit_row", "default");
@@ -561,7 +563,7 @@ class Namesilo extends Module {
 			// Build the meta data for this row
 			$meta = array();
 			foreach ($vars as $key => $value) {
-				
+			
 				if (in_array($key, $meta_fields)) {
 					$meta[] = array(
 						'key' => $key,
@@ -627,15 +629,16 @@ class Namesilo extends Module {
         $tld_options = $fields->label(Language::_("Namesilo.package_fields.tld_options", true));
 		
 		$tlds = Configure::get("Namesilo.tlds");
-		sort($tlds);
-		foreach ($tlds as $tld) {
-			$tld_label = $fields->label($tld, "tld_" . $tld);
-			$tld_options->attach($fields->fieldCheckbox("meta[tlds][]", $tld, (isset($vars->meta['tlds']) && in_array($tld, $vars->meta['tlds'])), array('id' => "tld_" . $tld), $tld_label));
+		$tlds = $this->getTlds();
+		sort( $tlds );
+		foreach ( $tlds as $tld ) {
+			$tld_label = $fields->label( $tld, "tld_" . $tld );
+			$tld_options->attach( $fields->fieldCheckbox( "meta[tlds][]", $tld, ( isset( $vars->meta['tlds'] ) && in_array( $tld, $vars->meta['tlds'] ) ), array( 'id' => "tld_" . $tld ), $tld_label ) );
 		}
-		$fields->setField($tld_options);
+		$fields->setField( $tld_options );
 		
 		// Set nameservers
-		for ($i=1; $i<=5; $i++) {
+		for ( $i=1; $i<=5; $i++ ) {
 			$type = $fields->label( Language::_( "Namesilo.package_fields.ns" . $i, true ), "namesilo_ns" . $i );
 			$type->attach( $fields->fieldText( "meta[ns][]",
 				$this->Html->ifSet( $vars->meta['ns'][$i-1] ), array ( 'id' => "namesilo_ns" . $i ) ) );
@@ -1450,8 +1453,16 @@ class Namesilo extends Module {
 	 * @param string $username The username to execute an API command using
 	 * @return NamesiloApi The NamesiloApi instance
 	 */
-	private function getApi( $user, $key, $sandbox, $username = null ) {
+	public function getApi( $user = null, $key = null, $sandbox = true, $username = null ) {
+		
 		Loader::load( __DIR__ . DS . "apis" . DS . "namesilo_api.php" );
+		
+		if ( empty( $user ) || empty( $key ) ) {
+			$row = $this->getModuleRow();
+			$user = $row->meta->user;
+			$key = $row->meta->key;
+			$sandbox = $row->meta->sandbox;
+		}
 		
 		return new NamesiloApi( $user, $key, $sandbox, $username );
 	}
@@ -1481,7 +1492,7 @@ class Namesilo extends Module {
 	 * @param NamesiloApi $api The Namesilo API object
 	 * @param NamesiloResponse $response The Namesilo API response object
 	 */
-	private function logRequest(NamesiloApi $api, NamesiloResponse $response) {		
+	private function logRequest( NamesiloApi $api, NamesiloResponse $response ) {		
 		$last_request = $api->lastRequest();
 		$url = substr( $last_request['url'], 0, strpos( $last_request['url'], '?' ) );
 		$this->log( $url, serialize( $last_request['args'] ), "input", true );
@@ -1495,8 +1506,8 @@ class Namesilo extends Module {
 	 * @return string The TLD of the domain
 	 */
 	private function getTld($domain) {
-		$tlds = Configure::get("Namesilo.tlds");
-		
+		//$tlds = Configure::get("Namesilo.tlds");
+		$tlds = $this->getTlds();
 		$domain = strtolower($domain);
 		
 		foreach ($tlds as $tld) {
@@ -1504,6 +1515,46 @@ class Namesilo extends Module {
 				return $tld;
 		}
 		return strstr($domain, ".");
+	}
+	
+	private function getTlds() {
+		
+		$tlds = Cache::fetchCache( 'tld_cache', 'Namesilo' . DS );
+		
+		if ( $tlds !== false ) {
+			return unserialize( base64_decode( $tlds ) );
+		}
+		
+		$row = $this->getModuleRow( $module_row );
+		$result = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" )->submit( 'getPrices' );
+		
+		//$result = $api->submit( 'getPrices' );
+		
+		$tlds = array();
+		foreach( $result->response() as $tld => $v ) {
+			if ( !is_object( $v ) ) {
+				continue;
+			}
+			$tlds[] = '.' . $tld;
+		}
+		
+		if ( count( $tlds ) > 0 ) {
+			
+			if ( Configure::get( 'Caching.on' ) && is_writable( CACHEDIR ) ) {
+				try {
+					Cache::writeCache(
+						'tld_cache',
+						base64_encode( serialize( $tlds ) ),
+						strtotime( Configure::get( 'Blesta.cache_length' ) ) - time(),
+						'Namesilo' . DS
+					);
+				} catch ( Exception $e ) {
+					// Couldn't cache
+					error_log( $e );
+				}
+			}
+		}
+		return $tlds;
 	}
 	
 	/**
@@ -1520,8 +1571,8 @@ class Namesilo extends Module {
 		return $this->Contacts->intlNumber($number, $country, ".");
 	}
 	
-	private function debug( $data ) {
-		mail( self::$debug_to, "Namesilo Module " . self::$version . " Debug", var_export( $data, true ), "From: blesta@localhost\n\n" );
+	public function debug( $data ) {
+		mail( self::$debug_to, "Namesilo Module " /*. self::$version*/ . " Debug", var_export( $data, true ), "From: blesta@localhost\n\n" );
 	}
 	
 }
