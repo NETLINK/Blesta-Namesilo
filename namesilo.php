@@ -1490,6 +1490,16 @@ class Namesilo extends Module {
 					$response = $transfer->getEpp( array( 'domain' => $fields->domain ) );
 					$this->processResponse( $api, $response );
 				}
+
+				if(isset($post['whois_privacy_before']) || isset($post['whois_privacy'])){
+				    if($post['whois_privacy_before'] == 'No' && $post['whois_privacy'] == 'Yes'){
+                        $response = $domains->addPrivacy(array('domain'=>$fields->domain));
+                        $this->processResponse($api,$response);
+                    }elseif($post['whois_privacy_before'] == 'Yes' && !isset($post['whois_privacy'])){
+                        $response = $domains->removePrivacy(array('domain'=>$fields->domain));
+                        $this->processResponse($api,$response);
+                    }
+                }
 				
 				$vars = (object)$post;
 			}
@@ -1498,6 +1508,11 @@ class Namesilo extends Module {
 				if ( isset ( $response->locked ) ) {
 					$vars->registrar_lock = $response->locked;
 				}
+
+                $info = $domains->getDomainInfo(array('domain'=>$fields->domain))->response();
+				if(isset($info->private)) {
+                    $vars->whois_privacy = $info->private;
+                }
 			}
 		}
 		

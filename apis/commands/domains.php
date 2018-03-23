@@ -194,5 +194,22 @@ class NamesiloDomains {
 		if ( !$autorenew ) $action = "remove"; else $action = "add";
 		return $this->api->submit( "{$action}AutoRenewal", array( "domain" => $domain ) );
 	}
+
+    /**
+     * @param array $vars
+     *  - domain
+     * @return NamesiloResponse
+     */
+	public function addPrivacy(array $vars){
+	    return $this->api->submit("addPrivacy",$vars);
+    }
+
+    /**
+     * @param array $vars
+     *  - domain
+     * @return NamesiloResponse
+     */
+    public function removePrivacy(array $vars){
+        return $this->api->submit("removePrivacy",$vars);
+    }
 }
-?>
