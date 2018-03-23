@@ -212,4 +212,12 @@ class NamesiloDomains {
     public function removePrivacy(array $vars){
         return $this->api->submit("removePrivacy",$vars);
     }
+
+    /**
+     * @param array $vars
+     * @return NamesiloResponse
+     */
+    public function portfolioList(){
+        return $this->api->submit("portfolioList");
+    }
 }

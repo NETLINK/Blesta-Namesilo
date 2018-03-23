@@ -23,6 +23,12 @@
 						$this->Form->fieldText("key", $this->Html->ifSet($vars->key), array('id' => "key"));
 						?>
 					</li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_("Namesilo.row_meta.portfolio", true), "portfolio");
+                        $this->Form->fieldText("portfolio", $this->Html->ifSet($vars->portfolio), array('id' => "portfolio"));
+                        ?>
+                    </li>
 					<li>
 						<?php
 						$this->Form->fieldCheckbox("sandbox", "true", $this->Html->ifSet($vars->sandbox) == "true", array('id' => "sandbox"));

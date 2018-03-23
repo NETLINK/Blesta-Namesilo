@@ -12,6 +12,7 @@ $lang['Namesilo.manage.module_rows_heading.user'] = "User";
 $lang['Namesilo.manage.module_rows_heading.key'] = "API Key";
 $lang['Namesilo.manage.module_rows_heading.sandbox'] = "Sandbox";
 $lang['Namesilo.manage.module_rows_heading.options'] = "Options";
+$lang['Namesilo.manage.module_rows_heading.portfolio'] = "Default Portfolio";
 $lang['Namesilo.manage.module_rows.edit'] = "Edit";
 $lang['Namesilo.manage.module_rows.delete'] = "Delete";
 $lang['Namesilo.manage.module_rows.confirm_delete'] = "Are you sure you want to delete this account?";
@@ -20,6 +21,7 @@ $lang['Namesilo.manage.module_rows_no_results'] = "There are no accounts.";
 // Row Meta
 $lang['Namesilo.row_meta.user'] = "User";
 $lang['Namesilo.row_meta.key'] = "API Key";
+$lang['Namesilo.row_meta.portfolio'] = "Portfolio";
 $lang['Namesilo.row_meta.sandbox'] = "Sandbox";
 $lang['Namesilo.row_meta.sandbox_true'] = "Yes";
 $lang['Namesilo.row_meta.sandbox_false'] = "No";
@@ -81,6 +83,7 @@ $lang['Namesilo.manage.manual_renewal'] = "Manually Renew (select years)";
 $lang['Namesilo.!error.user.valid'] = "Please enter a user";
 $lang['Namesilo.!error.key.valid'] = "Please enter a key";
 $lang['Namesilo.!error.key.valid_connection'] = "The user and key combination appear to be invalid, or your Namesilo account may not be configured to allow API access.";
+$lang['Namesilo.!error.portfolio.valid_portfolio'] = "The portfolio entered does not appear valid.  Are you sure it has been created in your Namesilo account?";
 
 // Notices
 $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you are trying to access will become available once the order has been activated successfully.";

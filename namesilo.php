@@ -181,7 +181,10 @@ class Namesilo extends Module {
 					$input_fields = array_merge( Configure::get( "Namesilo.transfer_fields" ), array( 'years' => true ) );
 					
 					$fields = array_intersect_key( $vars, $input_fields );
-					
+
+                    if(!empty($row->meta->portfolio))
+                        $fields['portfolio'] = $row->meta->portfolio;
+
 					$transfer = new NamesiloDomainsTransfer( $api );
 					$response = $transfer->create( $fields );
 					$this->processResponse( $api, $response );
@@ -230,7 +233,10 @@ class Namesilo extends Module {
 					}
 					
 					$fields = array_intersect_key( $vars, $input_fields );
-					
+
+                    if(!empty($row->meta->portfolio))
+                        $fields['portfolio'] = $row->meta->portfolio;
+
 					$domains = new NamesiloDomains( $api );
 					//$this->debug( $fields );
 					//$this->Input->setErrors( array( 'errors' => array( 'Test' ) ) );
@@ -548,7 +554,7 @@ class Namesilo extends Module {
 	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
 	 */
 	public function addModuleRow(array &$vars) {
-		$meta_fields = array("user", "key", "sandbox");
+		$meta_fields = array("user", "key", "sandbox", "portfolio");
 		$encrypted_fields = array("key");
 
 		// Set unspecified checkboxes
@@ -1571,7 +1577,13 @@ class Namesilo extends Module {
 					'rule' => array(array($this, "validateConnection"), $vars['user'], isset($vars['sandbox']) ? $vars['sandbox'] : "false"),
 					'message' => Language::_("Namesilo.!error.key.valid_connection", true)
 				)
-			)
+			),
+            'portfolio' => array(
+                'valid' => array(
+                    'rule' => array(array($this, "validatePortfolio"), $vars['key'], $vars['user'], isset($vars['sandbox']) ? $vars['sandbox'] : "false"),
+                    'message' => Language::_("Namesilo.!error.portfolio.valid_portfolio", true)
+                )
+            )
 		);
 	}
 	
@@ -1590,8 +1602,22 @@ class Namesilo extends Module {
 		$response = $domains->check( array( 'domains' => "example.com" ) );
 		$this->processResponse( $api, $response );
 		return true;
-		return self::$codes[$response->status()][1] == 'success';
 	}
+
+	public function validatePortfolio($portfolio, $key, $user, $sandbox){
+        $api = $this->getApi($user, $key, $sandbox == "true");
+        $domains = new NamesiloDomains($api);
+        $response = $domains->portfolioList();
+        $this->processResponse( $api, $response );
+        $response = $response->response();
+
+        if(isset($response->portfolios->name)){
+            if(!in_array($portfolio,$response->portfolios->name) && $portfolio){
+                return false;
+            }
+        }
+        return true;
+    }
 	
 	/**
 	 * Initializes the NamesiloApi and returns an instance of that object
