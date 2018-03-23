@@ -33,7 +33,7 @@ class NamesiloDomainsNs {
 	 * @return NamesiloResponse
 	 */
 	public function create(array $vars) {
-		return $this->api->submit("namesilo.domains.ns.create", $vars);
+		return $this->api->submit("addRegisteredNameServer", $vars);
 	}
 
 	/**
@@ -46,7 +46,7 @@ class NamesiloDomainsNs {
 	 * @return NamesiloResponse
 	 */	
 	public function delete(array $vars) {
-		return $this->api->submit("namesilo.domains.ns.delete", $vars);
+		return $this->api->submit("deleteRegisteredNameServer", $vars);
 	}
 	
 	/**
@@ -59,7 +59,7 @@ class NamesiloDomainsNs {
 	 * @return NamesiloResponse
 	 */
 	public function getInfo(array $vars) {
-		return $this->api->submit("namesilo.domains.ns.getInfo", $vars);
+		return $this->api->submit("listRegisteredNameServers", $vars);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ class NamesiloDomainsNs {
 	 * @return NamesiloResponse
 	 */
 	public function update(array $vars) {
-		return $this->api->submit("namesilo.domains.ns.update", $vars);
+		return $this->api->submit("modifyRegisteredNameServer", $vars);
 	}
 }
 ?>
