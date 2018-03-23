@@ -946,6 +946,7 @@ class Namesilo extends Module {
 			return array(
 				'tabWhois' => Language::_( "Namesilo.tab_whois.title", true ),
 				'tabNameservers' => Language::_( "Namesilo.tab_nameservers.title", true ),
+                'tabHosts' => Language::_( "Namesilo.tab_hosts.title", true ),
 				'tabSettings' => Language::_( "Namesilo.tab_settings.title", true ),
 				'tabCommunication' => Language::_( "Namesilo.tab_communication.title", true ),
 			);
@@ -967,6 +968,7 @@ class Namesilo extends Module {
 			return array(
 				'tabClientWhois' => Language::_( "Namesilo.tab_whois.title", true ),
 				'tabClientNameservers' => Language::_( "Namesilo.tab_nameservers.title", true ),
+                'tabClientHosts' => Language::_( "Namesilo.tab_hosts.title", true ),
 				'tabClientSettings' => Language::_( "Namesilo.tab_settings.title", true ),
 			);
 		}
@@ -1016,6 +1018,20 @@ class Namesilo extends Module {
 	public function tabNameservers($package, $service, array $get=null, array $post=null, array $files=null) {
 		return $this->manageNameservers("tab_nameservers", $package, $service, $get, $post, $files);
 	}
+
+    /**
+     * Admin Hosts tab
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabHosts($package, $service, array $get=null, array $post=null, array $files=null) {
+        return $this->manageHosts("tab_hosts", $package, $service, $get, $post, $files);
+    }
 	
 	/**
 	 * Admin Nameservers tab
@@ -1030,6 +1046,20 @@ class Namesilo extends Module {
 	public function tabClientNameservers($package, $service, array $get=null, array $post=null, array $files=null) {
 		return $this->manageNameservers("tab_client_nameservers", $package, $service, $get, $post, $files);
 	}
+
+    /**
+     * Admin Hosts tab
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabClientHosts($package, $service, array $get=null, array $post=null, array $files=null) {
+        return $this->manageHosts("tab_client_hosts", $package, $service, $get, $post, $files);
+    }
 	
 	/**
 	 * Admin Settings tab
@@ -1254,62 +1284,166 @@ class Namesilo extends Module {
 	 * Handle updating nameserver information
 	 *
 	 */
-	private function manageNameservers( $view, $package, $service, array $get = null, array $post = null, array $files = null ) {
-		
-		$vars = new stdClass();
-		
-		if ( in_array( $service->status, self::$pending ) ) {
-			$this->view = new View( 'pending', "default" );
-		}
-		else if ( $view == "tab_client_nameservers" && $service->status == "suspended" ) {
-			$this->view = new View( 'suspended', "default" );
-		}
-		else {
-		
-			$this->view = new View( $view, "default" );
-			// Load the helpers required for this view
-			Loader::loadHelpers( $this, array ( "Form", "Html" ) );
-			
-			$row = $this->getModuleRow( $package->module_row );
-			$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
-			$dns = new NamesiloDomainsDns( $api );
-			
-			$fields = $this->serviceFieldsToObject( $service->fields );
-			
-			$tld = $this->getTld( $fields->domain );
-			$sld = substr( $fields->domain, 0, -strlen( $tld ) );
-			
-			if ( ! empty ( $post ) ) {
-				$args = array(); $i = 1;
-				foreach( $post['ns'] as $ns ) {
-					$args["ns{$i}"] = $ns;
-					$i++;
-				}
-				
-				$args['domain'] = $fields->domain;
-				
-				$response = $dns->setCustom( $args );
-				$this->processResponse( $api, $response );
-				
-				$vars = (object)$post;
-			}
-			else {
-				$response = $dns->getList( array( 'domain' => $fields->domain ) )->response();
-				
-				if ( isset ( $response->nameservers ) ) {
-					$vars->ns = array();
-					foreach ( $response->nameservers->nameserver as $ns ) {
-						$vars->ns[] = $ns;
-					}
-				}
-			}
-			
-		}
-		
-		$this->view->set( "vars", $vars );
-		$this->view->setDefaultView( self::$defaultModuleView );
-		return $this->view->fetch();
-	}
+    private function manageNameservers( $view, $package, $service, array $get = null, array $post = null, array $files = null ) {
+
+        $vars = new stdClass();
+
+        if ( in_array( $service->status, self::$pending ) ) {
+            $this->view = new View( 'pending', "default" );
+        }
+        else if ( $view == "tab_client_nameservers" && $service->status == "suspended" ) {
+            $this->view = new View( 'suspended', "default" );
+        }
+        else {
+
+            $this->view = new View( $view, "default" );
+            // Load the helpers required for this view
+            Loader::loadHelpers( $this, array ( "Form", "Html" ) );
+
+            $row = $this->getModuleRow( $package->module_row );
+            $api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+            $dns = new NamesiloDomainsDns( $api );
+
+            $fields = $this->serviceFieldsToObject( $service->fields );
+
+            $tld = $this->getTld( $fields->domain );
+            $sld = substr( $fields->domain, 0, -strlen( $tld ) );
+
+            if ( ! empty ( $post ) ) {
+                $args = array(); $i = 1;
+                foreach( $post['ns'] as $ns ) {
+                    $args["ns{$i}"] = $ns;
+                    $i++;
+                }
+
+                $args['domain'] = $fields->domain;
+
+                $response = $dns->setCustom( $args );
+                $this->processResponse( $api, $response );
+
+                $vars = (object)$post;
+            }
+            else {
+                $response = $dns->getList( array( 'domain' => $fields->domain ) )->response();
+
+                if ( isset ( $response->nameservers ) ) {
+                    $vars->ns = array();
+                    foreach ( $response->nameservers->nameserver as $ns ) {
+                        $vars->ns[] = $ns;
+                    }
+                }
+            }
+
+        }
+
+        $this->view->set( "vars", $vars );
+        $this->view->setDefaultView( self::$defaultModuleView );
+        return $this->view->fetch();
+    }
+
+	/**
+	 * since the api only returns XML sometimes the return array/object changes based on the xml.  lets get it consistent for hosts
+	 */
+    private function getRegisteredHosts($package,$service){
+        $fields = $this->serviceFieldsToObject($service->fields);
+
+        $row = $this->getModuleRow( $package->module_row );
+        $api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+        $ns = new NamesiloDomainsNs( $api );
+
+        $response = $ns->getInfo( array( 'domain' => $fields->domain ) )->response();
+        $host_obj = new stdClass();
+        $hosts = [];
+
+        // lets get our data in a consistent format
+        if(isset($response->hosts->host) && isset($response->hosts->ip)){
+            if(!is_array($response->hosts->ip)) {
+                $ips[] = $response->hosts->ip;
+            }else{
+                $ips = $response->hosts->ip;
+            }
+            $host_obj->host = $response->hosts->host;
+            $host_obj->ip = $ips;
+            $hosts[0] = $host_obj;
+            return $hosts;
+        }
+
+        foreach($response->hosts as $host){
+            if(!is_array($host->ip)) {
+                $ips[] = $host->ip;
+            }else{
+                $ips = $host->ip;
+            }
+            $host_obj->host = $host->host;
+            $host_obj->ip = $ips;
+            $hosts[] = $host_obj;
+            $host_obj = new stdClass();
+            $ips = null;
+        }
+
+        return $hosts;
+    }
+
+
+    /**
+     * Handle updating host information
+     *
+     */
+    private function manageHosts( $view, $package, $service, array $get = null, array $post = null, array $files = null ) {
+        $vars = new stdClass();
+        if ( in_array( $service->status, self::$pending ) ) {
+            $this->view = new View( 'pending', "default" );
+        }elseif( $view == "tab_client_hosts" && $service->status == "suspended" ) {
+            $this->view = new View('suspended', "default");
+        }else{
+            $this->view = new View( $view, "default" );
+            $this->view->base_uri = $this->base_uri;
+            // Load the helpers required for this view
+            Loader::loadHelpers( $this, array ( "Form", "Html" ) );
+
+            $row = $this->getModuleRow( $package->module_row );
+            $api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+            $ns = new NamesiloDomainsNs( $api );
+
+            $fields = $this->serviceFieldsToObject( $service->fields );
+            $this->view->set('domain', $fields->domain);
+
+            if (!empty($post)) {
+                foreach($post['hosts'] as $host=>$ips){
+                    $ips_arr = [];
+                    foreach ($ips as $key => $ip) {
+                        if ($ip)
+                            $ips_arr["ip" . ($key + 1)] = $ip;
+                    }
+
+                    // if all of the ips are blanked, lets remove the host
+                    if(!$ips_arr) {
+                        $response = $ns->delete(array('domain' => $fields->domain, 'current_host' => $host));
+                        $this->processResponse($api, $response);
+                    }else{
+                        $args = array_merge(array('domain' => $fields->domain, 'current_host' => $host, 'new_host' => $host), $ips_arr);
+                        $response = $ns->update($args);
+                        $this->processResponse($api, $response);
+                    }
+                }
+
+                if(!empty($post['new_host']) && !empty($post['new_host_ip'])){
+                    $response = $ns->create(array('domain' => $fields->domain, 'new_host' => $post['new_host'], 'ip1' => $post['new_host_ip']));
+                    $this->processResponse($api, $response);
+                }
+
+                $vars = (object)$post;
+            }
+
+            $vars->hosts = $this->getRegisteredHosts($package,$service);
+            $this->view->set("vars", $vars);
+            $this->view->set('client_id', $service->client_id);
+            $this->view->set('service_id', $service->id);
+        }
+
+        $this->view->setDefaultView(self::$defaultModuleView);
+        return $this->view->fetch();
+    }
 	
 	/**
 	 * Handle updating settings

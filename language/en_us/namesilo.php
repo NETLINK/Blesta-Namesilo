@@ -57,6 +57,14 @@ $lang['Namesilo.tab_nameservers.title'] = "Name Servers";
 $lang['Namesilo.tab_nameserver.field_ns'] = "Name Server %1\$s"; // %1$s is the name server number
 $lang['Namesilo.tab_nameservers.field_submit'] = "Update Name Servers";
 
+$lang['Namesilo.tab_hosts.title'] = "Register Nameservers";
+$lang['Namesilo.tab_hosts.field_host'] = "Host %1\$s"; // %1$s is the host number
+$lang['Namesilo.tab_hosts.field_ip'] = "IP Address(es)";
+$lang['Namesilo.tab_hosts.field_hostname'] = "Host";
+$lang['Namesilo.tab_hosts.field_submit'] = "Update All Hosts";
+$lang['Namesilo.tab_client_hosts.help_text'] = "On this page you can add your own custom name servers (sometimes referred to as \"glue records\") to associate with your domains.  To remove a host record blank all IP fields associated with it before clicking update.  You can not delete any host records which have domains actively using it as a nameserver.";
+
+
 $lang['Namesilo.tab_settings.title'] = "Settings";
 $lang['Namesilo.tab_settings.field_registrar_lock'] = "Registrar Lock";
 $lang['Namesilo.tab_settings.field_registrar_lock_yes'] = "Set the registrar lock. Recommended to prevent unauthorized transfer.";
@@ -249,7 +257,7 @@ $lang['Namesilo.domain.ASIAIdentNumber'] = "Identity Number";
 $lang['Namesilo.!tooltip.FRRegistrantBirthDate'] = "Set your birth date in the format: YYYY-MM-DD";
 $lang['Namesilo.!tooltip.FRRegistrantLegalId'] = "The SIREN number is the first part of the SIRET NUMBER and consists of 9 digits. The SIRET number is a unique identification number with 14 digits.";
 $lang['Namesilo.!tooltip.FRRegistrantDunsNumber'] = "The DUNS number consists of 9 digits, issued by Dun & Bradstreet.";
-$lang['Namesilo.!tooltip.FRRegistrantJoDateDec'] = "French associations listed with the Journal Officiel de la République Francaise should set a declaration date in the format: YYYY-MM-DD";
+$lang['Namesilo.!tooltip.FRRegistrantJoDateDec'] = "French associations listed with the Journal Officiel de la Rï¿½publique Francaise should set a declaration date in the format: YYYY-MM-DD";
 $lang['Namesilo.!tooltip.FRRegistrantJoDatePub'] = "Enter the publication date in the Journal Officiel in the format: YYYY-MM-DD";
 
 $lang['Namesilo.domain.FRLegalType'] = "Legal Type";
