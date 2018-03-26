@@ -964,9 +964,6 @@ class Namesilo extends Module {
 				'tabCommunication' => Language::_( "Namesilo.tab_communication.title", true ),
 			);
 		}
-		else {
-			# ...
-		}
 	}
 
 	/**
@@ -984,9 +981,6 @@ class Namesilo extends Module {
                 'tabClientHosts' => Language::_( "Namesilo.tab_hosts.title", true ),
 				'tabClientSettings' => Language::_( "Namesilo.tab_settings.title", true ),
 			);
-		}
-		else {
-			# ...
 		}
 	}
 	
@@ -1175,7 +1169,14 @@ class Namesilo extends Module {
 			$this->view->setDefaultView( self::$defaultModuleView );
 			return $this->view->fetch();
 		}
-		
+
+		// if the domain is pending transfer display a notice of such
+        $checkDomainStatus = $this->checkDomainStatus($service,$package);
+		if(isset($checkDomainStatus)) {
+            return $checkDomainStatus;
+        }
+
+
 		$this->view = new View( $view, "default" );
 		// Load the helpers required for this view
 		Loader::loadHelpers( $this, array ( "Form", "Html" ) );
@@ -1309,6 +1310,12 @@ class Namesilo extends Module {
         }
         else {
 
+            // if the domain is pending transfer display a notice of such
+            $checkDomainStatus = $this->checkDomainStatus($service,$package);
+            if(isset($checkDomainStatus)) {
+                return $checkDomainStatus;
+            }
+
             $this->view = new View( $view, "default" );
             // Load the helpers required for this view
             Loader::loadHelpers( $this, array ( "Form", "Html" ) );
@@ -1409,6 +1416,12 @@ class Namesilo extends Module {
         }elseif( $view == "tab_client_hosts" && $service->status == "suspended" ) {
             $this->view = new View('suspended', "default");
         }else{
+            // if the domain is pending transfer display a notice of such
+            $checkDomainStatus = $this->checkDomainStatus($service,$package);
+            if(isset($checkDomainStatus)) {
+                return $checkDomainStatus;
+            }
+
             $this->view = new View( $view, "default" );
             $this->view->base_uri = $this->base_uri;
             // Load the helpers required for this view
@@ -1480,6 +1493,12 @@ class Namesilo extends Module {
 			$this->view = new View( 'suspended', "default" );
 		}
 		else {
+
+            // if the domain is pending transfer display a notice of such
+            $checkDomainStatus = $this->checkDomainStatus($service,$package);
+            if(isset($checkDomainStatus)) {
+                return $checkDomainStatus;
+            }
 			
 			$this->view = new View($view, "default");
 			// Load the helpers required for this view
@@ -1752,6 +1771,25 @@ class Namesilo extends Module {
 		
 		return $this->Contacts->intlNumber($number, $country, ".");
 	}
+
+	private function checkDomainStatus($service, $package){
+        $fields = $this->serviceFieldsToObject( $service->fields );
+        $row = $this->getModuleRow( $package->module_row );
+        $api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+        $domains = new NamesiloDomains($api);
+        $domain_info = $domains->getDomainInfo(array('domain'=>$fields->domain))->response();
+        if(isset($domain_info->code) && $domain_info->code != 300){
+            $transfer = new NamesiloDomainsTransfer($api);
+            $transfer_info = $transfer->getStatus(array('domain'=>$fields->domain))->response();
+            if(isset($transfer_info->code) && $transfer_info->code == 300){
+                $this->view = new View('transferstatus', "default");
+                $this->view->setDefaultView( self::$defaultModuleView );
+                $this->view->set('transferstatus', $transfer_info);
+                Loader::loadHelpers( $this, array ( "Form", "Html" ) );
+                return $this->view->fetch();
+            }
+        }
+    }
 	
 	public function debug( $data ) {
 		mail( self::$debug_to, "Namesilo Module " /*. self::$version*/ . " Debug", var_export( $data, true ), "From: blesta@localhost\n\n" );
