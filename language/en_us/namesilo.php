@@ -68,7 +68,6 @@ $lang['Namesilo.tab_hosts.field_hostname'] = "Host";
 $lang['Namesilo.tab_hosts.field_submit'] = "Update All Hosts";
 $lang['Namesilo.tab_client_hosts.help_text'] = "On this page you can add your own custom name servers (sometimes referred to as \"glue records\") to associate with your domains.  To remove a host record blank all IP fields associated with it before clicking update.  You can not delete any host records which have domains actively using it as a nameserver.";
 
-
 $lang['Namesilo.tab_settings.title'] = "Settings";
 $lang['Namesilo.tab_settings.field_registrar_lock'] = "Registrar Lock";
 $lang['Namesilo.tab_settings.field_registrar_lock_yes'] = "Set the registrar lock. Recommended to prevent unauthorized transfer.";
@@ -91,6 +90,7 @@ $lang['Namesilo.!error.payment_id.valid_format'] = "Payment ID must be either bl
 // Notices
 $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you are trying to access will become available once the order has been activated successfully.";
 $lang['Namesilo.notice.StatusSuspended'] = "This domain name has been suspended; domain management features are therefore currently unavailable. Please contact your service provider for more details or to reinstate service.";
+$lang['Namesilo.notice.TransferPending'] = "This domain is currently awaiting transfer completion.  Until the transfer is complete domain management features are unavailable.";
 
 
 // Domain Transfer Fields
