@@ -1,23 +1,4 @@
 <?php
-// All available TLDs
-Configure::set("Namesilo.tlds", array(
-	".biz",
-	".cc",
-	".co",
-	".com",
-	'.cloud',
-	'.club',
-	".info",
-	".me",
-	".mobi",	
-	".net",
-	'.online',
-	".org",
-	'.pro',
-	'.pub',
-	".tv",	
-	".us",
-));
 
 // Transfer fields
 Configure::set("Namesilo.transfer_fields", array(
