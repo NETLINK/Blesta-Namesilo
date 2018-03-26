@@ -12,6 +12,7 @@ $lang['Namesilo.manage.module_rows_heading.user'] = "User";
 $lang['Namesilo.manage.module_rows_heading.key'] = "API Key";
 $lang['Namesilo.manage.module_rows_heading.sandbox'] = "Sandbox";
 $lang['Namesilo.manage.module_rows_heading.options'] = "Options";
+$lang['Namesilo.manage.module_rows_heading.portfolio'] = "Default Portfolio";
 $lang['Namesilo.manage.module_rows.edit'] = "Edit";
 $lang['Namesilo.manage.module_rows.delete'] = "Delete";
 $lang['Namesilo.manage.module_rows.confirm_delete'] = "Are you sure you want to delete this account?";
@@ -20,6 +21,7 @@ $lang['Namesilo.manage.module_rows_no_results'] = "There are no accounts.";
 // Row Meta
 $lang['Namesilo.row_meta.user'] = "User";
 $lang['Namesilo.row_meta.key'] = "API Key";
+$lang['Namesilo.row_meta.portfolio'] = "Portfolio";
 $lang['Namesilo.row_meta.sandbox'] = "Sandbox";
 $lang['Namesilo.row_meta.sandbox_true'] = "Yes";
 $lang['Namesilo.row_meta.sandbox_false'] = "No";
@@ -57,6 +59,14 @@ $lang['Namesilo.tab_nameservers.title'] = "Name Servers";
 $lang['Namesilo.tab_nameserver.field_ns'] = "Name Server %1\$s"; // %1$s is the name server number
 $lang['Namesilo.tab_nameservers.field_submit'] = "Update Name Servers";
 
+$lang['Namesilo.tab_hosts.title'] = "Register Nameservers";
+$lang['Namesilo.tab_hosts.field_host'] = "Host %1\$s"; // %1$s is the host number
+$lang['Namesilo.tab_hosts.field_ip'] = "IP Address(es)";
+$lang['Namesilo.tab_hosts.field_hostname'] = "Host";
+$lang['Namesilo.tab_hosts.field_submit'] = "Update All Hosts";
+$lang['Namesilo.tab_client_hosts.help_text'] = "On this page you can add your own custom name servers (sometimes referred to as \"glue records\") to associate with your domains.  To remove a host record blank all IP fields associated with it before clicking update.  You can not delete any host records which have domains actively using it as a nameserver.";
+
+
 $lang['Namesilo.tab_settings.title'] = "Settings";
 $lang['Namesilo.tab_settings.field_registrar_lock'] = "Registrar Lock";
 $lang['Namesilo.tab_settings.field_registrar_lock_yes'] = "Set the registrar lock. Recommended to prevent unauthorized transfer.";
@@ -73,6 +83,7 @@ $lang['Namesilo.manage.manual_renewal'] = "Manually Renew (select years)";
 $lang['Namesilo.!error.user.valid'] = "Please enter a user";
 $lang['Namesilo.!error.key.valid'] = "Please enter a key";
 $lang['Namesilo.!error.key.valid_connection'] = "The user and key combination appear to be invalid, or your Namesilo account may not be configured to allow API access.";
+$lang['Namesilo.!error.portfolio.valid_portfolio'] = "The portfolio entered does not appear valid.  Are you sure it has been created in your Namesilo account?";
 
 // Notices
 $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you are trying to access will become available once the order has been activated successfully.";
@@ -249,7 +260,7 @@ $lang['Namesilo.domain.ASIAIdentNumber'] = "Identity Number";
 $lang['Namesilo.!tooltip.FRRegistrantBirthDate'] = "Set your birth date in the format: YYYY-MM-DD";
 $lang['Namesilo.!tooltip.FRRegistrantLegalId'] = "The SIREN number is the first part of the SIRET NUMBER and consists of 9 digits. The SIRET number is a unique identification number with 14 digits.";
 $lang['Namesilo.!tooltip.FRRegistrantDunsNumber'] = "The DUNS number consists of 9 digits, issued by Dun & Bradstreet.";
-$lang['Namesilo.!tooltip.FRRegistrantJoDateDec'] = "French associations listed with the Journal Officiel de la République Francaise should set a declaration date in the format: YYYY-MM-DD";
+$lang['Namesilo.!tooltip.FRRegistrantJoDateDec'] = "French associations listed with the Journal Officiel de la Rï¿½publique Francaise should set a declaration date in the format: YYYY-MM-DD";
 $lang['Namesilo.!tooltip.FRRegistrantJoDatePub'] = "Enter the publication date in the Journal Officiel in the format: YYYY-MM-DD";
 
 $lang['Namesilo.domain.FRLegalType'] = "Legal Type";

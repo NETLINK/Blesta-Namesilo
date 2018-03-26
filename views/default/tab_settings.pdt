@@ -21,6 +21,13 @@
 				$this->Form->label($this->_("Namesilo.tab_settings.field_request_epp", true), "request_epp", array('class' => "inline"));
 				?>
 			</li>
+            <li>
+                <?php
+                $this->Form->fieldHidden("whois_privacy_before", $this->Html->ifSet($vars->whois_privacy));
+                $this->Form->fieldCheckbox("whois_privacy", "Yes", $this->Html->ifSet($vars->whois_privacy) == "Yes", array('id' => "whois_privacy"));
+                $this->Form->label($this->_("Namesilo.domain.WhoisPrivacy", true), "whois_privacy", array('class' => "inline"));
+                ?>
+            </li>
 		</ul>
 	</div>
 	<div class="button_row"><a class="btn_right submit" href="#"><?php $this->_("Namesilo.tab_settings.field_submit");?></a></div>
