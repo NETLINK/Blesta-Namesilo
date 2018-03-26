@@ -1,5 +1,5 @@
 {
-	"version": "1.7.2-beta",
+	"version": "1.7.3-beta",
 	"name": "Namesilo Domains Module",
 	"description": "Namesilo registrar module",
 	"authors": [
@@ -8,7 +8,7 @@
 			"url": "http://www.netlink.ie/"
 		},
 		{
-			"name": "KnownHost LLC",
+			"name": "& KnownHost LLC",
 			"url": "https://www.knownhost.com"
 		}
 	]

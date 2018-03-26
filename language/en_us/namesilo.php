@@ -22,6 +22,8 @@ $lang['Namesilo.manage.module_rows_no_results'] = "There are no accounts.";
 $lang['Namesilo.row_meta.user'] = "User";
 $lang['Namesilo.row_meta.key'] = "API Key";
 $lang['Namesilo.row_meta.portfolio'] = "Portfolio";
+$lang['Namesilo.row_meta.payment_id'] = "Payment ID";
+$lang['Namesilo.row_meta.payment_id.description'] = "Leave blank to use account funds or enter the ID of a billing profile that is <strong>verified</strong> in your Namesilo account to use it for purchases.  You can get this ID from";
 $lang['Namesilo.row_meta.sandbox'] = "Sandbox";
 $lang['Namesilo.row_meta.sandbox_true'] = "Yes";
 $lang['Namesilo.row_meta.sandbox_false'] = "No";
@@ -83,6 +85,7 @@ $lang['Namesilo.!error.user.valid'] = "Please enter a user";
 $lang['Namesilo.!error.key.valid'] = "Please enter a key";
 $lang['Namesilo.!error.key.valid_connection'] = "The user and key combination appear to be invalid, or your Namesilo account may not be configured to allow API access.";
 $lang['Namesilo.!error.portfolio.valid_portfolio'] = "The portfolio entered does not appear valid.  Are you sure it has been created in your Namesilo account?";
+$lang['Namesilo.!error.payment_id.valid_format'] = "Payment ID must be either blank or numeric only.";
 
 // Notices
 $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you are trying to access will become available once the order has been activated successfully.";
