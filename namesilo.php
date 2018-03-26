@@ -158,9 +158,18 @@ class Namesilo extends Module {
 		# TODO: Handle validation checks
 		# TODO: Fix nameservers
 		#
-		
-		$tld = NULL;
-		$input_fields = array();
+
+        if ( isset( $vars['domain'] ) ) {
+            $tld = $this->getTld( $vars['domain'] );
+        }
+
+        $input_fields = array_merge(
+            Configure::get( "Namesilo.domain_fields" ),
+            (array) Configure::get( "Namesilo.domain_fields" . $tld ),
+            (array) Configure::get("Namesilo.nameserver_fields"),
+            (array) Configure::get("Namesilo.transfer_fields"),
+            array( 'years' => true )
+        );
 		
 		if ( isset( $vars['use_module'] ) && $vars['use_module'] == "true" ) {
 			
@@ -176,9 +185,9 @@ class Namesilo extends Module {
 				}
 				
 				// Handle transfer
-				if ( isset( $vars['transfer'] ) && $vars['transfer'] == '2' ) {
-					
-					$input_fields = array_merge( Configure::get( "Namesilo.transfer_fields" ), array( 'years' => true ) );
+				if ( isset( $vars['auth'] ) && strlen($vars['auth']) >= 1 ) {
+
+					//$input_fields = array_merge($input_fields, Configure::get("Namesilo.transfer_fields"));
 					
 					$fields = array_intersect_key( $vars, $input_fields );
 
@@ -186,28 +195,16 @@ class Namesilo extends Module {
                         $fields['portfolio'] = $row->meta->portfolio;
 
 					$transfer = new NamesiloDomainsTransfer( $api );
+
 					$response = $transfer->create( $fields );
 					$this->processResponse( $api, $response );
 					
 					if ( $this->Input->errors() )
 						return;
-					
-					return array( array( 'key' => "domain", 'value' => $fields['domain'], 'encrypted' => 0 ) );
-				}
-				// Handle registration
-				else {
-					
-					if ( isset( $vars['domain'] ) ) {
-						$tld = $this->getTld( $vars['domain'] );
-					}
-					
-					$whois_fields = Configure::get( "Namesilo.whois_fields" );
-					$input_fields = array_merge(
-						Configure::get( "Namesilo.domain_fields" ),
-						(array) Configure::get( "Namesilo.domain_fields" . $tld ),
-						(array) Configure::get( "Namesilo.nameserver_fields" ),
-						array( 'years' => true )
-					);
+				}else{
+				    // Handle registration
+					$whois_fields = Configure::get("Namesilo.whois_fields");
+                    //$input_fields = array_merge($input_fields, (array) Configure::get("Namesilo.nameserver_fields"));
 					
 					// Set all whois info from client ($vars['client_id'])
 					if ( !isset( $this->Clients ) ) {
@@ -238,21 +235,31 @@ class Namesilo extends Module {
                         $fields['portfolio'] = $row->meta->portfolio;
 
 					$domains = new NamesiloDomains( $api );
+
 					//$this->debug( $fields );
 					//$this->Input->setErrors( array( 'errors' => array( 'Test' ) ) );
 					//return;
+
 					$response = $domains->create( $fields );
 					$this->processResponse( $api, $response );
 					
 					if ( $this->Input->errors() )
 						return;
-					
-					return array( array( 'key' => "domain", 'value' => $vars['domain'], 'encrypted' => 0 ) );
 				}
 			}
 		}
-		
-		return array( array( 'key' => "domain", 'value' => $vars['domain'], 'encrypted' => 0 ) );
+
+        $meta = [];
+        $fields = array_intersect_key($vars, $input_fields);
+        foreach ($fields as $key => $value) {
+            $meta[] = [
+                'key' => $key,
+                'value' => $value,
+                'encrypted' => 0
+            ];
+        }
+
+        return $meta;
 	}
 	
 	/**
