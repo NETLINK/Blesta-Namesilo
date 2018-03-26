@@ -184,6 +184,8 @@ class Namesilo extends Module {
 
                     if(!empty($row->meta->portfolio))
                         $fields['portfolio'] = $row->meta->portfolio;
+                    if(!empty($row->meta->payment_id))
+                        $fields['payment_id'] = $row->meta->payment_id;
 
 					$transfer = new NamesiloDomainsTransfer( $api );
 					$response = $transfer->create( $fields );
@@ -236,6 +238,8 @@ class Namesilo extends Module {
 
                     if(!empty($row->meta->portfolio))
                         $fields['portfolio'] = $row->meta->portfolio;
+                    if(!empty($row->meta->payment_id))
+                        $fields['payment_id'] = $row->meta->payment_id;
 
 					$domains = new NamesiloDomains( $api );
 					//$this->debug( $fields );
@@ -554,7 +558,7 @@ class Namesilo extends Module {
 	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
 	 */
 	public function addModuleRow(array &$vars) {
-		$meta_fields = array("user", "key", "sandbox", "portfolio");
+		$meta_fields = array("user", "key", "sandbox", "portfolio", "payment_id");
 		$encrypted_fields = array("key");
 
 		// Set unspecified checkboxes
@@ -1582,6 +1586,12 @@ class Namesilo extends Module {
                 'valid' => array(
                     'rule' => array(array($this, "validatePortfolio"), $vars['key'], $vars['user'], isset($vars['sandbox']) ? $vars['sandbox'] : "false"),
                     'message' => Language::_("Namesilo.!error.portfolio.valid_portfolio", true)
+                )
+            ),
+            'payment_id' => array(
+                'valid' => array(
+                    'rule' => array('matches', '/^[\s\d]*$/'),
+                    'message' => Language::_("Namesilo.!error.payment_id.valid_format", true)
                 )
             )
 		);
