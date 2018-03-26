@@ -75,8 +75,9 @@ $lang['Namesilo.tab_settings.field_registrar_lock_no'] = "Release the registrar 
 $lang['Namesilo.tab_settings.field_request_epp'] = "Request EPP Code/Transfer Key";
 $lang['Namesilo.tab_settings.field_submit'] = "Update Settings";
 
-$lang['Namesilo.tab_communication.title'] = "Communication";
-$lang['Namesilo.tab_communication.field_submit'] = "Send Selected Notice";
+$lang['Namesilo.tab_adminactions.title'] = "Admin Actions";
+$lang['Namesilo.tab_adminactions.field_submit'] = "Send Selected Notice";
+$lang['Namesilo.tab_adminactions.sync_date'] = "Synchronize Renew Date";
 
 $lang['Namesilo.manage.manual_renewal'] = "Manually Renew (select years)";
 
