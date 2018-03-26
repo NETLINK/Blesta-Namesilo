@@ -5,7 +5,7 @@ require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_
 require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_dns.php";
 require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_ns.php";
 require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "domains_transfer.php";
-require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "account_information.php";
+//require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "account_information.php";
 require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_SEPARATOR . "users_address.php";
 
 /**
