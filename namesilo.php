@@ -965,7 +965,7 @@ class Namesilo extends Module {
 				'tabNameservers' => Language::_( "Namesilo.tab_nameservers.title", true ),
                 'tabHosts' => Language::_( "Namesilo.tab_hosts.title", true ),
 				'tabSettings' => Language::_( "Namesilo.tab_settings.title", true ),
-				'tabCommunication' => Language::_( "Namesilo.tab_communication.title", true ),
+				'tabAdminActions' => Language::_( "Namesilo.tab_adminactions.title", true ),
 			);
 		}
 	}
@@ -1115,7 +1115,7 @@ class Namesilo extends Module {
 	}
 	
 	/**
-	 * Admin Communication tab
+	 * Admin Actions tab
 	 *
 	 * @param stdClass $package A stdClass object representing the current package
 	 * @param stdClass $service A stdClass object representing the current service
@@ -1124,7 +1124,7 @@ class Namesilo extends Module {
 	 * @param array $files Any FILES parameters
 	 * @return string The string representing the contents of this tab
 	 */
-	public function tabCommunication( $package, $service, array $get = null, array $post = null, array $files = null ) {
+	public function tabAdminActions( $package, $service, array $get = null, array $post = null, array $files = null ) {
 		
 		$vars = new stdClass();
 		
@@ -1134,11 +1134,31 @@ class Namesilo extends Module {
 		
 		$vars->options = $communication->getNotices();
 		
-		if ( !empty ( $post ) && !empty ( $post['notice'] ) ) {
-			$communication->send( $post );
+		if (!empty($post)){
+            $fields = $this->serviceFieldsToObject( $service->fields );
+            $row = $this->getModuleRow($package->module_row);
+            $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == "true");
+            $domains = new NamesiloDomains($api);
+
+		    if(!empty($post['notice'])) {
+                $communication->send($post);
+            }
+            if(isset($post['action']) && $post['action'] == 'sync_date'){
+                Loader::loadModels($this, ['Services']);
+
+		        $domain_info = $domains->getDomainInfo(array('domain'=>$fields->domain));
+		        $this->processResponse($api,$domain_info);
+
+		        if(!$this->Input->errors()) {
+                    $domain_info = $domain_info->response();
+                    $expires = $domain_info->expires;
+                    $edit_vars['date_renews'] = date('Y-m-d h:i:s', strtotime($expires));
+                    $this->Services->edit($service->id, $edit_vars, $bypass_module = true);
+                }
+            }
 		}
 		
-		$this->view = new View( 'tab_admin_communication', "default" );
+		$this->view = new View( 'tab_admin_actions', "default" );
 		
 		Loader::loadHelpers( $this, array ( "Form", "Html" ) );
 		
