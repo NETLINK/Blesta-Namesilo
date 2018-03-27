@@ -22,6 +22,8 @@ $lang['Namesilo.manage.module_rows_no_results'] = "There are no accounts.";
 $lang['Namesilo.row_meta.user'] = "User";
 $lang['Namesilo.row_meta.key'] = "API Key";
 $lang['Namesilo.row_meta.portfolio'] = "Portfolio";
+$lang['Namesilo.row_meta.payment_id'] = "Payment ID";
+$lang['Namesilo.row_meta.payment_id.description'] = "Leave blank to use account funds or enter the ID of a billing profile that is <strong>verified</strong> in your Namesilo account to use it for purchases.  You can get this ID from";
 $lang['Namesilo.row_meta.sandbox'] = "Sandbox";
 $lang['Namesilo.row_meta.sandbox_true'] = "Yes";
 $lang['Namesilo.row_meta.sandbox_false'] = "No";
@@ -66,7 +68,6 @@ $lang['Namesilo.tab_hosts.field_hostname'] = "Host";
 $lang['Namesilo.tab_hosts.field_submit'] = "Update All Hosts";
 $lang['Namesilo.tab_client_hosts.help_text'] = "On this page you can add your own custom name servers (sometimes referred to as \"glue records\") to associate with your domains.  To remove a host record blank all IP fields associated with it before clicking update.  You can not delete any host records which have domains actively using it as a nameserver.";
 
-
 $lang['Namesilo.tab_settings.title'] = "Settings";
 $lang['Namesilo.tab_settings.field_registrar_lock'] = "Registrar Lock";
 $lang['Namesilo.tab_settings.field_registrar_lock_yes'] = "Set the registrar lock. Recommended to prevent unauthorized transfer.";
@@ -84,10 +85,12 @@ $lang['Namesilo.!error.user.valid'] = "Please enter a user";
 $lang['Namesilo.!error.key.valid'] = "Please enter a key";
 $lang['Namesilo.!error.key.valid_connection'] = "The user and key combination appear to be invalid, or your Namesilo account may not be configured to allow API access.";
 $lang['Namesilo.!error.portfolio.valid_portfolio'] = "The portfolio entered does not appear valid.  Are you sure it has been created in your Namesilo account?";
+$lang['Namesilo.!error.payment_id.valid_format'] = "Payment ID must be either blank or numeric only.";
 
 // Notices
 $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you are trying to access will become available once the order has been activated successfully.";
 $lang['Namesilo.notice.StatusSuspended'] = "This domain name has been suspended; domain management features are therefore currently unavailable. Please contact your service provider for more details or to reinstate service.";
+$lang['Namesilo.notice.TransferPending'] = "This domain is currently awaiting transfer completion.  Until the transfer is complete domain management features are unavailable.";
 
 
 // Domain Transfer Fields

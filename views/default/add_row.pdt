@@ -29,6 +29,13 @@
                         $this->Form->fieldText("portfolio", $this->Html->ifSet($vars->portfolio), array('id' => "portfolio"));
                         ?>
                     </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_("Namesilo.row_meta.payment_id", true), "payment_id");
+                        $this->Form->fieldText("payment_id", $this->Html->ifSet($vars->payment_id), array('id' => "payment_id"));
+                        ?>
+                        test
+                    </li>
 					<li>
 						<?php
 						$this->Form->fieldCheckbox("sandbox", "true", $this->Html->ifSet($vars->sandbox) == "true", array('id' => "sandbox"));
