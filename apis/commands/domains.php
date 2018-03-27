@@ -220,4 +220,11 @@ class NamesiloDomains {
     public function portfolioList(){
         return $this->api->submit("portfolioList");
     }
+
+    /**
+     * @return NamesiloResponse
+     */
+    public function getPrices(){
+        return $this->api->submit("getPrices");
+    }
 }
