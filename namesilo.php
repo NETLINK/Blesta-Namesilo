@@ -183,60 +183,52 @@ class Namesilo extends Module {
 						break;
 					}
 				}
+
+                $whois_fields = Configure::get("Namesilo.whois_fields");
+
+                // Set all whois info from client ($vars['client_id'])
+                if ( !isset( $this->Clients ) ) {
+                    Loader::loadModels( $this, array( "Clients" ) );
+                }
+                if ( !isset( $this->Contacts ) ) {
+                    Loader::loadModels( $this, array( "Contacts" ) );
+                }
+
+                $client = $this->Clients->get( $vars['client_id'] );
+
+                if ( $client )
+                    $contact_numbers = $this->Contacts->getNumbers( $client->contact_id );
+
+                foreach ( $whois_fields as $key => $value ) {
+                    $input_fields[$value['rp']] = true;
+                    if ( strpos( $key, "phone" ) !== false ) {
+                        $vars[$value['rp']] = $this->formatPhone( isset( $contact_numbers[0] ) ? $contact_numbers[0]->number : null, $client->country );
+                    }
+                    else {
+                        $vars[$value['rp']] = ( isset( $value['lp'] ) && !empty( $value['lp'] ) ) ? $client->{$value['lp']} : 'NA';
+                    }
+                }
+
+                $fields = array_intersect_key( $vars, $input_fields );
+
+                if(!empty($row->meta->portfolio))
+                    $fields['portfolio'] = $row->meta->portfolio;
+                if(!empty($row->meta->payment_id))
+                    $fields['payment_id'] = $row->meta->payment_id;
+
 				
 				// Handle transfer
 				if ( isset( $vars['auth'] ) && strlen($vars['auth']) >= 1 ) {
-
-					//$input_fields = array_merge($input_fields, Configure::get("Namesilo.transfer_fields"));
-					
-					$fields = array_intersect_key( $vars, $input_fields );
-
-                    if(!empty($row->meta->portfolio))
-                        $fields['portfolio'] = $row->meta->portfolio;
-                    if(!empty($row->meta->payment_id))
-                        $fields['payment_id'] = $row->meta->payment_id;
 
 					$transfer = new NamesiloDomainsTransfer( $api );
 
 					$response = $transfer->create( $fields );
 					$this->processResponse( $api, $response );
 					
-					if ( $this->Input->errors() )
+					if ($this->Input->errors())
 						return;
 				}else{
 				    // Handle registration
-					$whois_fields = Configure::get("Namesilo.whois_fields");
-                    //$input_fields = array_merge($input_fields, (array) Configure::get("Namesilo.nameserver_fields"));
-					
-					// Set all whois info from client ($vars['client_id'])
-					if ( !isset( $this->Clients ) ) {
-						Loader::loadModels( $this, array( "Clients" ) );
-					}
-                    if ( !isset( $this->Contacts ) ) {
-                        Loader::loadModels( $this, array( "Contacts" ) );
-					}
-					
-					$client = $this->Clients->get( $vars['client_id'] );
-					
-                    if ( $client )
-                        $contact_numbers = $this->Contacts->getNumbers( $client->contact_id );
-						
-					foreach ( $whois_fields as $key => $value ) {
-						$input_fields[$value['rp']] = true;
-						if ( strpos( $key, "phone" ) !== false ) {
-							$vars[$value['rp']] = $this->formatPhone( isset( $contact_numbers[0] ) ? $contact_numbers[0]->number : null, $client->country );
-						}
-						else {
-							$vars[$value['rp']] = ( isset( $value['lp'] ) && !empty( $value['lp'] ) ) ? $client->{$value['lp']} : 'NA';
-						}
-					}
-					
-					$fields = array_intersect_key( $vars, $input_fields );
-
-                    if(!empty($row->meta->portfolio))
-                        $fields['portfolio'] = $row->meta->portfolio;
-                    if(!empty($row->meta->payment_id))
-                        $fields['payment_id'] = $row->meta->payment_id;
 
 					$domains = new NamesiloDomains( $api );
 
@@ -247,7 +239,7 @@ class Namesilo extends Module {
 					$response = $domains->create( $fields );
 					$this->processResponse( $api, $response );
 					
-					if ( $this->Input->errors() )
+					if ($this->Input->errors())
 						return;
 				}
 			}
