@@ -19,8 +19,8 @@ require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . "commands" . DIRECTORY_
  */
 class NamesiloApi {
 
-	const SANDBOX_URL = "http://sandbox.namesilo.com/api/";
-	const LIVE_URL = "https://www.namesilo.com/api/";
+	const SANDBOX_URL = "http://sandbox.namesilo.com/api";
+	const LIVE_URL = "https://www.namesilo.com/api";
 
 	/**
 	 * @var string API version
