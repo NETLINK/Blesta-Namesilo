@@ -501,7 +501,18 @@ class Namesilo extends Module {
 		# TODO: add tab to check status of all transfers: check if possible with Namesilo... ref: NamesiloDomainsTransfer->getList()
 		#
 		#
-		
+
+        foreach($module->rows as $row){
+            if(isset($row->meta->key)){
+                $link_buttons[] = array('name'=>Language::_("Namesilo.manage.sync_renew_dates",true),'attributes'=>array('href'=>array('href'=>$this->base_uri . "settings/company/modules/addrow/" . $module->id."?action=sync_renew_dates")));
+                $link_buttons[] = array('name'=>Language::_("Namesilo.manage.audit_domains", true), 'attributes'=>array('href'=>$this->base_uri . "settings/company/modules/addrow/" . $module->id."?action=audit_domains"));
+                break;
+            }
+        }
+
+        $this->view->set("module", $module);
+        $this->view->set("link_buttons",$link_buttons);
+
 		// Load the helpers required for this view
 		Loader::loadHelpers( $this, array ( "Form", "Html", "Widget" ) );
 
@@ -524,7 +535,61 @@ class Namesilo extends Module {
 		
 		// Load the helpers required for this view
 		Loader::loadHelpers( $this, array ( "Form", "Html", "Widget" ) );
-		
+
+		$action = isset($_GET['action']) ? $_GET['action'] : null;
+
+		if($action == 'audit_domains'){
+            $this->view = new View("audit_domains", "default");
+            $this->view->base_uri = $this->base_uri;
+            $this->view->setDefaultView( self::$defaultModuleView );
+
+            // Load the helpers required for this view
+            Loader::loadHelpers($this, array ("Form", "Html", "Widget"));
+            Loader::loadModels($this,array("Services","Record","ModuleManager"));
+
+
+            $modules = $this->ModuleManager->getInstalled();
+            foreach ($modules as $module) {
+                $module_data = $this->ModuleManager->get($module->id);
+                foreach ($module_data->rows as $row) {
+                    if(isset($row->meta->namesilo_module))
+                        $module_row = $row;
+                    break;
+                }
+            }
+
+            $services = $this->Record->select('id')->from('services')->where('module_row_id','=',$module_row->id)->fetchAll();
+            $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
+            $domains = new NamesiloDomains($api);
+
+            foreach($services as $service){
+                $vars['services'][$service->id]['service'] = $this->Services->get($service->id);
+                $api_response = $domains->getDomainInfo(array(
+                    'domain'=>$vars['services'][$service->id]['service']->name
+                ))->response();
+
+                // if we didn't get a 300 code, assume it's a transfer
+                if($api_response->code != 300){
+                    if(!isset($transfer))
+                        $transfer = new NamesiloDomainsTransfer($api);
+                    $transfer_response = $transfer->getStatus(array(
+                        'domain'=>$vars['services'][$service->id]['service']->name
+                    ))->response();
+                    if($transfer_response->code == 300)
+                        $api_response = $transfer_response;
+                }elseif($api_response->code == 300){
+                    unset($vars['services'][$service->id]);
+                    continue;
+                }
+
+                $vars['services'][$service->id]['api_response'] = $api_response;
+            }
+
+            $this->view->set( "vars", (object)$vars );
+
+            return $this->view->fetch();
+        }
+
 		// Set unspecified checkboxes
 		if (!empty($vars)) {
 			if (empty($vars['sandbox']))
@@ -574,7 +639,7 @@ class Namesilo extends Module {
 	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
 	 */
 	public function addModuleRow(array &$vars) {
-		$meta_fields = array("user", "key", "sandbox", "portfolio", "payment_id");
+		$meta_fields = array("user", "key", "sandbox", "portfolio", "payment_id", "namesilo_module");
 		$encrypted_fields = array("key");
 
 		// Set unspecified checkboxes
@@ -1713,9 +1778,10 @@ class Namesilo extends Module {
 	 * @param string $key The key to use when connecting
 	 * @param boolean $sandbox Whether or not to process in sandbox mode (for testing)
 	 * @param string $username The username to execute an API command using
+     * @param bool $batch use API batch mode
 	 * @return NamesiloApi The NamesiloApi instance
 	 */
-	public function getApi( $user = null, $key = null, $sandbox = true, $username = null ) {
+	public function getApi( $user = null, $key = null, $sandbox = true, $username = null, $batch = false ) {
 
 		Loader::load( __DIR__ . DS . "apis" . DS . "namesilo_api.php" );
 
@@ -1726,7 +1792,7 @@ class Namesilo extends Module {
 			$sandbox = $row->meta->sandbox;
 		}
 
-		return new NamesiloApi( $user, $key, $sandbox, $username );
+		return new NamesiloApi( $user, $key, $sandbox, $username, $batch );
 	}
 
 	/**

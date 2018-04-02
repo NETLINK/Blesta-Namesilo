@@ -17,6 +17,8 @@ $lang['Namesilo.manage.module_rows.edit'] = "Edit";
 $lang['Namesilo.manage.module_rows.delete'] = "Delete";
 $lang['Namesilo.manage.module_rows.confirm_delete'] = "Are you sure you want to delete this account?";
 $lang['Namesilo.manage.module_rows_no_results'] = "There are no accounts.";
+$lang['Namesilo.manage.sync_renew_dates'] = "Sync Renew Dates";
+$lang['Namesilo.manage.audit_domains'] = "Audit Domains";
 
 // Row Meta
 $lang['Namesilo.row_meta.user'] = "User";
@@ -32,6 +34,9 @@ $lang['Namesilo.row_meta.sandbox_false'] = "No";
 $lang['Namesilo.add_row.box_title'] = "Add Namesilo Account";
 $lang['Namesilo.add_row.basic_title'] = "Basic Settings";
 $lang['Namesilo.add_row.add_btn'] = "Add Account";
+
+// Audit domains
+$lang['Namesilo.add_row.audit_domains.box_title'] = "Audit Domains";
 
 // Edit row
 $lang['Namesilo.edit_row.box_title'] = "Edit Namesilo Account";

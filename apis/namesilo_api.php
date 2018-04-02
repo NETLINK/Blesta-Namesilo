@@ -50,6 +50,10 @@ class NamesiloApi {
 	 * @var array An array representing the last request made
 	 */
 	private $last_request = array('url' => null, 'args' => null);
+    /**
+     * @var bool use batch api url if true
+     */
+	private $batch;
 	
 	/**
 	 * Sets the connection details
@@ -58,8 +62,10 @@ class NamesiloApi {
 	 * @param string $key The key to use when connecting
 	 * @param boolean $sandbox Whether or not to process in sandbox mode (for testing)
 	 * @param string $username The username to execute an API command using
+     * @param bool $batch Set true to pass commands to batch API URL.
+     *      See https://www.namesilo.com/Support/API-Automated-Batch-Processing
 	 */
-	public function __construct($user, $key, $sandbox = true, $username = null) {
+	public function __construct($user, $key, $sandbox = true, $username = null, $batch=false) {
 		
 		$this->user = $user;
 		$this->key = $key;
@@ -70,6 +76,8 @@ class NamesiloApi {
 			$username = $user;
 		
 		$this->username = $username;
+
+		$this->batch = $batch;
 	}
 	
 	/**
@@ -84,8 +92,11 @@ class NamesiloApi {
 		$url = self::LIVE_URL;
 		if ($this->sandbox)
 			$url = self::SANDBOX_URL;
+
+		if($this->batch)
+            $url = $url . 'batch';
 		
-		$url .= $command . "?key={$this->key}";
+		$url .= '/' . $command . "?key={$this->key}";
 		
 		//$args['ApiUser'] = $this->user;
 		//if (!array_key_exists("UserName", $args))

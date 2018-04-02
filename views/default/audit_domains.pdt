@@ -1,0 +1,28 @@
+<?php
+$this->Widget->clear();
+$this->Widget->create($this->_("Namesilo.add_row.audit_domains.box_title", true));
+?>
+<div class="inner">
+    <div class="title_row first">
+        <h3><?php $this->_("Namesilo.add_row.basic_title");?></h3>
+    </div>
+    <table>
+        <tr>
+            <th><?php echo $this->_("Namesilo.domain.domain", true); ?></th>
+            <th>Issue/Return</th>
+        </tr>
+        <?php
+        foreach($vars->services as $service_id=>$service){
+            ?>
+                <tr>
+                    <td><?php echo $this->Html->ifSet($service['service']->name); ?></td>
+                    <td><?php echo $this->Html->ifSet($service['api_response']->detail); ?></td>
+                </tr>
+            <?php
+        }
+        ?>
+    </table>
+</div>
+<?php
+$this->Widget->end();
+?>

@@ -1,7 +1,5 @@
 		<?php
-		$link_buttons = array(
-			array('name'=>$this->_("Namesilo.add_module_row", true), 'attributes'=>array('href'=>$this->base_uri . "settings/company/modules/addrow/" . $module->id))
-		);
+		$link_buttons[] = array('name'=>$this->_("Namesilo.add_module_row", true), 'attributes'=>array('href'=>$this->base_uri . "settings/company/modules/addrow/" . $module->id));
 		
 		$this->Widget->clear();
 		$this->Widget->setLinkButtons($link_buttons);

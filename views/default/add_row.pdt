@@ -42,6 +42,7 @@
 						$this->Form->label($this->_("Namesilo.row_meta.sandbox", true), "sandbox", array('class' => "inline"));
 						?>
 					</li>
+                    <?php $this->Form->fieldHidden("namesilo_module",true); ?>
 				</ul>
 			</div>
 			
