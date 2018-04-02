@@ -579,6 +579,7 @@ class Namesilo extends Module {
                         'domain'=>$vars['services'][$service->id]['service']->name
                     ))->response();
                     if($transfer_response->code == 300)
+                        $transfer_response->detail = 'pending transfer';
                         $api_response = $transfer_response;
                 }elseif($api_response->code == 300){
                     unset($vars['services'][$service->id]);
