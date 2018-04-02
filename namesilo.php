@@ -558,7 +558,10 @@ class Namesilo extends Module {
                 }
             }
 
-            $services = $this->Record->select('id')->from('services')->where('module_row_id','=',$module_row->id)->fetchAll();
+            $services = $this->Record->select('id')->from('services')
+                ->where('module_row_id','=',$module_row->id)
+                ->where('status','=','active')
+                ->fetchAll();
             $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
             $domains = new NamesiloDomains($api);
 
