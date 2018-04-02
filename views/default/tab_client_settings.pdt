@@ -33,6 +33,17 @@
 					</label>
 				</div>
 			</div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <?php
+                        $this->Form->fieldHidden("whois_privacy_before", $this->Html->ifSet($vars->whois_privacy));
+                        $this->Form->fieldCheckbox("whois_privacy", "Yes", $this->Html->ifSet($vars->whois_privacy) == "Yes", array('id' => "whois_privacy"));
+                        $this->Form->label($this->_("Namesilo.domain.WhoisPrivacy", true), "whois_privacy", array('class' => "inline"));
+                        ?>
+                    </label>
+                </div>
+            </div>
 		</div>
 	</div>
 	<button class="btn btn-default pull-right" type="submit">
