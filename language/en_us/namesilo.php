@@ -87,6 +87,8 @@ $lang['Namesilo.!error.key.valid'] = "Please enter a key";
 $lang['Namesilo.!error.key.valid_connection'] = "The user and key combination appear to be invalid, or your Namesilo account may not be configured to allow API access.";
 $lang['Namesilo.!error.portfolio.valid_portfolio'] = "The portfolio entered does not appear valid.  Are you sure it has been created in your Namesilo account?";
 $lang['Namesilo.!error.payment_id.valid_format'] = "Payment ID must be either blank or numeric only.";
+$lang['Namesilo.!error.epp.empty'] = "Domain transfers require an EPP code to be entered.";
+
 
 // Notices
 $lang['Namesilo.notice.StatusPending'] = "This order is pending. The feature you are trying to access will become available once the order has been activated successfully.";

@@ -126,7 +126,24 @@ class Namesilo extends Module {
 	 * @return boolean True if the service validates, false otherwise. Sets Input errors when false.
 	 */
 	public function validateService($package, array $vars=null) {
-		return true;
+        if(isset($vars['transfer']) && $vars['transfer'] == 2) {
+            $rules = [
+                'auth' => [
+                    'empty' => array(
+                        'rule' => array("isEmpty"),
+                        'negate' => true,
+                        'message' => Language::_("Namesilo.!error.epp.empty", true),
+                        'post_format' => "trim"
+                    )
+                ],
+            ];
+        }
+
+        if(isset($rules)){
+            $this->Input->setRules($rules);
+            return $this->Input->validates($vars);
+        }
+        return true;
 	}
 	
 	/**
@@ -165,10 +182,10 @@ class Namesilo extends Module {
 
         $input_fields = array_merge(
             Configure::get( "Namesilo.domain_fields" ),
-            (array) Configure::get( "Namesilo.domain_fields" . $tld ),
+            (array) Configure::get("Namesilo.domain_fields" . $tld ),
             (array) Configure::get("Namesilo.nameserver_fields"),
             (array) Configure::get("Namesilo.transfer_fields"),
-            array( 'years' => true )
+            array( 'years' => true, 'transfer' => isset($vars['transfer']) ? $vars['transfer'] : 0 )
         );
 		
 		if ( isset( $vars['use_module'] ) && $vars['use_module'] == "true" ) {
@@ -218,7 +235,7 @@ class Namesilo extends Module {
 
 				
 				// Handle transfer
-				if ( isset( $vars['auth'] ) && strlen($vars['auth']) >= 1 ) {
+				if ( isset($vars->transfer) && $vars->transfer == 2 ) {
 
 					$transfer = new NamesiloDomainsTransfer( $api );
 
@@ -300,7 +317,7 @@ class Namesilo extends Module {
 			$response = $domains->setAutoRenewal( $fields->{"domain"}, false );
 			$this->processResponse( $api, $response );
 			
-			if ( $this->Input->errors() )
+			if ($this->Input->errors())
 				return;
 			
 		}
@@ -361,7 +378,7 @@ class Namesilo extends Module {
 		$row = $this->getModuleRow( $package->module_row );
 		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
 
-		// Renew domain /* renewDomain?version=1&type=xml&key=12345&domain=namesilo.com&years=2 */
+		// Renew domain renewDomain?version=1&type=xml&key=12345&domain=namesilo.com&years=2
 		if ( $package->meta->type == "domain" ) {
 			
 			$fields = $this->serviceFieldsToObject( $service->fields );
@@ -388,7 +405,7 @@ class Namesilo extends Module {
 			$response = $domains->renew( $vars );
 			$this->processResponse( $api, $response );
 
-			if ( $this->Input->errors() )
+			if ($this->Input->errors())
 				return;
 		}
 
