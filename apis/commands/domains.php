@@ -52,7 +52,7 @@ class NamesiloDomains {
 	 * https://www.namesilo.com/api_reference.php#registerDomain
 	 */
 	public function create(array $vars) {
-		return $this->api->submit("registerDomain", $vars);
+		return $this->api->submit("registerDomain", array_merge($vars,array('auto_renew'=>0)));
 	}
 	
 	/**

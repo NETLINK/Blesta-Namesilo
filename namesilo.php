@@ -236,7 +236,7 @@ class Namesilo extends Module {
 
 				
 				// Handle transfer
-				if ( isset($vars->auth) && $vars->auth ) {
+				if ( isset($vars['auth']) && $vars['auth'] ) {
 
 					$transfer = new NamesiloDomainsTransfer( $api );
 
