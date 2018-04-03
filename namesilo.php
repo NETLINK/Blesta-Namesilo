@@ -126,7 +126,7 @@ class Namesilo extends Module {
 	 * @return boolean True if the service validates, false otherwise. Sets Input errors when false.
 	 */
 	public function validateService($package, array $vars=null) {
-        if(isset($vars['transfer']) && $vars['transfer'] == 2) {
+        if(isset($vars['transfer']) && $vars['transfer']) {
             $rules = [
                 'auth' => [
                     'empty' => array(
@@ -187,6 +187,7 @@ class Namesilo extends Module {
             (array) Configure::get("Namesilo.transfer_fields"),
             array( 'years' => true, 'transfer' => isset($vars['transfer']) ? $vars['transfer'] : 0 )
         );
+
 		
 		if ( isset( $vars['use_module'] ) && $vars['use_module'] == "true" ) {
 			
@@ -235,7 +236,7 @@ class Namesilo extends Module {
 
 				
 				// Handle transfer
-				if ( isset($vars->transfer) && $vars->transfer == 2 ) {
+				if ( isset($vars->auth) && $vars->auth ) {
 
 					$transfer = new NamesiloDomainsTransfer( $api );
 
@@ -558,7 +559,10 @@ class Namesilo extends Module {
                 }
             }
 
-            $services = $this->Record->select('id')->from('services')
+            $services = $this->Record->select(array("services.id","service_fields.value"))
+                ->from("services")
+                ->on("service_fields.key","=",'domain')
+                ->leftJoin("service_fields","services.id","=","service_fields.service_id", false)
                 ->where('module_row_id','=',$module_row->id)
                 ->where('status','=','active')
                 ->fetchAll();
@@ -566,9 +570,8 @@ class Namesilo extends Module {
             $domains = new NamesiloDomains($api);
 
             foreach($services as $service){
-                $vars['services'][$service->id]['service'] = $this->Services->get($service->id);
                 $api_response = $domains->getDomainInfo(array(
-                    'domain'=>$vars['services'][$service->id]['service']->name
+                    'domain'=>$service->value
                 ))->response();
 
                 // if we didn't get a 300 code, assume it's a transfer
@@ -576,7 +579,7 @@ class Namesilo extends Module {
                     if(!isset($transfer))
                         $transfer = new NamesiloDomainsTransfer($api);
                     $transfer_response = $transfer->getStatus(array(
-                        'domain'=>$vars['services'][$service->id]['service']->name
+                        'domain'=>$service->value
                     ))->response();
                     if($transfer_response->code == 300)
                         $transfer_response->detail = 'pending transfer';
@@ -587,6 +590,7 @@ class Namesilo extends Module {
                 }
 
                 $vars['services'][$service->id]['api_response'] = $api_response;
+                $vars['services'][$service->id]['domain'] = $service->value;
             }
 
             $this->view->set( "vars", (object)$vars );
@@ -907,11 +911,16 @@ class Namesilo extends Module {
 
 			// Handle transfer request
 			if (isset($vars->transfer) || isset($vars->auth)) {
+
+
 				$fields = Configure::get("Namesilo.transfer_fields");
 
 				// We should already have the domain name don't make editable
 				$fields['domain']['type'] = "hidden";
 				$fields['domain']['label'] = null;
+				// we already know we're doing a transfer, don't make it editable
+				$fields['transfer']['type'] = "hidden";
+				$fields['transfer']['label'] = null;
 
 				return $this->arrayToModuleFields($fields, null, $vars);
 			}
