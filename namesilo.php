@@ -529,17 +529,10 @@ class Namesilo extends Module {
 	 * @return string HTML content containing information to display when viewing the add module row page
 	 */
 	public function manageAddRow(array &$vars) {
-		// Load the view into this object, so helpers can be automatically added to the view
-		$this->view = new View("add_row", "default");
-		$this->view->base_uri = $this->base_uri;
-		$this->view->setDefaultView( self::$defaultModuleView );
-		
-		// Load the helpers required for this view
-		Loader::loadHelpers( $this, array ( "Form", "Html", "Widget" ) );
-
 		$action = isset($_GET['action']) ? $_GET['action'] : null;
 
-		if($action == 'audit_domains'){
+		if($action == 'audit_domains') {
+		    $vars = [];
             $this->view = new View("audit_domains", "default");
             $this->view->base_uri = $this->base_uri;
             $this->view->setDefaultView( self::$defaultModuleView );
@@ -559,53 +552,88 @@ class Namesilo extends Module {
                 }
             }
 
-            $services = $this->Record->select(array("services.id","service_fields.value"))
-                ->from("services")
-                ->on("service_fields.key","=",'domain')
-                ->leftJoin("service_fields","services.id","=","service_fields.service_id", false)
-                ->where('module_row_id','=',$module_row->id)
-                ->where('status','=','active')
-                ->fetchAll();
             $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
             $domains = new NamesiloDomains($api);
 
-            foreach($services as $service){
-                $api_response = $domains->getDomainInfo(array(
-                    'domain'=>$service->value
-                ))->response();
+            if($module_row->meta->portfolio)
+                $vars['portfolio'] = $module_row->meta->portfolio;
 
-                // if we didn't get a 300 code, assume it's a transfer
-                if($api_response->code != 300){
-                    if(!isset($transfer))
-                        $transfer = new NamesiloDomainsTransfer($api);
-                    $transfer_response = $transfer->getStatus(array(
-                        'domain'=>$service->value
-                    ))->response();
-                    if($transfer_response->code == 300)
-                        $transfer_response->detail = 'pending transfer';
-                        $api_response = $transfer_response;
-                }elseif($api_response->code == 300){
-                    unset($vars['services'][$service->id]);
-                    continue;
+            $domain_list = $domains->getList($vars)->response()->domains->domain;
+
+            $vars['domains'] = [];
+            foreach($domain_list as $domain){
+                $record = $this->Record->select("*")->from("services")
+                    ->leftJoin("service_fields","services.id","=","service_fields.service_id", false)
+                    ->where("services.status","IN",array("active","suspended"))
+                    ->where("service_fields.value","=",$domain)
+                    ->where("services.module_row_id","=",$module_row->id)
+                    ->where("service_fields.key","=",'domain')
+                    ->numResults();
+                if(!$record){
+                    $vars['domains'][] = $domain;
                 }
-
-                $vars['services'][$service->id]['api_response'] = $api_response;
-                $vars['services'][$service->id]['domain'] = $service->value;
             }
 
             $this->view->set( "vars", (object)$vars );
 
             return $this->view->fetch();
-        }
+        }elseif($action == 'sync_renew_dates'){
+            if(isset($_POST['sync_services']))
+                $post['sync_services'] = $_POST['sync_services'];
 
-		// Set unspecified checkboxes
-		if (!empty($vars)) {
-			if (empty($vars['sandbox']))
-				$vars['sandbox'] = "false";
-		}
-		
-		$this->view->set( "vars", (object)$vars );
-		return $this->view->fetch();	
+		    $this->view = new View("sync_renew_dates", "default");
+            $this->view->base_uri = $this->base_uri;
+            $this->view->setDefaultView( self::$defaultModuleView );
+
+            // Load the helpers required for this view
+            Loader::loadHelpers($this, array ("Form", "Html", "Widget"));
+            Loader::loadModels($this,array("Services","Clients","Record","ModuleManager","ClientGroups"));
+
+            $modules = $this->ModuleManager->getInstalled();
+            foreach ($modules as $module) {
+                $module_data = $this->ModuleManager->get($module->id);
+                foreach ($module_data->rows as $row) {
+                    if(isset($row->meta->namesilo_module))
+                        $module_row = $row;
+                    break;
+                }
+            }
+
+            $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
+            $domains = new NamesiloDomains($api);
+
+            $services = $this->Record->select(array("services.id","services.client_id"))
+                ->from("services")
+                ->where('module_row_id','=',$module_row->id)
+                ->where('status','=','active')
+                ->fetchAll();
+
+            $vars['changes'] = array();
+
+            foreach($services as $service_id){
+                $vars['changes'][] = $this->getRenewInfo($service_id->id,$domains);
+            }
+
+            $this->view->set( "vars", $vars );
+            return $this->view->fetch();
+        }else{
+            // Load the view into this object, so helpers can be automatically added to the view
+            $this->view = new View("add_row", "default");
+            $this->view->base_uri = $this->base_uri;
+            $this->view->setDefaultView( self::$defaultModuleView );
+
+            // Load the helpers required for this view
+            Loader::loadHelpers( $this, array ( "Form", "Html", "Widget" ) );
+
+            // Set unspecified checkboxes
+            if (!empty($vars)) {
+                if (empty($vars['sandbox']))
+                    $vars['sandbox'] = "false";
+            }
+
+            $this->view->set("vars", (object)$vars);
+            return $this->view->fetch();
+        }
 	}
 
 	/**
@@ -647,7 +675,31 @@ class Namesilo extends Module {
 	 * 	- encrypted Whether or not this field should be encrypted (default 0, not encrypted)
 	 */
 	public function addModuleRow(array &$vars) {
-		$meta_fields = array("user", "key", "sandbox", "portfolio", "payment_id", "namesilo_module");
+        if(isset($_POST['sync_services'])){
+            Loader::loadModels($this,array("ModuleManager","Services","Clients","ClientGroups"));
+
+            $modules = $this->ModuleManager->getInstalled();
+            foreach ($modules as $module) {
+                $module_data = $this->ModuleManager->get($module->id);
+                foreach ($module_data->rows as $row) {
+                    if(isset($row->meta->namesilo_module))
+                        $module_row = $row;
+                    break;
+                }
+            }
+
+            foreach($_POST['sync_services'] as $service_id) {
+                $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
+                $domains = new NamesiloDomains($api);
+
+                $info = $this->getRenewInfo($service_id, $domains);
+                $this->Services->edit($service_id, array('date_renews' => $info['date_after']), true);
+            }
+            $url = explode("?",$_SERVER['REQUEST_URI']);
+            header('Location:' . $url[0].'?action=sync_renew_dates&msg=success');
+            exit();
+        }
+	    $meta_fields = array("user", "key", "sandbox", "portfolio", "payment_id", "namesilo_module");
 		$encrypted_fields = array("key");
 
 		// Set unspecified checkboxes
@@ -1927,6 +1979,57 @@ class Namesilo extends Module {
                 return $this->view->fetch();
             }
         }
+    }
+
+    private function getRenewInfo($service_id,$api_object){
+	    $vars = array();
+
+	    $service = $this->Services->get($service_id);
+	    $api_response = $api_object->getDomainInfo(array(
+	        'domain'=>$service->name
+        ))->response();
+
+        if($api_response->code != 300){
+            $vars = array(
+                'domain' => $service->name,
+                'error' => array(
+                    'code' => $api_response->code,
+                    'detail' => $api_response->detail
+                )
+            );
+            return $vars;
+        }elseif(strtotime($api_response->expires) < 946706400){
+            $vars = array(
+                'domain' => $service->name,
+                'error' => array(
+                    'code' => $api_response->code,
+                    'detail' => $api_response->expires . "expires date from the API cannot possibly be valid"
+                )
+            );
+            return $vars;
+        }
+
+        $date_renews = new DateTime($service->date_renews);
+        $expires = new DateTime($api_response->expires);
+
+        $client = $this->Clients->get($service->client_id);
+        $suspend_days = $this->ClientGroups->getSetting($client->client_group_id, 'suspend_services_days_after_due')->value;
+
+        // take into account suspension threshold and a 3 day buffer
+        $target_date_obj = $expires->modify("- " . (3 + $suspend_days) . " days");
+        $target_date = $target_date_obj->format('Y-m-d H:i:s');
+
+        if($date_renews->diff($target_date_obj)->format('%a') > 0){
+            $vars = array(
+                'service_id' => $service_id,
+                'domain' => $service->name,
+                'date_before' => $date_renews->format('Y-m-d H:i:s'),
+                'date_after' => $target_date,
+                'error' => false
+            );
+        }
+
+        return $vars;
     }
 	
 	public function debug( $data ) {

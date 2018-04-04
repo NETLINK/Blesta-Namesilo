@@ -20,6 +20,20 @@ $lang['Namesilo.manage.module_rows_no_results'] = "There are no accounts.";
 $lang['Namesilo.manage.sync_renew_dates'] = "Sync Renew Dates";
 $lang['Namesilo.manage.audit_domains'] = "Audit Domains";
 
+// Audit Domains
+$lang['Namesilo.add_row.audit_domains.box_title'] = "Audit Domains";
+$lang['Namesilo.manage.audit_domains.description'] = "This is a summary of domains from the Namesilo API compared against domains currently active/suspended in Blesta.  This is to help ensure that you aren't paying for domains that you aren't being paid for.";
+$lang['Namesilo.manage.audit_domains.no_issues'] = "No issues detected.";
+$lang['Namesilo.manage.audit_domains.results'] = "Audit Results";
+
+// Sync renew dates
+$lang['Namesilo.manage.sync_renew_dates.box_title'] = "Sync Domain Renewal Dates";
+$lang['Namesilo.manage.sync_renew_dates.description'] = "This tool synchronizes a service's renewal date with the domain's actual expiration date, taking into account the suspension threshold (as to ensure auto-renewal doesn't renew the domain if the customer hasn't paid).";
+$lang['Namesilo.manage.sync_renew_dates.results'] = "Synchronization Results";
+$lang['Namesilo.manage.sync_renew_dates.out_of_sync'] = "Out Of Sync Renew Dates";
+$lang['Namesilo.manage.sync_renew_dates.errors'] = "Errors";
+$lang['Namesilo.manage.sync_renew_dates.sync_btn'] = "Synchronize";
+
 // Row Meta
 $lang['Namesilo.row_meta.user'] = "User";
 $lang['Namesilo.row_meta.key'] = "API Key";
@@ -34,9 +48,6 @@ $lang['Namesilo.row_meta.sandbox_false'] = "No";
 $lang['Namesilo.add_row.box_title'] = "Add Namesilo Account";
 $lang['Namesilo.add_row.basic_title'] = "Basic Settings";
 $lang['Namesilo.add_row.add_btn'] = "Add Account";
-
-// Audit domains
-$lang['Namesilo.add_row.audit_domains.box_title'] = "Audit Domains";
 
 // Edit row
 $lang['Namesilo.edit_row.box_title'] = "Edit Namesilo Account";

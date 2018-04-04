@@ -26,15 +26,11 @@ class NamesiloDomains {
 	 * Returns a list of domains for the particular user.
 	 *
 	 * @param array $vars An array of input params including:
-	 * 	- ListType Possible values are ALL/EXPIRING/EXPIRED
-	 * 	- SearchTerm Keyword to look for on the domain list 
-	 * 	- Page Page to return 
-	 * 	- PageSize Number of domains to be listed in a page. Minimum value is 10 and maximum value is 100. 
-	 * 	- SortBy Possible values are NAME, NAME_DESC, EXPIREDATE, EXPIREDATE_DESC, CREATEDATE, CREATEDATE_DESC.
+	 * 	- portfolio (optional) portfolio to fetch domains for
 	 * @return NamesiloResponse
 	 */
 	public function getList(array $vars) {
-		return $this->api->submit("namesilo.domains.getList", $vars);
+		return $this->api->submit("listDomains", $vars);
 	}
 
 	/**
