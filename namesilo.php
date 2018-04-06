@@ -126,8 +126,11 @@ class Namesilo extends Module {
 	 * @return boolean True if the service validates, false otherwise. Sets Input errors when false.
 	 */
 	public function validateService($package, array $vars=null) {
-        if(isset($vars['transfer']) && $vars['transfer']) {
-            $rules = [
+        $rules = array();
+
+        // transfers (epp code)
+	    if(isset($vars['transfer']) && $vars['transfer']) {
+            $rule = [
                 'auth' => [
                     'empty' => array(
                         'rule' => array("isEmpty"),
@@ -137,9 +140,94 @@ class Namesilo extends Module {
                     )
                 ],
             ];
+            $rules = array_merge($rules,$rule);
         }
 
-        if(isset($rules)){
+        // .us fields
+        if(isset($vars['usnc']) || isset($vars['usap'])){
+            $rule = [
+                'usnc' => [
+                    'empty' => array(
+                        'rule' => array("isEmpty"),
+                        'negate' => true,
+                        'message' => Language::_("Namesilo.!error.US.RegistrantNexus.empty", true),
+                        'post_format' => "trim",
+                        'final' => true
+                    ),
+                    'valid' => [
+                        'rule' => ['array_key_exists', Configure::get("Namesilo.domain_fields.us")['usnc']['options']],
+                        'message' => Language::_("Namesilo.!error.US.RegistrantNexus.invalid", true)
+                    ]
+                ],
+                'usap' => [
+                    'empty' => array(
+                        'rule' => array("isEmpty"),
+                        'negate' => true,
+                        'message' => Language::_("Namesilo.!error.US.RegistrantPurpose.empty", true),
+                        'post_format' => "trim",
+                        'final' => true
+                    ),
+                    'valid' => [
+                        'rule' => ['array_key_exists', Configure::get("Namesilo.domain_fields.us")['usap']['options']],
+                        'message' => Language::_("Namesilo.!error.US.RegistrantPurpose.invalid", true)
+                    ]
+                ],
+            ];
+            $rules = array_merge($rules,$rule);
+        }
+
+        // .ca fields
+        if(isset($vars['calf']) || isset($vars['cawd']) || isset($vars['caln'])){
+            $rule = [
+                'calf' => [
+                    'empty' => array(
+                        'rule' => array("isEmpty"),
+                        'negate' => true,
+                        'message' => Language::_("Namesilo.!error.CA.CIRALegalType.empty", true),
+                        'post_format' => "trim",
+                        'final' => true
+                    ),
+                    'valid' => [
+                        'rule' => ['array_key_exists', Configure::get("Namesilo.domain_fields.ca")['calf']['options']],
+                        'message' => Language::_("Namesilo.!error.CA.CIRALegalType.invalid", true)
+                    ],
+                    'other' => [
+                        'rule' => ['matches', '/^OTHER$/'],
+                        'negate' => true,
+                        'message' => Language::_("Namesilo.!error.CA.CIRALegalType.other", true)
+                    ]
+                ],
+                'cawd' => [
+                    'empty' => array(
+                        'rule' => array("isEmpty"),
+                        'negate' => true,
+                        'message' => Language::_("Namesilo.!error.CA.CIRAWhoisDisplay.empty", true),
+                        'post_format' => "trim",
+                        'final' => true
+                    ),
+                    'valid' => [
+                        'rule' => ['array_key_exists', Configure::get("Namesilo.domain_fields.ca")['cawd']['options']],
+                        'message' => Language::_("Namesilo.!error.CA.CIRAWhoisDisplay.invalid", true)
+                        ]
+                ],
+                'caln' => [
+                    'empty' => array(
+                        'rule' => array("isEmpty"),
+                        'negate' => true,
+                        'message' => Language::_("Namesilo.!error.CA.CIRALanguage.empty", true),
+                        'post_format' => "trim",
+                        'final' => true
+                    ),
+                    'valid' => [
+                        'rule' => ['array_key_exists', Configure::get("Namesilo.domain_fields.ca")['caln']['options']],
+                        'message' => Language::_("Namesilo.!error.CA.CIRALanguage.invalid", true)
+                        ]
+                ],
+            ];
+            $rules = array_merge($rules,$rule);
+        }
+
+        if(isset($rules) && count($rules) > 0){
             $this->Input->setRules($rules);
             return $this->Input->validates($vars);
         }
@@ -188,6 +276,10 @@ class Namesilo extends Module {
             array( 'years' => true, 'transfer' => isset($vars['transfer']) ? $vars['transfer'] : 0 )
         );
 
+        // .ca domains can't have traditional whois privacy
+        if($tld == '.ca')
+            unset($input_fields['private']);
+
 		
 		if ( isset( $vars['use_module'] ) && $vars['use_module'] == "true" ) {
 			
@@ -234,7 +326,18 @@ class Namesilo extends Module {
                 if(!empty($row->meta->payment_id))
                     $fields['payment_id'] = $row->meta->payment_id;
 
-				
+                // for .ca domains we need to create a special contact to use
+                if($tld == '.ca'){
+                    $domains = new NamesiloDomains( $api );
+                    $response = $domains->addContacts($vars);
+                    $this->processResponse($api,$response);
+                    if ($this->Input->errors())
+                        return;
+                    $fields['contact_id'] = $response->response()->contact_id;
+
+                    $this->debug($fields);
+                }
+
 				// Handle transfer
 				if ( isset($vars['auth']) && $vars['auth'] ) {
 
@@ -243,11 +346,13 @@ class Namesilo extends Module {
 					$response = $transfer->create( $fields );
 					$this->processResponse( $api, $response );
 					
-					if ($this->Input->errors())
-						return;
+					if ($this->Input->errors()) {
+					    if(isset($vars['contact_id']))
+					        $domains->deleteContacts(array('contact_id'=>$vars['contact_id']));
+                        return;
+                    }
 				}else{
 				    // Handle registration
-
 					$domains = new NamesiloDomains( $api );
 
 					//$this->debug( $fields );
@@ -257,8 +362,11 @@ class Namesilo extends Module {
 					$response = $domains->create( $fields );
 					$this->processResponse( $api, $response );
 					
-					if ($this->Input->errors())
-						return;
+					if ($this->Input->errors()) {
+                        if(isset($vars['contact_id']))
+                            $domains->deleteContacts(array('contact_id'=>$vars['contact_id']));
+                        return;
+                    }
 				}
 			}
 		}
@@ -961,11 +1069,20 @@ class Namesilo extends Module {
 				}
 			}
 
+            if ( isset( $vars->domain ) ) {
+                $tld = $this->getTld($vars->domain);
+            }
+
 			// Handle transfer request
 			if (isset($vars->transfer) || isset($vars->auth)) {
+				$fields = array_merge(
+				    Configure::get("Namesilo.transfer_fields"),
+                    Configure::get("Namesilo.domain_fields" . $tld)
+                );
 
-
-				$fields = Configure::get("Namesilo.transfer_fields");
+                // .ca domains can't have traditional whois privacy
+                if($tld == '.ca')
+                    unset($fields['private']);
 
 				// We should already have the domain name don't make editable
 				$fields['domain']['type'] = "hidden";
@@ -974,23 +1091,27 @@ class Namesilo extends Module {
 				$fields['transfer']['type'] = "hidden";
 				$fields['transfer']['label'] = null;
 
-				return $this->arrayToModuleFields($fields, null, $vars);
+				$module_fields = $this->arrayToModuleFields($fields, null, $vars);
+
+                return $module_fields;
 			}
 			// Handle domain registration
 			else {
-				$fields = array_merge(Configure::get("Namesilo.nameserver_fields"), Configure::get("Namesilo.domain_fields"));
+				$fields = array_merge(
+				    Configure::get("Namesilo.nameserver_fields"),
+                    Configure::get("Namesilo.domain_fields"),
+                    Configure::get("Namesilo.domain_fields" . $tld)
+                );
+
+                // .ca domains can't have traditional whois privacy
+                if($tld == '.ca')
+                    unset($fields['private']);
 
 				// We should already have the domain name don't make editable
 				$fields['domain']['type'] = "hidden";
 				$fields['domain']['label'] = null;
 
 				$module_fields = $this->arrayToModuleFields( $fields, null, $vars );
-
-                // Build the domain fields
-                $domain_fields = $this->buildDomainModuleFields( $vars, true );
-                if ( $domain_fields ) {
-                    $module_fields = $domain_fields;
-				}
 			}
 		}
 
@@ -1013,9 +1134,14 @@ class Namesilo extends Module {
             if ($extension_fields) {
                 // Set the fields
                 if ($client)
-                    $fields = array_merge(Configure::get("Namesilo.nameserver_fields"), Configure::get("Namesilo.domain_fields"), $extension_fields);
+                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
                 else
-                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), Configure::get("Namesilo.nameserver_fields"), $extension_fields);
+                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
+
+                if(!isset($vars->transfer))
+                    $fields = array_merge($fields,Configure::get("Namesilo.nameserver_fields"));
+                else
+                    $fields = array_merge($fields,Configure::get("Namesilo.transfer_fields"));
 
                 if ($client) {
                     // We should already have the domain name don't make editable
@@ -1042,6 +1168,10 @@ class Namesilo extends Module {
                     elseif ($field['type'] == "select") {
                         $type = $module_fields->fieldSelect($key, (isset($field['options']) ? $please_select + $field['options'] : $please_select),
                                     (isset($vars->{$key}) ? $vars->{$key} : ""), array('id'=>$key));
+                    }
+                    elseif($field['type'] == "checkbox"){
+                        $type = $module_fields->fieldCheckbox($key, (isset($field['options']) ? $field['options']: 1));
+                        $label = $module_fields->label((isset($field['label']) ? $field['label'] : ""), $key);
                     }
                     elseif ($field['type'] == "hidden") {
                         $type = $module_fields->fieldHidden($key, (isset($vars->{$key}) ? $vars->{$key} : ""), array('id'=>$key));
@@ -1384,31 +1514,27 @@ class Namesilo extends Module {
 		$contact_ids = $domainInfo->response( true )['contact_ids'];
 
 		if ( !empty( $post ) ) {
+            $new_ids = $delete_ids = array();
 
-			//$post = array_merge( array( 'domain' => $fields->domain ), array_intersect_key( $post, $whois_fields ) );
+            $params = array("domain" => $fields->domain);
 
-			$new_ids = $delete_ids = array();
+            foreach ($post as $key => $value) {
+                $response = $domains->addContacts($value);
+                $this->processResponse($api, $response);
+                if (self::$codes[$response->status()][1] == "success") {
+                    $new_ids[$key] = $params[$key] = $response->response()->contact_id;
+                    $delete_ids[] = $contact_ids[$key];
+                }
+            }
 
-			$params = array( "domain" => $fields->domain );
+            $response = $domains->setContacts($params);
+            if (self::$codes[$response->status()][1] == "success") {
+                // Delete old contact IDs and set new ones
+                foreach ($delete_ids as $id) $domains->deleteContacts(array('contact_id' => $id));
+                $contact_ids = array_replace($contact_ids, $new_ids);
+            }
 
-			foreach ( $post as $key => $value )
-			{
-				$response = $domains->addContacts( $value );
-				$this->processResponse( $api, $response );
-				if ( self::$codes[$response->status()][1] == "success" ) {
-					$new_ids[$key] = $params[$key] = $response->response()->contact_id;
-					$delete_ids[] = $contact_ids[$key];
-				}
-			}
-
-			$response = $domains->setContacts( $params );
-			if ( self::$codes[$response->status()][1] == "success" ) {
-				// Delete old contact IDs and set new ones
-				foreach( $delete_ids as $id ) $domains->deleteContacts( array( 'contact_id' => $id ) );
-				$contact_ids = array_replace( $contact_ids, $new_ids );
-			}
-
-			//$vars = (object)$post;
+            //$vars = (object)$post;
 		}
 
 		$contacts = $temp = array();
@@ -1697,40 +1823,58 @@ class Namesilo extends Module {
 			$fields = $this->serviceFieldsToObject($service->fields);
 
 			if ( !empty( $post ) ) {
-				if ( isset( $post['registrar_lock'] ) ) {
-					$LockAction = $post['registrar_lock'] == "Yes" ? "Lock" : "Unlock";
-					$response = $domains->setRegistrarLock( $LockAction, array( 'domain' => $fields->domain ) );
-					$this->processResponse( $api, $response );
-				}
-
-				if ( isset( $post['request_epp'] ) ) {
-					$response = $transfer->getEpp( array( 'domain' => $fields->domain ) );
-					$this->processResponse( $api, $response );
-				}
-
-				if(isset($post['whois_privacy_before']) || isset($post['whois_privacy'])){
-				    if($post['whois_privacy_before'] == 'No' && $post['whois_privacy'] == 'Yes'){
-                        $response = $domains->addPrivacy(array('domain'=>$fields->domain));
-                        $this->processResponse($api,$response);
-                    }elseif($post['whois_privacy_before'] == 'Yes' && !isset($post['whois_privacy'])){
-                        $response = $domains->removePrivacy(array('domain'=>$fields->domain));
-                        $this->processResponse($api,$response);
+                if(isset($post['resend_verification_email'])) {
+                    $response = $domains->emailVerification(array('email' => $post['resend_verification_email']));
+                    $this->processResponse($api, $response);
+                }else {
+                    if (isset($post['registrar_lock'])) {
+                        $LockAction = $post['registrar_lock'] == "Yes" ? "Lock" : "Unlock";
+                        $response = $domains->setRegistrarLock($LockAction, array('domain' => $fields->domain));
+                        $this->processResponse($api, $response);
                     }
-                }
 
-				$vars = (object)$post;
-			}
-			else {
+                    if (isset($post['request_epp'])) {
+                        $response = $transfer->getEpp(array('domain' => $fields->domain));
+                        $this->processResponse($api, $response);
+                    }
+
+                    if (isset($post['whois_privacy_before']) || isset($post['whois_privacy'])) {
+                        if ($post['whois_privacy_before'] == 'No' && $post['whois_privacy'] == 'Yes') {
+                            $response = $domains->addPrivacy(array('domain' => $fields->domain));
+                            $this->processResponse($api, $response);
+                        } elseif ($post['whois_privacy_before'] == 'Yes' && !isset($post['whois_privacy'])) {
+                            $response = $domains->removePrivacy(array('domain' => $fields->domain));
+                            $this->processResponse($api, $response);
+                        }
+                    }
+
+                    $vars = (object)$post;
+                }
+			}else{
 				$response = $domains->getRegistrarLock( array ( 'domain' => $fields->domain ) )->response();
 				if ( isset ( $response->locked ) ) {
 					$vars->registrar_lock = $response->locked;
 				}
 
-                $info = $domains->getDomainInfo(array('domain'=>$fields->domain))->response();
-				if(isset($info->private)) {
-                    $vars->whois_privacy = $info->private;
+                $info = $domains->getDomainInfo(array('domain'=>$fields->domain));
+				$info_response = $info->response();
+				if(isset($info_response->private)) {
+                    $vars->whois_privacy = $info_response->private;
                 }
 			}
+
+			if(!isset($info))
+                $info = $domains->getDomainInfo(array('domain'=>$fields->domain));
+            $registrant_id = $info->response(true)['contact_ids']['registrant'];
+            $registrant_info = $domains->getContacts(array('contact_id'=>$registrant_id));
+            $registrant_email = $registrant_info->response()->contact->email;
+
+            $registrant_verification = $domains->registrantVerificationStatus()->response();
+            foreach($registrant_verification->email as $registrant){
+                if($registrant->email_address == $registrant_email) {
+                    $vars->registrant_verification_info = $registrant;
+                }
+            }
 		}
 
 		$this->view->set( "vars", $vars );
@@ -1900,7 +2044,6 @@ class Namesilo extends Module {
 	 * @return string The TLD of the domain
 	 */
 	private function getTld($domain,$row=null) {
-		//$tlds = Configure::get("Namesilo.tlds");
 		$tlds = $this->getTlds($row);
 		$domain = strtolower($domain);
 

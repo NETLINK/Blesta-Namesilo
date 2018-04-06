@@ -90,6 +90,12 @@ $lang['Namesilo.tab_settings.field_registrar_lock_yes'] = "Set the registrar loc
 $lang['Namesilo.tab_settings.field_registrar_lock_no'] = "Release the registrar lock so the domain can be transferred.";
 $lang['Namesilo.tab_settings.field_request_epp'] = "Request EPP Code/Transfer Key";
 $lang['Namesilo.tab_settings.field_submit'] = "Update Settings";
+$lang['Namesilo.tab_settings.section_verification'] = "Registrant Email Verification";
+$lang['Namesilo.tab_settings.verification_text'] = "Registrant email verification status for ";
+$lang['Namesilo.tab_settings.verified'] = "Verified";
+$lang['Namesilo.tab_settings.not_verified'] = "NOT VERIFIED";
+$lang['Namesilo.tab_settings.not_verified_warning'] = "<strong>WARNING:</strong> Your domain is at risk of being deactivated if you do not verify the registrant email address.";
+$lang['Namesilo.tab_settings.field_resend_verification_email'] = "Resend Verification Email";
 
 $lang['Namesilo.tab_adminactions.title'] = "Admin Actions";
 $lang['Namesilo.tab_adminactions.field_submit'] = "Send Selected Notice";
@@ -155,23 +161,19 @@ $lang['Namesilo.whois.EmailAddress'] = "Email";
 
 // .US domain fields
 $lang['Namesilo.domain.RegistrantNexus'] = "Registrant Type";
+$lang['Namesilo.domain.RegistrantNexus.error'] = "Please select a registrant type";
 $lang['Namesilo.domain.RegistrantNexus.c11'] = "US citizen";
 $lang['Namesilo.domain.RegistrantNexus.c12'] = "Permanent resident of the US";
 $lang['Namesilo.domain.RegistrantNexus.c21'] = "US entity or organization";
 $lang['Namesilo.domain.RegistrantNexus.c31'] = "Foreign organization";
 $lang['Namesilo.domain.RegistrantNexus.c32'] = "Foreign organization with an office in the US";
 $lang['Namesilo.domain.RegistrantPurpose'] = "Purpose";
+$lang['Namesilo.domain.RegistrantPurpose.error'] = "Please select a registrant purpose";
 $lang['Namesilo.domain.RegistrantPurpose.p1'] = "Business";
 $lang['Namesilo.domain.RegistrantPurpose.p2'] = "Non-profit";
 $lang['Namesilo.domain.RegistrantPurpose.p3'] = "Personal";
 $lang['Namesilo.domain.RegistrantPurpose.p4'] = "Educational";
 $lang['Namesilo.domain.RegistrantPurpose.p5'] = "Governmental";
-
-// .EU domain fields
-$lang['Namesilo.domain.EUAgreeWhoisPolicy'] = "Whois Policy";
-$lang['Namesilo.domain.EUAgreeWhoisPolicy.yes'] = "I hereby agree that the Registry is entitled to transfer the data contained in this application to third parties(i) if ordered to do so by a public authority, carrying out its legitimate tasks; and (ii) upon demand of an ADR Provider as mentioned in section 16 of the Terms and Conditions which are published at www.eurid.eu; and (iii) as provided in Section 2 (WHOIS look-up facility) of the .eu Domain Name WHOIS Policy which is published at www.eurid.eu.";
-$lang['Namesilo.domain.EUAgreeDeletePolicy'] = "Deleteion Rules";
-$lang['Namesilo.domain.EUAgreeDeletePolicy.yes'] = "I agree and acknowledge to the special renewal and expiration terms set forth below for this domain name, including those terms set forth in the Registration Agreement. I understand that unless I have set this domain for autorenewal, this domain name must be explicitly renewed by the expiration date or the 20th of the month of expiration, whichever is sooner. (e.g. If the name expires on Sept 4th, 2008, then a manual renewal must be received by Sept 4th, 2008. If name expires on Sep 27th, 2008, the renewal request must be received prior to Sep 20th, 2008). If the name is not manually renewed or previously set to autorenew, a delete request will be issued by Namesilo. When a delete request is issued, the name will remain fully functional in my account until expiration, but will no longer be renewable nor will I be able to make any modifications to the name. These terms are subject to change.";
 
 // .CA domain fields
 $lang['Namesilo.domain.CIRALegalType'] = "Legal Type";
@@ -192,113 +194,14 @@ $lang['Namesilo.domain.RegistrantPurpose.abo'] = "Aboriginal Peoples";
 $lang['Namesilo.domain.RegistrantPurpose.inb'] = "Indian Band";
 $lang['Namesilo.domain.RegistrantPurpose.lgr'] = "Legal Representative";
 $lang['Namesilo.domain.RegistrantPurpose.omk'] = "Official Mark";
-$lang['Namesilo.domain.RegistrantPurpose.maj'] = "The Queen";
-$lang['Namesilo.domain.CIRAWhoisDisplay'] = "Whois";
+$lang['Namesilo.domain.RegistrantPurpose.maj'] = "Her Majesty the Queen";
+$lang['Namesilo.domain.RegistrantPurpose.other'] = "Other";
+$lang['Namesilo.domain.CIRAWhoisDisplay'] = "Whois Publishing";
 $lang['Namesilo.domain.CIRAWhoisDisplay.full'] = "Make Public";
 $lang['Namesilo.domain.CIRAWhoisDisplay.private'] = "Keep Private";
-
-// .CO.UK domain fields
-$lang['Namesilo.domain.COUKLegalType'] = "Legal Type";
-$lang['Namesilo.domain.COUKLegalType.ind'] = "UK individual";
-$lang['Namesilo.domain.COUKLegalType.find'] = "Non-UK individual";
-$lang['Namesilo.domain.COUKLegalType.ltd'] = "UK Limited Company";
-$lang['Namesilo.domain.COUKLegalType.plc'] = "UK Public Limited Company";
-$lang['Namesilo.domain.COUKLegalType.ptnr'] = "UK Partnership";
-$lang['Namesilo.domain.COUKLegalType.llp'] = "UK Limited Liability Partnership";
-$lang['Namesilo.domain.COUKLegalType.ip'] = "UK Industrial/Provident Registered Company";
-$lang['Namesilo.domain.COUKLegalType.stra'] = "UK Sole Trader";
-$lang['Namesilo.domain.COUKLegalType.sch'] = "UK School";
-$lang['Namesilo.domain.COUKLegalType.rchar'] = "UK Registered Charity";
-$lang['Namesilo.domain.COUKLegalType.gov'] = "UK Government Body";
-$lang['Namesilo.domain.COUKLegalType.other'] = "UK Entity (other)";
-$lang['Namesilo.domain.COUKLegalType.crc'] = "UK Corporation by Royal Charter";
-$lang['Namesilo.domain.COUKLegalType.fcorp'] = "Foreign Organization";
-$lang['Namesilo.domain.COUKLegalType.stat'] = "UK Statutory Body FIND";
-$lang['Namesilo.domain.COUKLegalType.fother'] = "Other Foreign Organizations";
-$lang['Namesilo.domain.COUKCompanyID'] = "Company ID Number";
-$lang['Namesilo.domain.COUKRegisteredfor'] = "Registrant Name";
-
-// .ME.UK domain fields
-$lang['Namesilo.domain.MEUKLegalType'] = "Legal Type";
-$lang['Namesilo.domain.MEUKLegalType.ind'] = "UK individual";
-$lang['Namesilo.domain.MEUKLegalType.find'] = "Non-UK individual";
-$lang['Namesilo.domain.MEUKLegalType.ltd'] = "UK Limited Company";
-$lang['Namesilo.domain.MEUKLegalType.plc'] = "UK Public Limited Company";
-$lang['Namesilo.domain.MEUKLegalType.ptnr'] = "UK Partnership";
-$lang['Namesilo.domain.MEUKLegalType.llp'] = "UK Limited Liability Partnership";
-$lang['Namesilo.domain.MEUKLegalType.ip'] = "UK Industrial/Provident Registered Company";
-$lang['Namesilo.domain.MEUKLegalType.stra'] = "UK Sole Trader";
-$lang['Namesilo.domain.MEUKLegalType.sch'] = "UK School";
-$lang['Namesilo.domain.MEUKLegalType.rchar'] = "UK Registered Charity";
-$lang['Namesilo.domain.MEUKLegalType.gov'] = "UK Government Body";
-$lang['Namesilo.domain.MEUKLegalType.other'] = "UK Entity (other)";
-$lang['Namesilo.domain.MEUKLegalType.crc'] = "UK Corporation by Royal Charter";
-$lang['Namesilo.domain.MEUKLegalType.fcorp'] = "Foreign Organization";
-$lang['Namesilo.domain.MEUKLegalType.stat'] = "UK Statutory Body FIND";
-$lang['Namesilo.domain.MEUKLegalType.fother'] = "Other Foreign Organizations";
-$lang['Namesilo.domain.MEUKCompanyID'] = "Company ID Number";
-$lang['Namesilo.domain.MEUKRegisteredfor'] = "Registrant Name";
-
-// .ORG.UK domain fields
-$lang['Namesilo.domain.ORGUKLegalType'] = "Legal Type";
-$lang['Namesilo.domain.ORGUKLegalType.ind'] = "UK individual";
-$lang['Namesilo.domain.ORGUKLegalType.find'] = "Non-UK individual";
-$lang['Namesilo.domain.ORGUKLegalType.ltd'] = "UK Limited Company";
-$lang['Namesilo.domain.ORGUKLegalType.plc'] = "UK Public Limited Company";
-$lang['Namesilo.domain.ORGUKLegalType.ptnr'] = "UK Partnership";
-$lang['Namesilo.domain.ORGUKLegalType.llp'] = "UK Limited Liability Partnership";
-$lang['Namesilo.domain.ORGUKLegalType.ip'] = "UK Industrial/Provident Registered Company";
-$lang['Namesilo.domain.ORGUKLegalType.stra'] = "UK Sole Trader";
-$lang['Namesilo.domain.ORGUKLegalType.sch'] = "UK School";
-$lang['Namesilo.domain.ORGUKLegalType.rchar'] = "UK Registered Charity";
-$lang['Namesilo.domain.ORGUKLegalType.gov'] = "UK Government Body";
-$lang['Namesilo.domain.ORGUKLegalType.other'] = "UK Entity (other)";
-$lang['Namesilo.domain.ORGUKLegalType.crc'] = "UK Corporation by Royal Charter";
-$lang['Namesilo.domain.ORGUKLegalType.fcorp'] = "Foreign Organization";
-$lang['Namesilo.domain.ORGUKLegalType.stat'] = "UK Statutory Body FIND";
-$lang['Namesilo.domain.ORGUKLegalType.fother'] = "Other Foreign Organizations";
-$lang['Namesilo.domain.ORGUKCompanyID'] = "Company ID Number";
-$lang['Namesilo.domain.ORGUKRegisteredfor'] = "Registrant Name";
-
-// .ASIA domain fields
-$lang['Namesilo.domain.ASIALegalEntityType'] = "Legal Type";
-$lang['Namesilo.domain.ASIALegalEntityType.corporation'] = "Corporations or Companies";
-$lang['Namesilo.domain.ASIALegalEntityType.cooperative'] = "Cooperatives";
-$lang['Namesilo.domain.ASIALegalEntityType.partnership'] = "Partnerships or Collectives";
-$lang['Namesilo.domain.ASIALegalEntityType.government'] = "Government Bodies";
-$lang['Namesilo.domain.ASIALegalEntityType.politicalParty'] = "Political parties or Trade Unions";
-$lang['Namesilo.domain.ASIALegalEntityType.society'] = "Trusts, Estates, Associations or Societies";
-$lang['Namesilo.domain.ASIALegalEntityType.institution'] = "Institutions";
-$lang['Namesilo.domain.ASIALegalEntityType.naturalPerson'] = "Natural Persons";
-$lang['Namesilo.domain.ASIAIdentForm'] = "Form of Identity";
-$lang['Namesilo.domain.ASIAIdentForm.certificate'] = "Certificate of Incorporation";
-$lang['Namesilo.domain.ASIAIdentForm.legislation'] = "Charter";
-$lang['Namesilo.domain.ASIAIdentForm.societyRegistry'] = "Societies Registry";
-$lang['Namesilo.domain.ASIAIdentForm.politicalPartyRegistry'] = "Political Party Registry";
-$lang['Namesilo.domain.ASIAIdentForm.passport'] = "Passport/ Citizenship ID";
-$lang['Namesilo.domain.ASIAIdentNumber'] = "Identity Number";
-
-// .FR domain fields
-$lang['Namesilo.!tooltip.FRRegistrantBirthDate'] = "Set your birth date in the format: YYYY-MM-DD";
-$lang['Namesilo.!tooltip.FRRegistrantLegalId'] = "The SIREN number is the first part of the SIRET NUMBER and consists of 9 digits. The SIRET number is a unique identification number with 14 digits.";
-$lang['Namesilo.!tooltip.FRRegistrantDunsNumber'] = "The DUNS number consists of 9 digits, issued by Dun & Bradstreet.";
-$lang['Namesilo.!tooltip.FRRegistrantJoDateDec'] = "French associations listed with the Journal Officiel de la R�publique Francaise should set a declaration date in the format: YYYY-MM-DD";
-$lang['Namesilo.!tooltip.FRRegistrantJoDatePub'] = "Enter the publication date in the Journal Officiel in the format: YYYY-MM-DD";
-
-$lang['Namesilo.domain.FRLegalType'] = "Legal Type";
-$lang['Namesilo.domain.FRLegalType.individual'] = "Individual";
-$lang['Namesilo.domain.FRLegalType.company'] = "Company";
-$lang['Namesilo.domain.FRRegistrantBirthDate'] = "Birth Date";
-$lang['Namesilo.domain.FRRegistrantBirthplace'] = "Birth Place";
-$lang['Namesilo.domain.FRRegistrantLegalId'] = "SIREN/SIRET Number";
-$lang['Namesilo.domain.FRRegistrantTradeNumber'] = "Trademark Number";
-$lang['Namesilo.domain.FRRegistrantDunsNumber'] = "DUNS Number";
-$lang['Namesilo.domain.FRRegistrantLocalId'] = "European Economic Area Local ID";
-$lang['Namesilo.domain.FRRegistrantJoDateDec'] = "The Journal Official Declaration Date";
-$lang['Namesilo.domain.FRRegistrantJoDatePub'] = "The Journal Official Publication Date";
-$lang['Namesilo.domain.FRRegistrantJoNumber'] = "The Journal Official Number";
-$lang['Namesilo.domain.FRRegistrantJoPage'] = "The Journal Official Announcement Page Number";
-
+$lang['Namesilo.domain.CIRALanguage'] = "Language";
+$lang['Namesilo.domain.CIRALanguage.en'] = "English";
+$lang['Namesilo.domain.CIRALanguage.fr'] = "French";
 
 
 // Errors
@@ -313,5 +216,17 @@ $lang['Namesilo.!error.FRRegistrantJoDateDec.format'] = "Please set the Journal 
 $lang['Namesilo.!error.FRRegistrantJoDatePub.format'] = "Please set the Journal Publication Date in the format: YYYY-MM-DD";
 $lang['Namesilo.!error.FRRegistrantJoNumber.format'] = "Please set the Journal Number.";
 $lang['Namesilo.!error.FRRegistrantJoPage.format'] = "Please set the Journal Announcement Page Number.";
+$lang['Namesilo.!error.US.RegistrantNexus.empty'] = "Please select a registrant type.";
+$lang['Namesilo.!error.US.RegistrantPurpose.empty'] = "Please select a registrant purpose.";
+$lang['Namesilo.!error.US.RegistrantNexus.invalid'] = "Invalid registrant type submitted.";
+$lang['Namesilo.!error.US.RegistrantPurpose.invalid'] = "Invalid registrat purpose submitted.";
+$lang['Namesilo.!error.CA.CIRALegalType.empty'] = "Please select a legal type.";
+$lang['Namesilo.!error.CA.CIRAWhoisDisplay.empty'] = "Please select a whois display option.";
+$lang['Namesilo.!error.CA.CIRALanaguage.empty'] = "Please select a language.";
+$lang['Namesilo.!error.CA.CIRALegalType.invalid'] = "Invalid legal type submitted.";
+$lang['Namesilo.!error.CA.CIRAWhoisDisplay.invalid'] = "Invalid whois display option submitted.";
+$lang['Namesilo.!error.CA.CIRALanaguage.invalid'] = "Invalid language submitted.";
+$lang['Namesilo.!error.CA.CIRALegalType.other'] = "Only individual legal types may be processed automatically.  Please contact us for more information.";
+
 
 require_once __DIR__ . '/notices.php';

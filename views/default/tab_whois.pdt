@@ -1,13 +1,17 @@
-	
-	<?php
-	$this->Form->create();
-	?>
-	
+
+    <div class="title_row first">
+        <h3><?php $this->_("Namesilo.tab_whois.section_verification");?></h3>
+    </div>
+
+    <?php
+    $this->Form->create();
+    ?>
+
 	<?php
 	$i=0;
 	foreach ($sections as $key) {
 	?>
-	<div class="title_row<?php echo ($i == 0 ? " first" : "");?>">
+	<div class="title_row">
 		<h3><?php $this->_("Namesilo.tab_whois.section_" . $key);?></h3>
 	</div>
 	<div class="pad">

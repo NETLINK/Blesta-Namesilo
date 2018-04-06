@@ -137,6 +137,7 @@ Configure::set("Namesilo.domain_fields.us", array(
 		'label' => Language::_("Namesilo.domain.RegistrantNexus", true),
 		'type' => "select",
 		'options' => array(
+            '' => Language::_("AppController.select.please", true),
 			'C11' => Language::_("Namesilo.domain.RegistrantNexus.c11", true),
 			'C12' => Language::_("Namesilo.domain.RegistrantNexus.c12", true),
 			'C21' => Language::_("Namesilo.domain.RegistrantNexus.c21", true),
@@ -148,6 +149,7 @@ Configure::set("Namesilo.domain_fields.us", array(
 		'label' => Language::_("Namesilo.domain.RegistrantPurpose", true),
 		'type' => "select",
 		'options' => array(
+            '' => Language::_("AppController.select.please", true),
 			'P1' => Language::_("Namesilo.domain.RegistrantPurpose.p1", true),
 			'P2' => Language::_("Namesilo.domain.RegistrantPurpose.p2", true),
 			'P3' => Language::_("Namesilo.domain.RegistrantPurpose.p3", true),
@@ -156,6 +158,62 @@ Configure::set("Namesilo.domain_fields.us", array(
 		)
 	)
 ));
+
+// .CA
+// the commented types represent options that namesilo doesn't allow via the API.
+// hopefully this will change in the future so they're here for future use.
+// this is actually a CIRA limitation supposedly so I doubt it will change...
+Configure::set('Namesilo.domain_fields.ca', [
+    'calf' => [
+        'label' => Language::_('Namesilo.domain.CIRALegalType', true),
+        'type' => 'select',
+        'options' => [
+            '' => Language::_("AppController.select.please", true),
+            'CCT' => Language::_('Namesilo.domain.RegistrantPurpose.cct', true),
+            'RES' => Language::_('Namesilo.domain.RegistrantPurpose.res', true),
+            'ABO' => Language::_('Namesilo.domain.RegistrantPurpose.abo', true),
+            'LGR' => Language::_('Namesilo.domain.RegistrantPurpose.lgr', true),
+            'OTHER' => Language::_('Namesilo.domain.RegistrantPurpose.other', true),
+//            'CCO' => Language::_('Namesilo.domain.RegistrantPurpose.cco', true),
+//            'GOV' => Language::_('Namesilo.domain.RegistrantPurpose.gov', true),
+//            'EDU' => Language::_('Namesilo.domain.RegistrantPurpose.edu', true),
+//            'ASS' => Language::_('Namesilo.domain.RegistrantPurpose.ass', true),
+//            'HOP' => Language::_('Namesilo.domain.RegistrantPurpose.hop', true),
+//            'PRT' => Language::_('Namesilo.domain.RegistrantPurpose.prt', true),
+//            'TDM' => Language::_('Namesilo.domain.RegistrantPurpose.tdm', true),
+//            'TRD' => Language::_('Namesilo.domain.RegistrantPurpose.trd', true),
+//            'PLT' => Language::_('Namesilo.domain.RegistrantPurpose.plt', true),
+//            'LAM' => Language::_('Namesilo.domain.RegistrantPurpose.lam', true),
+//            'TRS' => Language::_('Namesilo.domain.RegistrantPurpose.trs', true),
+//            'INB' => Language::_('Namesilo.domain.RegistrantPurpose.inb', true),
+//            'OMK' => Language::_('Namesilo.domain.RegistrantPurpose.omk', true),
+//            'MAJ' => Language::_('Namesilo.domain.RegistrantPurpose.maj', true)
+
+        ]
+    ],
+    'cawd' => [
+        'label' => Language::_('Namesilo.domain.CIRAWhoisDisplay', true),
+        'type' => 'select',
+        'options' => [
+            '' => Language::_("AppController.select.please", true),
+            '1' => Language::_('Namesilo.domain.CIRAWhoisDisplay.full', true),
+            '0' => Language::_('Namesilo.domain.CIRAWhoisDisplay.private', true),
+        ]
+    ],
+    'caln' => [
+        'label' => Language::_('Namesilo.domain.CIRALanguage', true),
+        'type' => 'select',
+        'options' => [
+            '' => Language::_("AppController.select.please", true),
+            'en' => Language::_('Namesilo.domain.CIRALanguage.en', true),
+            'fr' => Language::_('Namesilo.domain.CIRALanguage.fr', true),
+        ]
+    ],
+    'caag' => [
+        'type' => 'hidden',
+        'options' => '2.0'
+    ]
+]);
 
 
 require_once __DIR__ . '/codes.php';
