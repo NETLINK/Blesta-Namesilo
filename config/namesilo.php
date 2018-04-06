@@ -1,23 +1,4 @@
 <?php
-// All available TLDs
-Configure::set("Namesilo.tlds", array(
-	".biz",
-	".cc",
-	".co",
-	".com",
-	'.cloud',
-	'.club',
-	".info",
-	".me",
-	".mobi",	
-	".net",
-	'.online',
-	".org",
-	'.pro',
-	'.pub',
-	".tv",	
-	".us",
-));
 
 // Transfer fields
 Configure::set("Namesilo.transfer_fields", array(
@@ -152,7 +133,7 @@ Configure::set("Namesilo.whois_fields", array(
 
 // .US
 Configure::set("Namesilo.domain_fields.us", array(
-	'RegistrantNexus' => array(
+	'usnc' => array(
 		'label' => Language::_("Namesilo.domain.RegistrantNexus", true),
 		'type' => "select",
 		'options' => array(
@@ -163,7 +144,7 @@ Configure::set("Namesilo.domain_fields.us", array(
 			'C32' => Language::_("Namesilo.domain.RegistrantNexus.c32", true)
 		)
 	),
-	'RegistrantPurpose' => array(
+	'usap' => array(
 		'label' => Language::_("Namesilo.domain.RegistrantPurpose", true),
 		'type' => "select",
 		'options' => array(
