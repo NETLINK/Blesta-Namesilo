@@ -223,4 +223,20 @@ class NamesiloDomains {
     public function getPrices(){
         return $this->api->submit("getPrices");
     }
+
+    /**
+     * @return NamesiloResponse
+     */
+    public function registrantVerificationStatus(){
+        return $this->api->submit("registrantVerificationStatus");
+    }
+
+    /**
+     * @param array $vars
+     *  - email string email address to verify
+     * @return NamesiloResponse
+     */
+    public function emailVerification(array $vars){
+        return $this->api->submit("emailVerification", $vars);
+    }
 }
