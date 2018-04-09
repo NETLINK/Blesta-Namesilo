@@ -1,9 +1,35 @@
 
-	<?php
-	$this->Form->create();
-	?>
 	<div class="row panel-fix">
-		<div class="col-md-12">
+        <div class="col-md-12">
+            <h4><?php $this->_("Namesilo.tab_settings.section_verification");?></h4>
+            <div class="form-group">
+                <p><?php $this->_("Namesilo.tab_settings.verification_text"); echo $this->Html->ifSet($vars->registrant_verification_info->email_address); ?>:
+                <?php if($vars->registrant_verification_info->verified == "Yes"){ ?>
+                    <span style="color:green"><?php $this->_("Namesilo.tab_settings.verified"); ?></span>!</p>
+                <?php }else{ ?>
+                    <span style="color:red;font-weight:bold"><?php $this->_("Namesilo.tab_settings.not_verified"); ?></span>!</p>
+                    <p><?php $this->_("Namesilo.tab_settings.not_verified_warning"); ?></p>
+                    <?php $this->Form->create(); ?>
+                    <p>
+                        <?php
+                        $this->Form->create();
+                        $this->Form->fieldHidden('resend_verification_email',$vars->registrant_verification_info->email_address);
+                        ?>
+                        <button class="btn btn-default pull-right" type="submit">
+                            <i class="fa fa-edit"></i> <?php $this->_("Namesilo.tab_settings.field_resend_verification_email");?>
+                        </button>
+                    <?php
+                    $this->Form->end();
+                    ?>
+                    </p>
+                <?php } ?>
+            </div>
+
+        </div>
+        <?php
+        $this->Form->create();
+        ?>
+        <div class="col-md-12">
 			<h4><?php $this->_("Namesilo.tab_settings.field_registrar_lock");?></h4>
 			<div class="form-group">
 				<div class="radio">
@@ -33,11 +59,22 @@
 					</label>
 				</div>
 			</div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <?php
+                        $this->Form->fieldHidden("whois_privacy_before", $this->Html->ifSet($vars->whois_privacy));
+                        $this->Form->fieldCheckbox("whois_privacy", "Yes", $this->Html->ifSet($vars->whois_privacy) == "Yes", array('id' => "whois_privacy"));
+                        $this->Form->label($this->_("Namesilo.domain.WhoisPrivacy", true), "whois_privacy", array('class' => "inline"));
+                        ?>
+                    </label>
+                </div>
+            </div>
 		</div>
+        <button class="btn btn-default pull-right" type="submit">
+            <i class="fa fa-edit"></i> <?php $this->_("Namesilo.tab_settings.field_submit");?>
+        </button>
+        <?php
+        $this->Form->end();
+        ?>
 	</div>
-	<button class="btn btn-default pull-right" type="submit">
-		<i class="fa fa-edit"></i> <?php $this->_("Namesilo.tab_settings.field_submit");?>
-	</button>
-	<?php
-	$this->Form->end();
-	?>

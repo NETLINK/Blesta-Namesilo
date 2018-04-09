@@ -1,15 +1,15 @@
 {
-	"version": "1.7.3-beta",
-	"name": "Namesilo Domains Module",
-	"description": "Namesilo registrar module",
+	"version": "1.8.0",
+	"name": "NameSilo Domains Module",
+	"description": "Resell domains through NameSilo.",
 	"authors": [
+		{
+			"name": "KnownHost LLC &",
+			"url": "https://www.knownhost.com"
+		},
 		{
 			"name": "NETLINK IT SERVICES",
 			"url": "http://www.netlink.ie/"
-		},
-		{
-			"name": "& KnownHost LLC",
-			"url": "https://www.knownhost.com"
 		}
 	]
 }
