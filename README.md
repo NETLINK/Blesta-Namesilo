@@ -21,7 +21,8 @@ The module provides the following template tags for use in welcome email templat
 
 | Tag  | Description |
 | ------------- | ------------- |
-| service.auth  | The EPP code submitted.  Since no value is falsy we can use this to determine if it is a registration or transfer to change text accordingly.  |
+| service.auth  | The EPP code submitted.  |
+| service.transfer | Value is true for transfers.  Will not exist for new registrations |
 | service.domain  | The domain name being registered or transferred |
 | service.ns1 | The first nameserver value submitted on the order form. |
 | service.ns2 | The second nameserver value submitted on the order form. |
@@ -42,6 +43,4 @@ The module provides the following template tags for use in welcome email templat
 | service.years | Years of registration or extension if it's a transfer |
 | package.meta.ns | Array of default nameservers configured on the package.  This may not match what the customer submitted if they changed it. |
 
-**[Get your Namesilo account here](https://www.namesilo.com/pricing.php?rid=1456f77tg)**
-
-[![Namesilo](http://www.namesilo.com/affiliate/banner_gen.php?aid=1456f77tg&bid=53 "Namesilo")](http://www.namesilo.com/?rid=1456f77tg)
+**[Get your Namesilo account here](https://www.namesilo.com/)**
