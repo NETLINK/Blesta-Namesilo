@@ -39,7 +39,7 @@ class NamesiloDomainsTransfer {
 	public function create( array $vars ) {
 		if ( isset( $vars['auth'] ) /*&& substr( $vars['auth'], 0, 7 ) != "base64:"*/ )
 			$vars['auth'] = /*"base64:" .*/ urlencode( $vars['auth'] );
-		return $this->api->submit( "transferDomain", $vars );
+		return $this->api->submit( "transferDomain", array_merge($vars,array('auto_renew'=>0)) );
 	}
 	
 	/**

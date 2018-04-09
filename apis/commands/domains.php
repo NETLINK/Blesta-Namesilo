@@ -26,15 +26,11 @@ class NamesiloDomains {
 	 * Returns a list of domains for the particular user.
 	 *
 	 * @param array $vars An array of input params including:
-	 * 	- ListType Possible values are ALL/EXPIRING/EXPIRED
-	 * 	- SearchTerm Keyword to look for on the domain list 
-	 * 	- Page Page to return 
-	 * 	- PageSize Number of domains to be listed in a page. Minimum value is 10 and maximum value is 100. 
-	 * 	- SortBy Possible values are NAME, NAME_DESC, EXPIREDATE, EXPIREDATE_DESC, CREATEDATE, CREATEDATE_DESC.
+	 * 	- portfolio (optional) portfolio to fetch domains for
 	 * @return NamesiloResponse
 	 */
 	public function getList(array $vars) {
-		return $this->api->submit("namesilo.domains.getList", $vars);
+		return $this->api->submit("listDomains", $vars);
 	}
 
 	/**
@@ -52,7 +48,7 @@ class NamesiloDomains {
 	 * https://www.namesilo.com/api_reference.php#registerDomain
 	 */
 	public function create(array $vars) {
-		return $this->api->submit("registerDomain", $vars);
+		return $this->api->submit("registerDomain", array_merge($vars,array('auto_renew'=>0)));
 	}
 	
 	/**
@@ -226,5 +222,21 @@ class NamesiloDomains {
      */
     public function getPrices(){
         return $this->api->submit("getPrices");
+    }
+
+    /**
+     * @return NamesiloResponse
+     */
+    public function registrantVerificationStatus(){
+        return $this->api->submit("registrantVerificationStatus");
+    }
+
+    /**
+     * @param array $vars
+     *  - email string email address to verify
+     * @return NamesiloResponse
+     */
+    public function emailVerification(array $vars){
+        return $this->api->submit("emailVerification", $vars);
     }
 }
