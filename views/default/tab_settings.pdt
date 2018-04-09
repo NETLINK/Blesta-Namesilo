@@ -18,8 +18,12 @@
             <?php } ?>
         </ul>
     </div>
-    <div class="button_row"><a class="btn_right submit" href="#"><?php $this->_("Namesilo.tab_settings.field_resend_verification_email");?></a></div>
-    <?php
+    <?php if($vars->registrant_verification_info->verified == "No") { ?>
+        <div class="button_row"><a class="btn_right submit"
+                                   href="#"><?php $this->_("Namesilo.tab_settings.field_resend_verification_email"); ?></a>
+        </div>
+        <?php
+    }
     $this->Form->end();
     ?>
 
