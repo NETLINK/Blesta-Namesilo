@@ -1699,17 +1699,19 @@ class Namesilo extends Module {
             return $hosts;
         }
 
-        foreach($response->hosts as $host){
-            if(!is_array($host->ip)) {
-                $ips[] = $host->ip;
-            }else{
-                $ips = $host->ip;
+        if(isset($response->hosts)) {
+            foreach ($response->hosts as $host) {
+                if (!is_array($host->ip)) {
+                    $ips[] = $host->ip;
+                } else {
+                    $ips = $host->ip;
+                }
+                $host_obj->host = $host->host;
+                $host_obj->ip = $ips;
+                $hosts[] = $host_obj;
+                $host_obj = new stdClass();
+                $ips = null;
             }
-            $host_obj->host = $host->host;
-            $host_obj->ip = $ips;
-            $hosts[] = $host_obj;
-            $host_obj = new stdClass();
-            $ips = null;
         }
 
         return $hosts;
