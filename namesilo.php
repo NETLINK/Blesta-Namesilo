@@ -650,15 +650,7 @@ class Namesilo extends Module {
             Loader::loadModels($this,array("Services","Record","ModuleManager"));
 
 
-            $modules = $this->ModuleManager->getInstalled();
-            foreach ($modules as $module) {
-                $module_data = $this->ModuleManager->get($module->id);
-                foreach ($module_data->rows as $row) {
-                    if(isset($row->meta->namesilo_module))
-                        $module_row = $row;
-                    break;
-                }
-            }
+            $module_row = getNamesiloRow();
 
             $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
             $domains = new NamesiloDomains($api);
@@ -697,15 +689,7 @@ class Namesilo extends Module {
             Loader::loadHelpers($this, array ("Form", "Html", "Widget"));
             Loader::loadModels($this,array("Services","Clients","Record","ModuleManager","ClientGroups"));
 
-            $modules = $this->ModuleManager->getInstalled();
-            foreach ($modules as $module) {
-                $module_data = $this->ModuleManager->get($module->id);
-                foreach ($module_data->rows as $row) {
-                    if(isset($row->meta->namesilo_module))
-                        $module_row = $row;
-                    break;
-                }
-            }
+            $module_row = $this->getNamesiloRow();
 
             $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
             $domains = new NamesiloDomains($api);
@@ -786,15 +770,7 @@ class Namesilo extends Module {
         if(isset($_POST['sync_services'])){
             Loader::loadModels($this,array("ModuleManager","Services","Clients","ClientGroups"));
 
-            $modules = $this->ModuleManager->getInstalled();
-            foreach ($modules as $module) {
-                $module_data = $this->ModuleManager->get($module->id);
-                foreach ($module_data->rows as $row) {
-                    if(isset($row->meta->namesilo_module))
-                        $module_row = $row;
-                    break;
-                }
-            }
+            $module_row = $this->getNamesiloRow();
 
             foreach($_POST['sync_services'] as $service_id) {
                 $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
@@ -1077,7 +1053,7 @@ class Namesilo extends Module {
 			if (isset($vars->transfer) || isset($vars->auth)) {
 				$fields = array_merge(
 				    Configure::get("Namesilo.transfer_fields"),
-                    Configure::get("Namesilo.domain_fields" . $tld)
+                    (array) Configure::get("Namesilo.domain_fields" . $tld)
                 );
 
                 // .ca domains can't have traditional whois privacy
@@ -1100,7 +1076,7 @@ class Namesilo extends Module {
 				$fields = array_merge(
 				    Configure::get("Namesilo.nameserver_fields"),
                     Configure::get("Namesilo.domain_fields"),
-                    Configure::get("Namesilo.domain_fields" . $tld)
+                    (array) Configure::get("Namesilo.domain_fields" . $tld)
                 );
 
                 // .ca domains can't have traditional whois privacy
@@ -2046,6 +2022,9 @@ class Namesilo extends Module {
 	 * @return string The TLD of the domain
 	 */
 	private function getTld($domain,$row=null) {
+        if($row == null)
+	        $row = $this->getNamesiloRow();
+
 		$tlds = $this->getTlds($row);
 		$domain = strtolower($domain);
 
@@ -2175,6 +2154,20 @@ class Namesilo extends Module {
         }
 
         return $vars;
+    }
+
+    private function getNamesiloRow(){
+        Loader::loadModels($this,array("ModuleManager"));
+
+        $modules = $this->ModuleManager->getInstalled();
+        foreach ($modules as $module) {
+            $module_data = $this->ModuleManager->get($module->id);
+            foreach ($module_data->rows as $module_row) {
+                if(isset($module_row->meta->namesilo_module)) {
+                    return $module_row;
+                }
+            }
+        }
     }
 	
 	public function debug( $data ) {
