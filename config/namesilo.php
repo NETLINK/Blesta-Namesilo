@@ -54,6 +54,43 @@ Configure::set("Namesilo.nameserver_fields", array(
 	)
 ));
 
+// DNSSEC
+Configure::set("Namesilo.dnssec", array(
+    'digest_type' => array(
+       'label' => Language::_("Namesilo.dnssec.digest_type", true),
+       'type' => "select",
+       'options' => array(
+           '' => Language::_("AppController.select.please", true),
+           '1' => 'SHA-1 (1)',
+           '2' => 'SHA-256 (2)',
+           '3' => 'GOST R 34.11-94 (3)',
+           '4' => 'SHA-384 (4)'
+       )
+    ),
+    'algorithm' => array(
+        'label' => Language::_("Namesilo.dnssec.algorithm", true),
+        'type' => "select",
+        'options' => array(
+            '' => Language::_("AppController.select.please", true),
+            '1' => 'RSA/MD5 (1)',
+            '2' => 'Diffie-Hellman (2)',
+            '3' => 'DSA/SHA-1 (3)',
+            '4' => 'Elliptic Curve (4)',
+            '5' => 'RSA/SHA-1 (5)',
+            '6' => 'DSA-NSEC3-SHA1 (6)',
+            '7' => 'RSASHA1-NSEC3-SHA1 (7)',
+            '8' => 'RSA/SHA-256 (8)',
+            '10' => 'RSA/SHA-512 (10)',
+            '12' => 'ECC-GOST (12)',
+            '13' => 'ECDSA Curve P-256 with SHA-256 (13)',
+            '14' => 'ECDSA Curve P-384 with SHA-384 (14)',
+            '252' => 'Indirect (252)',
+            '253' => 'Private DNS (253)',
+            '254' => 'Private OID (254)'
+        )
+    ),
+));
+
 // Whois fields
 Configure::set("Namesilo.whois_fields", array(
 	/*

@@ -1,0 +1,97 @@
+
+    <div id="ds-records" class="pad">
+        <div class="title_row first">
+            <h3><?php $this->_("Namesilo.tab_dnssec.title_disclaimer");?></h3>
+        </div>
+        <p><?php $this->_("Namesilo.tab_dnssec.warning_message1"); ?></p>
+        <p><?php $this->_("Namesilo.tab_dnssec.warning_message2"); ?></p>
+        <div class="title_row">
+            <h3><?php $this->_("Namesilo.tab_dnssec.title_list");?></h3>
+        </div>
+        <table class="table">
+            <thead>
+            <tr class="heading_row">
+                <td><span><?php $this->_("Namesilo.dnssec.key_tag"); ?></span></td>
+                <td><span><?php $this->_("Namesilo.dnssec.algorithm"); ?></span></td>
+                <td><span><?php $this->_("Namesilo.dnssec.digest_type"); ?></span></td>
+                <td><span><?php echo $this->_("Namesilo.dnssec.digest"); ?></span></td>
+                <td><span><?php $this->_("Namesilo.tab_dnssec.field_delete"); ?></span></td>
+            </tr>
+            </thead>
+            <?php
+            foreach($vars->records as $record) {
+                ?>
+                <!-- List existing ds records -->
+                <tbody>
+                    <tr>
+                        <td><?php echo $this->Html->ifSet($record->key_tag); ?></td>
+                        <td><?php echo $this->Html->ifSet($record->algorithm); ?></td>
+                        <td><?php echo $this->Html->ifSet($record->digest_type); ?></td>
+                        <td><?php echo $this->Html->ifSet($record->digest); ?></td>
+                        <td>
+                            <?php
+                            $this->Form->create($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabDnssec/');
+
+                            $this->Form->fieldHidden('digest', $this->Html->ifSet($record->digest));
+                            $this->Form->fieldHidden('key_tag', $this->Html->ifSet($record->key_tag));
+                            $this->Form->fieldHidden('algorithm', $this->Html->ifSet($record->algorithm));
+                            $this->Form->fieldHidden('digest_type', $this->Html->ifSet($record->digest_type));
+
+                            $button_attributes = [
+                                'class' => 'btn',
+                                'value' => 'deleteDnssec',
+                                'type' => 'submit',
+                            ];
+
+                            $this->Form->fieldButton('action', $this->_('Namesilo.tab_dnssec.field_delete', true), $button_attributes);
+
+                            $this->Form->end();
+                            ?>
+                        </td>
+                    </tr>
+                </tbody>
+                <?php
+            }
+            ?>
+        </table>
+
+        <div class="title_row">
+            <h3><?php $this->_("Namesilo.tab_dnssec.title_add");?></h3>
+        </div>
+        <?php
+        $this->Form->create($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabDnssec/');
+        ?>
+        <table class="table">
+            <!-- Add New DS Record -->
+            <thead>
+            <tr class="heading_row">
+                <td><span><?php $this->_("Namesilo.dnssec.key_tag"); ?></span></td>
+                <td><span><?php $this->_("Namesilo.dnssec.algorithm"); ?></span></td>
+                <td><span><?php $this->_("Namesilo.dnssec.digest_type"); ?></span></td>
+                <td><span><?php echo $this->_("Namesilo.dnssec.digest"); ?></span></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><?php $this->Form->fieldText("key_tag"); ?></td>
+                <td><?php $this->Form->fieldSelect("algorithm", $vars->selects['algorithm']['options']); ?></td>
+                <td><?php $this->Form->fieldSelect("digest_type", $vars->selects['digest_type']['options']); ?></td>
+                <td><?php $this->Form->fieldText("digest"); ?></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="button_row">
+            <?php
+            $button_attributes = [
+                'class' => 'btn btn-primary pull-right',
+                'value' => 'addDnssec',
+                'type' => 'submit',
+            ];
+
+            $this->Form->fieldButton('action', $this->_('Namesilo.tab_dnssec.field_add', true), $button_attributes);
+            ?>
+        </div>
+        <?php
+        $this->Form->end();
+        ?>
+    </div>
