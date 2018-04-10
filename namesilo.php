@@ -650,7 +650,7 @@ class Namesilo extends Module {
             Loader::loadModels($this,array("Services","Record","ModuleManager"));
 
 
-            $module_row = getNamesiloRow();
+            $module_row = $this->getNamesiloRow();
 
             $api = $this->getApi($module_row->meta->user, $module_row->meta->key, $module_row->meta->sandbox == "true", null, true);
             $domains = new NamesiloDomains($api);
