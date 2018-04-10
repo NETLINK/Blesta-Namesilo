@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+## [1.8.1] = 2018-04-10
+### Changed
+- Fix configuration fields on order form
 
 ## [1.8.0] - 2018-04-09
 ### Added
@@ -41,7 +44,9 @@ Detailed changelogs before this point may be innacurate.
 - .cloud extension
 
 ## [1.3-beta]
+### Added
 - Add Admin Communication tab to send domain-related email notifications.
 
 ## [1.2-beta]
+### Added
 - Disable Settings tab (registrar lock and EPP code) on a per-client basis by adding a custom client field called "Disable Domain Transfers" and checking it on the Client Edit screen.
