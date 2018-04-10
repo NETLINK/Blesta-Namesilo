@@ -19,10 +19,11 @@
             </tr>
             </thead>
             <?php
-            foreach($vars->records as $record) {
-                ?>
-                <!-- List existing ds records -->
-                <tbody>
+            if(count($vars->records) > 0 && $vars->records[0]) {
+                foreach ($vars->records as $record) {
+                    ?>
+                    <!-- List existing ds records -->
+                    <tbody>
                     <tr>
                         <td><?php echo $this->Html->ifSet($record->key_tag); ?></td>
                         <td><?php echo $this->Html->ifSet($record->algorithm); ?></td>
@@ -49,8 +50,9 @@
                             ?>
                         </td>
                     </tr>
-                </tbody>
-                <?php
+                    </tbody>
+                    <?php
+                }
             }
             ?>
         </table>
