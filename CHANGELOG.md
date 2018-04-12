@@ -2,14 +2,14 @@
 
 ## [Unreleased]
 
-## [1.8.2] = 2018-04-12
+## [1.8.2] - 2018-04-11
 ### Added
-- DNSSEC management
+- DNSSEC management support
 
 ### Changed
-- Fix email verification display if single email controls all domains
+- Fix email verification status if NameSilo account has a single email for all domains
 
-## [1.8.1] = 2018-04-10
+## [1.8.1] - 2018-04-10
 ### Changed
 - Fix configuration fields on order form
 

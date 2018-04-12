@@ -1950,6 +1950,8 @@ class Namesilo extends Module {
             $registrant_email = $registrant_info->response()->contact->email;
 
             $registrant_verification = $domains->registrantVerificationStatus()->response();
+            if(!is_array($registrant_verification->email))
+                $registrant_verification->email = array($registrant_verification->email);
             foreach($registrant_verification->email as $registrant){
                 if($registrant->email_address == $registrant_email) {
                     $vars->registrant_verification_info = $registrant;
