@@ -84,6 +84,20 @@ $lang['Namesilo.tab_hosts.field_hostname'] = "Host";
 $lang['Namesilo.tab_hosts.field_submit'] = "Update All Hosts";
 $lang['Namesilo.tab_client_hosts.help_text'] = "On this page you can add your own custom name servers (sometimes referred to as \"glue records\") to associate with your domains.  To remove a host record blank all IP fields associated with it before clicking update.  You can not delete any host records which have domains actively using it as a nameserver.";
 
+$lang['Namesilo.tab_dnssec.title'] = "DNSSEC";
+$lang['Namesilo.tab_dnssec.title_list'] = "Current DS (DNSSEC) Records";
+$lang['Namesilo.tab_dnssec.title_add'] = "Add DS (DNSSEC) Record";
+$lang['Namesilo.tab_dnssec.field_delete'] = "Delete Record(s)";
+$lang['Namesilo.tab_dnssec.field_add'] = "Add Record";
+$lang['Namesilo.tab_dnssec.field_delete'] = "Delete";
+$lang['Namesilo.tab_dnssec.title_disclaimer'] = "Disclaimer";
+$lang['Namesilo.tab_dnssec.warning_message1'] = "You can use this page to manage the DS records for your domain. You should only use this page if you are comfortable with DS records and DNSSEC.";
+$lang['Namesilo.tab_dnssec.warning_message2'] = "When you manage DS records, <strong>the domain will stop resolving correctly</strong> if your nameservers are not configured correctly with the associated DNSSEC resource records.";
+$lang['Namesilo.dnssec.algorithm'] = "Algorithm";
+$lang['Namesilo.dnssec.digest_type'] = "Digest Type";
+$lang['Namesilo.dnssec.digest'] = "Digest";
+$lang['Namesilo.dnssec.key_tag'] = "Key Tag";
+
 $lang['Namesilo.tab_settings.title'] = "Settings";
 $lang['Namesilo.tab_settings.field_registrar_lock'] = "Registrar Lock";
 $lang['Namesilo.tab_settings.field_registrar_lock_yes'] = "Set the registrar lock. Recommended to prevent unauthorized transfer.";

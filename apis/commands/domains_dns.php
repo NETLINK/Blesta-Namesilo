@@ -91,5 +91,31 @@ class NamesiloDomainsDns {
 	public function setEmailForwarding(array $vars) {
 		return $this->api->submit("configureEmailForward", $vars);
 	}
+
+    /**
+     * Retrieves DS records
+     *
+     * https://www.namesilo.com/api_reference.php#dnsSecListRecords
+     */
+    public function dnsSecListRecords(array $vars) {
+        return $this->api->submit("dnsSecListRecords", $vars);
+    }
+
+    /**
+     * Add DS record
+     *
+     * https://www.namesilo.com/api_reference.php#dnsSecListRecords
+     */
+    public function dnsSecAddRecord(array $vars) {
+        return $this->api->submit("dnsSecAddRecord", $vars);
+    }
+
+    /**
+     * Delete DS record
+     *
+     * https://www.namesilo.com/api_reference.php#dnsSecListRecords
+     */
+    public function dnsSecDeleteRecord(array $vars) {
+        return $this->api->submit("dnsSecDeleteRecord", $vars);
+    }
 }
-?>
