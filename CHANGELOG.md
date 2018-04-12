@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [1.8.2] = 2018-04-12
+### Added
+- DNSSEC management
+
+### Changed
+- Fix email verification display if single email controls all domains
+
 ## [1.8.1] = 2018-04-10
 ### Changed
 - Fix configuration fields on order form
