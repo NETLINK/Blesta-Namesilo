@@ -334,8 +334,6 @@ class Namesilo extends Module {
                     if ($this->Input->errors())
                         return;
                     $fields['contact_id'] = $response->response()->contact_id;
-
-                    $this->debug($fields);
                 }
 
 				// Handle transfer
@@ -1229,6 +1227,7 @@ class Namesilo extends Module {
 				'tabWhois' => Language::_( "Namesilo.tab_whois.title", true ),
 				'tabNameservers' => Language::_( "Namesilo.tab_nameservers.title", true ),
                 'tabHosts' => Language::_( "Namesilo.tab_hosts.title", true ),
+                'tabDnssec' => Language::_( "Namesilo.tab_dnssec.title", true ),
 				'tabSettings' => Language::_( "Namesilo.tab_settings.title", true ),
 				'tabAdminActions' => Language::_( "Namesilo.tab_adminactions.title", true ),
 			);
@@ -1248,6 +1247,7 @@ class Namesilo extends Module {
 				'tabClientWhois' => Language::_( "Namesilo.tab_whois.title", true ),
 				'tabClientNameservers' => Language::_( "Namesilo.tab_nameservers.title", true ),
                 'tabClientHosts' => Language::_( "Namesilo.tab_hosts.title", true ),
+                'tabClientDnssec' => Language::_( "Namesilo.tab_dnssec.title", true ),
 				'tabClientSettings' => Language::_( "Namesilo.tab_settings.title", true ),
 			);
 		}
@@ -1309,6 +1309,20 @@ class Namesilo extends Module {
         return $this->manageHosts("tab_hosts", $package, $service, $get, $post, $files);
     }
 
+    /**
+     * Admin DNSSEC tab
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabDnssec($package, $service, array $get=null, array $post=null, array $files=null) {
+        return $this->manageDnssec("tab_dnssec", $package, $service, $get, $post, $files);
+    }
+
 	/**
 	 * Admin Nameservers tab
 	 *
@@ -1335,6 +1349,20 @@ class Namesilo extends Module {
      */
     public function tabClientHosts($package, $service, array $get=null, array $post=null, array $files=null) {
         return $this->manageHosts("tab_client_hosts", $package, $service, $get, $post, $files);
+    }
+
+    /**
+     * Client Dnssec tab
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabClientDnssec($package, $service, array $get=null, array $post=null, array $files=null) {
+        return $this->manageDnssec("tab_client_dnssec", $package, $service, $get, $post, $files);
     }
 
 	/**
@@ -1760,6 +1788,80 @@ class Namesilo extends Module {
         return $this->view->fetch();
     }
 
+    /**
+     * Handle updating host information
+     *
+     */
+    private function manageDnssec( $view, $package, $service, array $get = null, array $post = null, array $files = null ) {
+        $vars = new stdClass();
+        if ( in_array( $service->status, self::$pending ) ) {
+            $this->view = new View( 'pending', "default" );
+        }elseif( $view == "tab_client_dnssec" && $service->status == "suspended" ) {
+            $this->view = new View('suspended', "default");
+        }else{
+            // if the domain is pending transfer display a notice of such
+            $checkDomainStatus = $this->checkDomainStatus($service,$package);
+            if(isset($checkDomainStatus)) {
+                return $checkDomainStatus;
+            }
+
+            $this->view = new View( $view, "default" );
+            $this->view->base_uri = $this->base_uri;
+            // Load the helpers required for this view
+            Loader::loadHelpers( $this, array ( "Form", "Html" ) );
+
+            $row = $this->getModuleRow( $package->module_row );
+            $api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
+            $dns = new NamesiloDomainsDns( $api );
+
+            $fields = $this->serviceFieldsToObject( $service->fields );
+            $this->view->set('domain', $fields->domain);
+
+            if (!empty($post)) {
+                if(isset($post['action'])){
+                    if($post['action'] == 'addDnssec') {
+                        $response = $dns->dnsSecAddRecord(
+                            array(
+                                'domain' => $fields->domain,
+                                'digest' => $post['digest'],
+                                'keyTag' => $post['key_tag'],
+                                'digestType' => $post['digest_type'],
+                                'alg' => $post['algorithm'],
+                            )
+                        );
+                        $this->processResponse($api, $response);
+                    }elseif($post['action'] == 'deleteDnssec'){
+                        $response = $dns->dnsSecDeleteRecord(
+                            array(
+                                'domain' => $fields->domain,
+                                'digest' => $post['digest'],
+                                'keyTag' => $post['key_tag'],
+                                'digestType' => $post['digest_type'],
+                                'alg' => $post['algorithm'],
+                            )
+                        );
+                        $this->processResponse($api, $response);
+                    }
+                }
+            }
+
+            $ds = $dns->dnsSecListRecords(array('domain'=>$fields->domain))->response();
+
+            if(!is_array($ds->ds_record)) {
+                $ds->ds_record = array($ds->ds_record);
+            }
+
+            $vars->selects = Configure::get("Namesilo.dnssec");
+            $vars->records = $ds->ds_record;
+            $this->view->set("vars", $vars);
+            $this->view->set('client_id', $service->client_id);
+            $this->view->set('service_id', $service->id);
+        }
+
+        $this->view->setDefaultView(self::$defaultModuleView);
+        return $this->view->fetch();
+    }
+
 	/**
 	 * Handle updating settings
 	 *
@@ -2027,7 +2129,11 @@ class Namesilo extends Module {
         if($row == null)
 	        $row = $this->getNamesiloRow();
 
-		$tlds = $this->getTlds($row);
+		if($row == null){
+            $row = $this->getNamesiloRow();
+        }
+
+	    $tlds = $this->getTlds($row);
 		$domain = strtolower($domain);
 
 		foreach ($tlds as $tld) {
