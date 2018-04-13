@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.8.3] - 2018-04-13
+### Changed
+- Fix client DNSSEC format on small screens
+
 ## [1.8.2] - 2018-04-11
 ### Added
 - DNSSEC management support
