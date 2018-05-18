@@ -128,8 +128,8 @@ class Namesilo extends Module {
 	public function validateService($package, array $vars=null) {
         $rules = array();
 
-        // transfers (epp code)
-	    if(isset($vars['transfer']) && $vars['transfer']) {
+        // Transfers (EPP Code)
+	    if ( isset( $vars['transfer'] ) && $vars['transfer'] === '2' ) {
             $rule = [
                 'auth' => [
                     'empty' => array(
@@ -273,7 +273,7 @@ class Namesilo extends Module {
             (array) Configure::get("Namesilo.domain_fields" . $tld ),
             (array) Configure::get("Namesilo.nameserver_fields"),
             (array) Configure::get("Namesilo.transfer_fields"),
-            array( 'years' => true, 'transfer' => isset($vars['transfer']) ? $vars['transfer'] : 0 )
+            array( 'years' => true, 'transfer' => isset( $vars['transfer'] ) ? $vars['transfer'] : 1 )
         );
 
         // .ca domains can't have traditional whois privacy
@@ -960,7 +960,7 @@ class Namesilo extends Module {
 			}
 
 			// Handle transfer request
-			if ( isset( $vars->transfer ) || isset( $vars->auth ) ) {
+			if ( ( isset( $vars->transfer ) && $vars->transfer === '2' ) || isset( $vars->auth ) ) {
 				return $this->arrayToModuleFields( Configure::get( "Namesilo.transfer_fields" ), null, $vars );
 			}
 			// Handle domain registration
@@ -1048,11 +1048,11 @@ class Namesilo extends Module {
             }
 
 			// Handle transfer request
-			if (isset($vars->transfer) || isset($vars->auth)) {
+			if ( ( isset( $vars->transfer ) && $vars->transfer === '2' ) || isset( $vars->auth ) ) {
 				$fields = array_merge(
-				    Configure::get("Namesilo.transfer_fields"),
-                    (array) Configure::get("Namesilo.domain_fields" . $tld)
-                );
+					Configure::get( 'Namesilo.transfer_fields' ),
+					(array) Configure::get( "Namesilo.domain_fields{$tld}" )
+				);
 
                 // .ca domains can't have traditional whois privacy
                 if($tld == '.ca')
@@ -1112,10 +1112,12 @@ class Namesilo extends Module {
                 else
                     $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
 
-                if(!isset($vars->transfer))
-                    $fields = array_merge($fields,Configure::get("Namesilo.nameserver_fields"));
-                else
-                    $fields = array_merge($fields,Configure::get("Namesilo.transfer_fields"));
+                if ( !isset( $vars->transfer ) || $vars->transfer === '1' ) {
+					$fields = array_merge( $fields, Configure::get( 'Namesilo.nameserver_fields' ) );
+				}
+				else {
+					$fields = array_merge( $fields, Configure::get( 'Namesilo.transfer_fields' ) );
+				}
 
                 if ($client) {
                     // We should already have the domain name don't make editable
