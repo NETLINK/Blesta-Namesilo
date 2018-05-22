@@ -2103,6 +2103,7 @@ class Namesilo extends Module {
 		$status = $response->status();
 
 		// Set errors if non-200 http code
+        if ($api->httpcode != 200)
             $this->Input->setErrors( array('errors'=>['API returned non-200 HTTP code']));
 
 		// Set errors, if any
