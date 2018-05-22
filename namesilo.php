@@ -1849,8 +1849,11 @@ class Namesilo extends Module {
 
             $ds = $dns->dnsSecListRecords(array('domain'=>$fields->domain))->response();
 
-            if(!is_array($ds->ds_record)) {
+            // get a consistent format because xml parsing in php is inconsistent
+            if(isset($ds->ds_record) && !is_array($ds->ds_record)) {
                 $ds->ds_record = array($ds->ds_record);
+            }else{
+                $ds->ds_record = [];
             }
 
             $vars->selects = Configure::get("Namesilo.dnssec");
@@ -2098,6 +2101,10 @@ class Namesilo extends Module {
 		$this->logRequest( $api, $response );
 
 		$status = $response->status();
+
+		// Set errors if non-200 http code
+        if ($api->httpcode != 200)
+            $this->Input->setErrors( array('errors'=>['API returned non-200 HTTP code']));
 
 		// Set errors, if any
 		if ( self::$codes[$status][1] == "fail" ) {

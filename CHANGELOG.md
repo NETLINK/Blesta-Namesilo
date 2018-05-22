@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.8.4] = 2018-05-22
+### Added
+- non-200 HTTP return codes parsed as error
+### Changed
+- Fix admin-side domain registrations
+- Open namesilo links in new tab
+- Fix undefined property error on DNSSEC page (admin)
+
 ## [1.8.3] - 2018-04-13
 ### Changed
 - Fix client DNSSEC format on small screens
