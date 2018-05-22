@@ -54,6 +54,10 @@ class NamesiloApi {
      * @var bool use batch api url if true
      */
 	private $batch;
+    /**
+     * @var int http return code
+     */
+	public $httpcode;
 	
 	/**
 	 * Sets the connection details
@@ -122,6 +126,7 @@ class NamesiloApi {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		$response = curl_exec($ch);
+        $this->httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		
 		//trigger_error( var_export( $args, true ) );
