@@ -960,7 +960,7 @@ class Namesilo extends Module {
 			}
 
 			// Handle transfer request
-			if ( ( isset( $vars->transfer ) && $vars->transfer === '2' ) || isset( $vars->auth ) ) {
+			if ( ( isset( $vars->transfer ) && $vars->transfer ) || isset( $vars->auth ) ) {
 				return $this->arrayToModuleFields( Configure::get( "Namesilo.transfer_fields" ), null, $vars );
 			}
 			// Handle domain registration
@@ -1002,10 +1002,21 @@ class Namesilo extends Module {
 								$('#auth_id').closest('li').show();
 								
 							$('input[name=\"transfer\"]').change(function() {
-								if ($(this).val() == '2')
+								if ($(this).val() == '2'){
 									$('#auth_id').closest('li').show();
-								else
+									$('#ns1_id').closest('li').hide();
+									$('#ns2_id').closest('li').hide();
+									$('#ns3_id').closest('li').hide();
+									$('#ns4_id').closest('li').hide();
+									$('#ns5_id').closest('li').hide();
+								}else{
 									$('#auth_id').closest('li').hide();
+									$('#ns1_id').closest('li').show();
+									$('#ns2_id').closest('li').show();
+									$('#ns3_id').closest('li').show();
+									$('#ns4_id').closest('li').show();
+									$('#ns5_id').closest('li').show();
+								}
 							});
 						});
 					</script>");
@@ -1048,7 +1059,7 @@ class Namesilo extends Module {
             }
 
 			// Handle transfer request
-			if ( ( isset( $vars->transfer ) && $vars->transfer === '2' ) || isset( $vars->auth ) ) {
+			if ( ( isset( $vars->transfer ) && $vars->transfer ) || isset( $vars->auth ) ) {
 				$fields = array_merge(
 					Configure::get( 'Namesilo.transfer_fields' ),
 					(array) Configure::get( "Namesilo.domain_fields{$tld}" )
@@ -1107,15 +1118,11 @@ class Namesilo extends Module {
             $extension_fields = Configure::get("Namesilo.domain_fields" . $tld);
             if ($extension_fields) {
                 // Set the fields
-                if ($client)
-                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
-                else
-                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
+                $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
 
-                if ( !isset( $vars->transfer ) || $vars->transfer === '1' ) {
+                if (!isset( $vars->transfer ) || $vars->transfer === '1') {
 					$fields = array_merge( $fields, Configure::get( 'Namesilo.nameserver_fields' ) );
-				}
-				else {
+				}else{
 					$fields = array_merge( $fields, Configure::get( 'Namesilo.transfer_fields' ) );
 				}
 

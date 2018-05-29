@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Fix - Ask customer for EPP code for transfers
+- Hide NS fields for admin transfer orders
 
 ## [1.8.4] = 2018-05-22
 ### Added
