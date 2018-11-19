@@ -129,7 +129,7 @@ class Namesilo extends Module {
         $rules = array();
 
         // Transfers (EPP Code)
-	    if ( isset( $vars['transfer'] ) && $vars['transfer'] === '2' ) {
+	    if (isset($vars['transfer']) && ($vars['transfer'] === '2' || $vars['transfer'] == true)) {
             $rule = [
                 'auth' => [
                     'empty' => array(
