@@ -2083,6 +2083,9 @@ class Namesilo extends Module {
         $this->processResponse( $api, $response );
         $response = $response->response();
 
+        if(!is_array($response->portfolios->name))
+            $response->portfolios->name = [$response->portfolios->name];
+
         if(isset($response->portfolios->name)){
             if(!in_array($portfolio,$response->portfolios->name) && $portfolio){
                 return false;
