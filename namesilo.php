@@ -266,6 +266,7 @@ class Namesilo extends Module {
 
         if ( isset( $vars['domain'] ) ) {
             $tld = $this->getTld($vars['domain'],$row);
+            $vars['domain'] = trim($vars['domain']);
         }
 
         $input_fields = array_merge(
