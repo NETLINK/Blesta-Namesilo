@@ -2,8 +2,16 @@
 
 ## [Unreleased]
 ### Changed
-- Fix - Ask customer for EPP code for transfers
+
+## [1.8.5] = 2018-11-19
+### Added
+- Automatically remove spaces from beginning/end of domain registrations/transfers
+### Changed
 - Hide NS fields for admin transfer orders
+- Fix multi-year registrations during Namesilo promotions
+- Fix exception when editing API info if only one portfolio exists
+- Fix disallow domain privacy on .us domains
+- Fix require EPP code from client for transfers
 
 ## [1.8.4] = 2018-05-22
 ### Added
