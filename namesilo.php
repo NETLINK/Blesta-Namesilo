@@ -129,7 +129,7 @@ class Namesilo extends Module {
         $rules = array();
 
         // Transfers (EPP Code)
-	    if ( isset( $vars['transfer'] ) && $vars['transfer'] === '2' ) {
+	    if (isset($vars['transfer']) && ($vars['transfer'] === '2' || $vars['transfer'] == true)) {
             $rule = [
                 'auth' => [
                     'empty' => array(
@@ -266,6 +266,7 @@ class Namesilo extends Module {
 
         if ( isset( $vars['domain'] ) ) {
             $tld = $this->getTld($vars['domain'],$row);
+            $vars['domain'] = trim($vars['domain']);
         }
 
         $input_fields = array_merge(
@@ -276,8 +277,8 @@ class Namesilo extends Module {
             array( 'years' => true, 'transfer' => isset( $vars['transfer'] ) ? $vars['transfer'] : 1 )
         );
 
-        // .ca domains can't have traditional whois privacy
-        if($tld == '.ca')
+        // .ca and .us domains can't have traditional whois privacy
+        if($tld == '.ca' || $tld == '.us')
             unset($input_fields['private']);
 
 		
@@ -359,10 +360,26 @@ class Namesilo extends Module {
 
 					$response = $domains->create( $fields );
 					$this->processResponse( $api, $response );
-					
+
 					if ($this->Input->errors()) {
+					    // if namesilo is running a promotion on registrations we have to work around their system if
+                        // we are doing a multi-year registration
+                        if(reset($this->Input->errors()['errors']) === 'Invalid number of years, or no years provided.'){
+					        unset($this->Input->errors()['errors']);
+					        // set the registration length to 1 year and save the remainder for an extension
+                            $total_years = $fields['years'];
+                            $fields['years'] = 1;
+					        $response = $domains->create($fields);
+					        $this->processResponse($api,$response);
+					        // now extend the remainder of the years
+                            $fields['years'] = $total_years - 1;
+                            $response = $domains->renew($fields);
+                            $this->processResponse($api,$response);
+                        }
+
                         if(isset($vars['contact_id']))
                             $domains->deleteContacts(array('contact_id'=>$vars['contact_id']));
+
                         return;
                     }
 				}
@@ -960,7 +977,7 @@ class Namesilo extends Module {
 			}
 
 			// Handle transfer request
-			if ( ( isset( $vars->transfer ) && $vars->transfer === '2' ) || isset( $vars->auth ) ) {
+			if ( ( isset( $vars->transfer ) && $vars->transfer ) || isset( $vars->auth ) ) {
 				return $this->arrayToModuleFields( Configure::get( "Namesilo.transfer_fields" ), null, $vars );
 			}
 			// Handle domain registration
@@ -1002,10 +1019,21 @@ class Namesilo extends Module {
 								$('#auth_id').closest('li').show();
 								
 							$('input[name=\"transfer\"]').change(function() {
-								if ($(this).val() == '2')
+								if ($(this).val() == '2'){
 									$('#auth_id').closest('li').show();
-								else
+									$('#ns1_id').closest('li').hide();
+									$('#ns2_id').closest('li').hide();
+									$('#ns3_id').closest('li').hide();
+									$('#ns4_id').closest('li').hide();
+									$('#ns5_id').closest('li').hide();
+								}else{
 									$('#auth_id').closest('li').hide();
+									$('#ns1_id').closest('li').show();
+									$('#ns2_id').closest('li').show();
+									$('#ns3_id').closest('li').show();
+									$('#ns4_id').closest('li').show();
+									$('#ns5_id').closest('li').show();
+								}
 							});
 						});
 					</script>");
@@ -1048,7 +1076,7 @@ class Namesilo extends Module {
             }
 
 			// Handle transfer request
-			if ( ( isset( $vars->transfer ) && $vars->transfer === '2' ) || isset( $vars->auth ) ) {
+			if ( ( isset( $vars->transfer ) && $vars->transfer ) || isset( $vars->auth ) ) {
 				$fields = array_merge(
 					Configure::get( 'Namesilo.transfer_fields' ),
 					(array) Configure::get( "Namesilo.domain_fields{$tld}" )
@@ -1107,15 +1135,11 @@ class Namesilo extends Module {
             $extension_fields = Configure::get("Namesilo.domain_fields" . $tld);
             if ($extension_fields) {
                 // Set the fields
-                if ($client)
-                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
-                else
-                    $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
+                $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
 
-                if ( !isset( $vars->transfer ) || $vars->transfer === '1' ) {
+                if (!isset( $vars->transfer ) || $vars->transfer === '1') {
 					$fields = array_merge( $fields, Configure::get( 'Namesilo.nameserver_fields' ) );
-				}
-				else {
+				}else{
 					$fields = array_merge( $fields, Configure::get( 'Namesilo.transfer_fields' ) );
 				}
 
@@ -2058,6 +2082,9 @@ class Namesilo extends Module {
         $response = $domains->portfolioList();
         $this->processResponse( $api, $response );
         $response = $response->response();
+
+        if(!is_array($response->portfolios->name))
+            $response->portfolios->name = [$response->portfolios->name];
 
         if(isset($response->portfolios->name)){
             if(!in_array($portfolio,$response->portfolios->name) && $portfolio){
