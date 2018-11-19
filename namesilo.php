@@ -359,10 +359,26 @@ class Namesilo extends Module {
 
 					$response = $domains->create( $fields );
 					$this->processResponse( $api, $response );
-					
+
 					if ($this->Input->errors()) {
+					    // if namesilo is running a promotion on registrations we have to work around their system if
+                        // we are doing a multi-year registration
+                        if(reset($this->Input->errors()['errors']) === 'Invalid number of years, or no years provided.'){
+					        unset($this->Input->errors()['errors']);
+					        // set the registration length to 1 year and save the remainder for an extension
+                            $total_years = $fields['years'];
+                            $fields['years'] = 1;
+					        $response = $domains->create($fields);
+					        $this->processResponse($api,$response);
+					        // now extend the remainder of the years
+                            $fields['years'] = $total_years - 1;
+                            $response = $domains->renew($fields);
+                            $this->processResponse($api,$response);
+                        }
+
                         if(isset($vars['contact_id']))
                             $domains->deleteContacts(array('contact_id'=>$vars['contact_id']));
+
                         return;
                     }
 				}
