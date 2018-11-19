@@ -277,8 +277,8 @@ class Namesilo extends Module {
             array( 'years' => true, 'transfer' => isset( $vars['transfer'] ) ? $vars['transfer'] : 1 )
         );
 
-        // .ca domains can't have traditional whois privacy
-        if($tld == '.ca')
+        // .ca and .us domains can't have traditional whois privacy
+        if($tld == '.ca' || $tld == '.us')
             unset($input_fields['private']);
 
 		
