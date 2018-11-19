@@ -129,7 +129,7 @@ class Namesilo extends Module {
         $rules = array();
 
         // Transfers (EPP Code)
-	    if (isset($vars['transfer']) && ($vars['transfer'] === '2' || $vars['transfer'] == true)) {
+	    if (isset($vars['transfer']) && ($vars['transfer'] == '1' || $vars['transfer'] == true)) {
             $rule = [
                 'auth' => [
                     'empty' => array(
@@ -365,7 +365,8 @@ class Namesilo extends Module {
 					    // if namesilo is running a promotion on registrations we have to work around their system if
                         // we are doing a multi-year registration
                         if(reset($this->Input->errors()['errors']) === 'Invalid number of years, or no years provided.'){
-					        unset($this->Input->errors()['errors']);
+					        // unset the errors since we are working around it
+                            $this->Input->setErrors([]);
 					        // set the registration length to 1 year and save the remainder for an extension
                             $total_years = $fields['years'];
                             $fields['years'] = 1;
@@ -994,8 +995,8 @@ class Namesilo extends Module {
 					'type' => "radio",
 					'value' => "1",
 					'options' => array(
-						'1' => "Register",
-						'2' => "Transfer",
+						'0' => "Register",
+						'1' => "Transfer",
 					),
 				);
 
@@ -1015,11 +1016,11 @@ class Namesilo extends Module {
 							$('#auth_id').closest('li').hide();
 							// Set whether to show or hide the ACL option
 							$('#auth').closest('li').hide();
-							if ($('input[name=\"transfer\"]:checked').val() == '2')
+							if ($('input[name=\"transfer\"]:checked').val() == '1')
 								$('#auth_id').closest('li').show();
 								
 							$('input[name=\"transfer\"]').change(function() {
-								if ($(this).val() == '2'){
+								if ($(this).val() == '1'){
 									$('#auth_id').closest('li').show();
 									$('#ns1_id').closest('li').hide();
 									$('#ns2_id').closest('li').hide();
@@ -1137,7 +1138,7 @@ class Namesilo extends Module {
                 // Set the fields
                 $fields = array_merge(Configure::get("Namesilo.domain_fields"), $extension_fields);
 
-                if (!isset( $vars->transfer ) || $vars->transfer === '1') {
+                if (!isset( $vars->transfer ) || $vars->transfer == '0') {
 					$fields = array_merge( $fields, Configure::get( 'Namesilo.nameserver_fields' ) );
 				}else{
 					$fields = array_merge( $fields, Configure::get( 'Namesilo.transfer_fields' ) );
