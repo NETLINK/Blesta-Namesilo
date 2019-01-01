@@ -118,11 +118,16 @@ class NamesiloApi {
 			'args' => $args
 		);
 		
+		# Use GET request as it seems to cause less timeouts than POST
+		# https://github.com/NETLINK/Blesta-Namesilo/issues/33
+		$query = http_build_query( $args );
+		$url = $url . "&{$query}";
+		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $args);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		#curl_setopt($ch, CURLOPT_POSTFIELDS, $args);
+		#curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		$response = curl_exec($ch);
@@ -146,4 +151,3 @@ class NamesiloApi {
 		return $this->last_request;
 	}
 }
-?>

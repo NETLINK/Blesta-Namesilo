@@ -362,7 +362,7 @@ class Namesilo extends Module {
 					$this->processResponse( $api, $response );
 
 					if ($this->Input->errors()) {
-					    // if namesilo is running a promotion on registrations we have to work around their system if
+					    // If Namesilo is running a promotion on registrations, we have to work around their system if
                         // we are doing a multi-year registration
                         if(reset($this->Input->errors()['errors']) === 'Invalid number of years, or no years provided.'){
 					        // unset the errors since we are working around it
@@ -1874,10 +1874,11 @@ class Namesilo extends Module {
 
             $ds = $dns->dnsSecListRecords(array('domain'=>$fields->domain))->response();
 
-            // get a consistent format because xml parsing in php is inconsistent
-            if(isset($ds->ds_record) && !is_array($ds->ds_record)) {
-                $ds->ds_record = array($ds->ds_record);
-            }else{
+            // Get a consistent format because XML parsing in PHP is inconsistent
+            if ( isset( $ds->ds_record ) && !is_array( $ds->ds_record ) ) {
+                $ds->ds_record = array( $ds->ds_record );
+            }
+			else {
                 $ds->ds_record = [];
             }
 
@@ -2130,9 +2131,9 @@ class Namesilo extends Module {
 
 		$status = $response->status();
 
-		// Set errors if non-200 http code
-        if ($api->httpcode != 200)
-            $this->Input->setErrors( array('errors'=>['API returned non-200 HTTP code']));
+		// Set errors if non-200 HTTP code
+        if ( $api->httpcode != 200 )
+            $this->Input->setErrors( array( 'errors'=>['API returned non-200 HTTP code'] ) );
 
 		// Set errors, if any
 		if ( self::$codes[$status][1] == "fail" ) {
