@@ -50,13 +50,13 @@ class NamesiloApi {
 	 * @var array An array representing the last request made
 	 */
 	private $last_request = array('url' => null, 'args' => null);
-    /**
-     * @var bool use batch api url if true
-     */
+	/**
+	 * @var bool use batch api url if true
+	 */
 	private $batch;
-    /**
-     * @var int http return code
-     */
+	/**
+	 * @var int http return code
+	 */
 	public $httpcode;
 	
 	/**
@@ -66,8 +66,8 @@ class NamesiloApi {
 	 * @param string $key The key to use when connecting
 	 * @param boolean $sandbox Whether or not to process in sandbox mode (for testing)
 	 * @param string $username The username to execute an API command using
-     * @param bool $batch Set true to pass commands to batch API URL.
-     *      See https://www.namesilo.com/Support/API-Automated-Batch-Processing
+	 * @param bool $batch Set true to pass commands to batch API URL.
+	 *		See https://www.namesilo.com/Support/API-Automated-Batch-Processing
 	 */
 	public function __construct($user, $key, $sandbox = true, $username = null, $batch=false) {
 		
@@ -98,7 +98,7 @@ class NamesiloApi {
 			$url = self::SANDBOX_URL;
 
 		if($this->batch)
-            $url = $url . 'batch';
+			$url = $url . 'batch';
 		
 		$url .= '/' . $command . "?key={$this->key}";
 		
@@ -131,7 +131,7 @@ class NamesiloApi {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		$response = curl_exec($ch);
-        $this->httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		
 		//trigger_error( var_export( $args, true ) );
@@ -144,8 +144,8 @@ class NamesiloApi {
 	 * Returns the details of the last request made
 	 *
 	 * @return array An array containg:
-	 * 	- url The URL of the last request
-	 * 	- args The paramters passed to the URL
+	 *	- url The URL of the last request
+	 *	- args The paramters passed to the URL
 	 */
 	public function lastRequest() {
 		return $this->last_request;
