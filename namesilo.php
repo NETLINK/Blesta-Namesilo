@@ -498,7 +498,7 @@ class Namesilo extends Module {
 	 * @see Module::getModule()
 	 * @see Module::getModuleRow()
 	 */
-	public function renewService( $package, $service, $parent_package = NULL, $parent_service = NULL, $years = NULL ) {
+	public function renewService( $package, $service, $parent_package = null, $parent_service = null, $years = null ) {
 		
 		$row = $this->getModuleRow( $package->module_row );
 		$api = $this->getApi( $row->meta->user, $row->meta->key, $row->meta->sandbox == "true" );
@@ -1200,7 +1200,7 @@ class Namesilo extends Module {
 	 * @param $vars stdClass A stdClass object representing a set of post fields
 	 * @return ModuleFields A ModuleFields object, containg the fields to render as well as any additional HTML markup to include
 	 */
-	public function getAdminEditFields( $package, $vars = NULL ) {
+	public function getAdminEditFields( $package, $vars = null ) {
 
 		Loader::loadHelpers( $this, array( "Html" ) );
 
