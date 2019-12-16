@@ -1,26 +1,35 @@
     <div class="title_row first">
-        <h3><?php $this->_("Namesilo.tab_settings.section_verification");?></h3>
+        <h3><?php $this->_('Namesilo.tab_settings.section_verification');?></h3>
     </div>
     <?php
     $this->Form->create();
     ?>
     <div class="pad">
         <ul>
-            <li><?php $this->_("Namesilo.tab_settings.verification_text"); echo $this->Html->ifSet($vars->registrant_verification_info->email_address); ?>:
-                <?php if($vars->registrant_verification_info->verified == "Yes"){ ?>
-                <span style="color:green"><?php $this->_("Namesilo.tab_settings.verified"); ?></span>!</li>
-            <?php }else{ ?>
-                <span style="color:red;font-weight:bold"><?php $this->_("Namesilo.tab_settings.not_verified"); ?></span>!</li>
-                <li><?php $this->_("Namesilo.tab_settings.not_verified_warning"); ?></li>
-                <li>
-                    <?php $this->Form->fieldHidden('resend_verification_email',$vars->registrant_verification_info->email_address); ?>
-                </li>
-            <?php } ?>
+            <li>
+                <?php $this->_('Namesilo.tab_settings.verification_text'); echo $this->Html->ifSet($vars->registrant_verification_info->email_address); ?>:
+                <?php
+                if ($this->Html->ifSet($vars->registrant_verification_info->verified) == 'Yes') {
+                ?>
+                <span style="color:green"><?php $this->_('Namesilo.tab_settings.verified'); ?></span>!
+            </li>
+            <?php
+                } else {
+            ?>
+                <span style="color:red;font-weight:bold"><?php $this->_('Namesilo.tab_settings.not_verified'); ?></span>!
+            </li>
+            <li><?php $this->_('Namesilo.tab_settings.not_verified_warning'); ?></li>
+            <li>
+                <?php $this->Form->fieldHidden('resend_verification_email', $this->Html->ifSet($vars->registrant_verification_info->email_address)); ?>
+            </li>
+            <?php
+                }
+            ?>
         </ul>
     </div>
-    <?php if($vars->registrant_verification_info->verified == "No") { ?>
-        <div class="button_row"><a class="btn_right submit"
-                                   href="#"><?php $this->_("Namesilo.tab_settings.field_resend_verification_email"); ?></a>
+    <?php if ($this->Html->ifSet($vars->registrant_verification_info->verified) == 'No') { ?>
+        <div class="button_row">
+            <a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_settings.field_resend_verification_email'); ?></a>
         </div>
         <?php
     }
@@ -28,41 +37,41 @@
     ?>
 
     <div class="title_row">
-        <h3><?php $this->_("Namesilo.tab_settings.title");?></h3>
+        <h3><?php $this->_('Namesilo.tab_settings.title');?></h3>
     </div>
 
 	<?php
-	$this->Form->create();
-	?>
+    $this->Form->create();
+    ?>
 	<div class="pad">
 		<ul>
 			<li>
 				<?php
-				$this->Form->label($this->_("Namesilo.tab_settings.field_registrar_lock", true), "registrar_lock");
-				
-				$this->Form->fieldRadio("registrar_lock", "Yes", $this->Html->ifSet($vars->registrar_lock) == "Yes", array('id' => "registrar_lock_yes"));
-				$this->Form->label($this->_("Namesilo.tab_settings.field_registrar_lock_yes", true), "registrar_lock_yes", array('class' => "inline"));
-				
-				$this->Form->fieldRadio("registrar_lock", "No", $this->Html->ifSet($vars->registrar_lock) == "No", array('id' => "registrar_lock_no"));
-				$this->Form->label($this->_("Namesilo.tab_settings.field_registrar_lock_no", true), "registrar_lock_no", array('class' => "inline"));
-				?>
+                $this->Form->label($this->_('Namesilo.tab_settings.field_registrar_lock', true), 'registrar_lock');
+
+                $this->Form->fieldRadio('registrar_lock', 'Yes', $this->Html->ifSet($vars->registrar_lock) == 'Yes', ['id' => 'registrar_lock_yes']);
+                $this->Form->label($this->_('Namesilo.tab_settings.field_registrar_lock_yes', true), 'registrar_lock_yes', ['class' => 'inline']);
+
+                $this->Form->fieldRadio('registrar_lock', 'No', $this->Html->ifSet($vars->registrar_lock) == 'No', ['id' => 'registrar_lock_no']);
+                $this->Form->label($this->_('Namesilo.tab_settings.field_registrar_lock_no', true), 'registrar_lock_no', ['class' => 'inline']);
+                ?>
 			</li>
 			<li>
 				<?php
-				$this->Form->fieldCheckbox("request_epp", "true", $this->Html->ifSet($vars->request_epp) == "true", array('id' => "request_epp"));
-				$this->Form->label($this->_("Namesilo.tab_settings.field_request_epp", true), "request_epp", array('class' => "inline"));
-				?>
+                $this->Form->fieldCheckbox('request_epp', 'true', $this->Html->ifSet($vars->request_epp) == 'true', ['id' => 'request_epp']);
+                $this->Form->label($this->_('Namesilo.tab_settings.field_request_epp', true), 'request_epp', ['class' => 'inline']);
+                ?>
 			</li>
             <li>
                 <?php
-                $this->Form->fieldHidden("whois_privacy_before", $this->Html->ifSet($vars->whois_privacy));
-                $this->Form->fieldCheckbox("whois_privacy", "Yes", $this->Html->ifSet($vars->whois_privacy) == "Yes", array('id' => "whois_privacy"));
-                $this->Form->label($this->_("Namesilo.domain.WhoisPrivacy", true), "whois_privacy", array('class' => "inline"));
+                $this->Form->fieldHidden('whois_privacy_before', $this->Html->ifSet($vars->whois_privacy));
+                $this->Form->fieldCheckbox('whois_privacy', 'Yes', $this->Html->ifSet($vars->whois_privacy) == 'Yes', ['id' => 'whois_privacy']);
+                $this->Form->label($this->_('Namesilo.domain.WhoisPrivacy', true), 'whois_privacy', ['class' => 'inline']);
                 ?>
             </li>
 		</ul>
 	</div>
-	<div class="button_row"><a class="btn_right submit" href="#"><?php $this->_("Namesilo.tab_settings.field_submit");?></a></div>
+	<div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_settings.field_submit');?></a></div>
 	<?php
-	$this->Form->end();
-	?>
+    $this->Form->end();
+    ?>

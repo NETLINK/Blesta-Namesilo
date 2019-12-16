@@ -1,56 +1,56 @@
 		<?php
-		$this->Widget->clear();
-		$this->Widget->create($this->_("Namesilo.add_row.box_title", true));
-		?>
+        $this->Widget->clear();
+        $this->Widget->create($this->_('Namesilo.add_row.box_title', true));
+        ?>
 		<div class="inner">
 			<?php
-			$this->Form->create();
-			?>
+            $this->Form->create();
+            ?>
 			<div class="title_row first">
-				<h3><?php $this->_("Namesilo.add_row.basic_title");?></h3>
+				<h3><?php $this->_('Namesilo.add_row.basic_title');?></h3>
 			</div>
 			<div class="pad">
 				<ul>
 					<li>
 						<?php
-						$this->Form->label($this->_("Namesilo.row_meta.user", true), "user");
-						$this->Form->fieldText("user", $this->Html->ifSet($vars->user), array('id' => "user"));
-						?>
+                        $this->Form->label($this->_('Namesilo.row_meta.user', true), 'user');
+                        $this->Form->fieldText('user', $this->Html->ifSet($vars->user), ['id' => 'user']);
+                        ?>
 					</li>
 					<li>
 						<?php
-						$this->Form->label($this->_("Namesilo.row_meta.key", true), "key");
-						$this->Form->fieldText("key", $this->Html->ifSet($vars->key), array('id' => "key"));
-						?>
+                        $this->Form->label($this->_('Namesilo.row_meta.key', true), 'key');
+                        $this->Form->fieldText('key', $this->Html->ifSet($vars->key), ['id' => 'key']);
+                        ?>
 					</li>
                     <li>
                         <?php
-                        $this->Form->label($this->_("Namesilo.row_meta.portfolio", true), "portfolio");
-                        $this->Form->fieldText("portfolio", $this->Html->ifSet($vars->portfolio), array('id' => "portfolio"));
+                        $this->Form->label($this->_('Namesilo.row_meta.portfolio', true), 'portfolio');
+                        $this->Form->fieldText('portfolio', $this->Html->ifSet($vars->portfolio), ['id' => 'portfolio']);
                         ?>
                     </li>
                     <li>
                         <?php
-                        $this->Form->label($this->_("Namesilo.row_meta.payment_id", true), "payment_id");
-                        $this->Form->fieldText("payment_id", $this->Html->ifSet($vars->payment_id), array('id' => "payment_id"));
+                        $this->Form->label($this->_('Namesilo.row_meta.payment_id', true), 'payment_id');
+                        $this->Form->fieldText('payment_id', $this->Html->ifSet($vars->payment_id), ['id' => 'payment_id']);
                         ?>
-                        <p><?php echo $this->_("Namesilo.row_meta.payment_id.description", true); ?> <a href="https://www.namesilo.com/account_billing_profiles.php" target="_blank" rel="noopener">https://www.namesilo.com/account_billing_profiles.php</a></p>
+                        <p><?php echo $this->_('Namesilo.row_meta.payment_id.description', true); ?> <a href="https://www.namesilo.com/account_billing_profiles.php" target="_blank" rel="noopener">https://www.namesilo.com/account_billing_profiles.php</a></p>
                     </li>
 					<li>
 						<?php
-						$this->Form->fieldCheckbox("sandbox", "true", $this->Html->ifSet($vars->sandbox) == "true", array('id' => "sandbox"));
-						$this->Form->label($this->_("Namesilo.row_meta.sandbox", true), "sandbox", array('class' => "inline"));
-						?>
+                        $this->Form->fieldCheckbox('sandbox', 'true', $this->Html->ifSet($vars->sandbox) == 'true', ['id' => 'sandbox']);
+                        $this->Form->label($this->_('Namesilo.row_meta.sandbox', true), 'sandbox', ['class' => 'inline']);
+                        ?>
 					</li>
-                    <?php $this->Form->fieldHidden("namesilo_module",true); ?>
+                    <?php $this->Form->fieldHidden('namesilo_module',true); ?>
 				</ul>
 			</div>
-			
-			<div class="button_row"><a class="btn_right submit" href="#"><?php $this->_("Namesilo.add_row.add_btn");?></a></div>
+
+			<div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.add_row.add_btn');?></a></div>
 			<?php
-			$this->Form->end();
-			?>
+            $this->Form->end();
+            ?>
 		</div>
 		<?php
-		$this->Widget->end();
-		?>
+        $this->Widget->end();
+        ?>

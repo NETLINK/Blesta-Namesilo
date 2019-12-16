@@ -1,14 +1,14 @@
 	
 	<?php
     $this->Form->create();
-	?>
+    ?>
 	<div class="row panel-fix">
 		<div class="col-md-12">
             <ul class="nav nav-tabs">
                 <?php
                 foreach ($sections as $index => $key) {
                 ?>
-                <li<?php echo $index == 0 ? " class=\"active\"" : "";?>><a href="#<?php $this->Html->_($key);?>" data-toggle="tab"><?php $this->_("Namesilo.tab_whois.section_" . $key);?></a></li>
+                <li<?php echo $index == 0 ? ' class="active"' : '';?>><a href="#<?php $this->Html->_($key);?>" data-toggle="tab"><?php $this->_('Namesilo.tab_whois.section_' . $key);?></a></li>
                 <?php
                 }
                 ?>
@@ -19,7 +19,7 @@
                 $i = 0;
                 foreach ($sections as $index => $key) {
                 ?>
-                <div class="tab-pane<?php echo $index == 0 ? " active" : "";?>" id="<?php $this->Html->_($key);?>">
+                <div class="tab-pane<?php echo $index == 0 ? ' active' : '';?>" id="<?php $this->Html->_($key);?>">
                     <?php
                     foreach ($fields as $field) {
                         if (substr($field->params['for'], 0, strlen($key)) != $key)
@@ -28,23 +28,23 @@
                     <div class="form-group">
                         <?php
                         // Draw each form field associated with this label
-                        $tooltips = array();
+                        $tooltips = [];
                         foreach ($field->fields as $input) {
-                            
+
                             // Collect all tooltips to be displayed at the end
-                            if ($input->type == "tooltip") {
+                            if ($input->type == 'tooltip') {
                                 $tooltips[] = $input;
                                 continue;
                             }
-                            
+
                             // Draw the form field's secondary label if checkbox or radio item
-                            if (($input->type == "fieldCheckbox" || $input->type == "fieldRadio") && isset($input->label)) {
-                                $type = ($input->type == "fieldCheckbox" ? "checkbox" : "radio");
+                            if (($input->type == 'fieldCheckbox' || $input->type == 'fieldRadio') && isset($input->label)) {
+                                $type = ($input->type == 'fieldCheckbox' ? 'checkbox' : 'radio');
                             ?>
                             <div class="<?php $this->Html->_($type);?>">
                                 <label>
                                     <?php
-                                    call_user_func_array(array($this->Form, $field->type), $field->params);
+                                    call_user_func_array([$this->Form, $field->type], $field->params);
                                     $this->Html->_($field->params['name']);
                                     ?>
                                 </label>
@@ -61,19 +61,19 @@
                             else {
                                 if (isset($input->params['attributes']['class'])) {
                                     if (is_array($input->params['attributes']['class']))
-                                        $input->params['attributes']['class'][] = "form-control";
+                                        $input->params['attributes']['class'][] = 'form-control';
                                     else
-                                        $input->params['attributes']['class'] .= " form-control";
+                                        $input->params['attributes']['class'] .= ' form-control';
                                 }
                                 else
-                                    $input->params['attributes']['class'] = "form-control";
-                                
+                                    $input->params['attributes']['class'] = 'form-control';
+
                                 $input->params['attributes']['placeholder'] = $this->Html->ifSet($field->params['name']);
-                                
+
                                 // Draw the primary label/field
-                                call_user_func_array(array($this->Form, $field->type), $field->params);
-                                call_user_func_array(array($this->Form, $input->type), $input->params);
-								//mail( "julian@netlink.ie", "API Debug", var_export( $input->params, true ), "From: blesta@localhost\n\n" );
+                                call_user_func_array([$this->Form, $field->type], $field->params);
+                                call_user_func_array([$this->Form, $input->type], $input->params);
+                                //mail( "julian@netlink.ie", "API Debug", var_export( $input->params, true ), "From: blesta@localhost\n\n" );
                                 
                                 foreach ($tooltips as $tooltip) {
                                 ?>
@@ -95,8 +95,8 @@
 		</div>
 	</div>
 	<button class="btn btn-default pull-right" type="submit">
-		<i class="fa fa-edit"></i> <?php $this->_("Namesilo.tab_whois.field_submit");?>
+		<i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_whois.field_submit');?>
 	</button>
 	<?php
-	$this->Form->end();
-	?>
+    $this->Form->end();
+    ?>
