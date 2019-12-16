@@ -1,10 +1,14 @@
 {
-	"version": "1.8.5",
+	"version": "1.9.0",
 	"name": "NameSilo Domains Module",
 	"description": "Resell domains through NameSilo.",
 	"authors": [
+        {
+			"name": "Phillips Data Inc.",
+			"url": "https://www.blesta.com"
+		},
 		{
-			"name": "KnownHost LLC &",
+			"name": "KnownHost LLC",
 			"url": "https://www.knownhost.com"
 		},
 		{

@@ -1,21 +1,21 @@
 
     <div id="ds-records" class="pad">
         <div class="title_row first">
-            <h3><?php $this->_("Namesilo.tab_dnssec.title_disclaimer");?></h3>
+            <h3><?php $this->_('Namesilo.tab_dnssec.title_disclaimer');?></h3>
         </div>
-        <p><?php $this->_("Namesilo.tab_dnssec.warning_message1"); ?></p>
-        <p><?php $this->_("Namesilo.tab_dnssec.warning_message2"); ?></p>
+        <p><?php $this->_('Namesilo.tab_dnssec.warning_message1'); ?></p>
+        <p><?php $this->_('Namesilo.tab_dnssec.warning_message2'); ?></p>
         <div class="title_row">
-            <h3><?php $this->_("Namesilo.tab_dnssec.title_list");?></h3>
+            <h3><?php $this->_('Namesilo.tab_dnssec.title_list');?></h3>
         </div>
         <table class="table">
             <thead>
             <tr class="heading_row">
-                <td><span><?php $this->_("Namesilo.dnssec.key_tag"); ?></span></td>
-                <td><span><?php $this->_("Namesilo.dnssec.algorithm"); ?></span></td>
-                <td><span><?php $this->_("Namesilo.dnssec.digest_type"); ?></span></td>
-                <td><span><?php echo $this->_("Namesilo.dnssec.digest"); ?></span></td>
-                <td><span><?php $this->_("Namesilo.tab_dnssec.field_delete"); ?></span></td>
+                <td><span><?php $this->_('Namesilo.dnssec.key_tag'); ?></span></td>
+                <td><span><?php $this->_('Namesilo.dnssec.algorithm'); ?></span></td>
+                <td><span><?php $this->_('Namesilo.dnssec.digest_type'); ?></span></td>
+                <td><span><?php echo $this->_('Namesilo.dnssec.digest'); ?></span></td>
+                <td><span><?php $this->_('Namesilo.tab_dnssec.field_delete'); ?></span></td>
             </tr>
             </thead>
             <?php
@@ -58,7 +58,7 @@
         </table>
 
         <div class="title_row">
-            <h3><?php $this->_("Namesilo.tab_dnssec.title_add");?></h3>
+            <h3><?php $this->_('Namesilo.tab_dnssec.title_add');?></h3>
         </div>
         <?php
         $this->Form->create($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabDnssec/');
@@ -67,18 +67,18 @@
             <!-- Add New DS Record -->
             <thead>
             <tr class="heading_row">
-                <td><span><?php $this->_("Namesilo.dnssec.key_tag"); ?></span></td>
-                <td><span><?php $this->_("Namesilo.dnssec.algorithm"); ?></span></td>
-                <td><span><?php $this->_("Namesilo.dnssec.digest_type"); ?></span></td>
-                <td><span><?php echo $this->_("Namesilo.dnssec.digest"); ?></span></td>
+                <td><span><?php $this->_('Namesilo.dnssec.key_tag'); ?></span></td>
+                <td><span><?php $this->_('Namesilo.dnssec.algorithm'); ?></span></td>
+                <td><span><?php $this->_('Namesilo.dnssec.digest_type'); ?></span></td>
+                <td><span><?php echo $this->_('Namesilo.dnssec.digest'); ?></span></td>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td><?php $this->Form->fieldText("key_tag"); ?></td>
-                <td><?php $this->Form->fieldSelect("algorithm", $vars->selects['algorithm']['options']); ?></td>
-                <td><?php $this->Form->fieldSelect("digest_type", $vars->selects['digest_type']['options']); ?></td>
-                <td><?php $this->Form->fieldText("digest"); ?></td>
+                <td><?php $this->Form->fieldText('key_tag'); ?></td>
+                <td><?php $this->Form->fieldSelect('algorithm', $vars->selects['algorithm']['options']); ?></td>
+                <td><?php $this->Form->fieldSelect('digest_type', $vars->selects['digest_type']['options']); ?></td>
+                <td><?php $this->Form->fieldText('digest'); ?></td>
             </tr>
             </tbody>
         </table>

@@ -1,6 +1,6 @@
 
     <div class="title_row first">
-        <h3><?php $this->_("Namesilo.tab_hosts.title");?></h3>
+        <h3><?php $this->_('Namesilo.tab_hosts.title');?></h3>
     </div>
     <div id="domain-hosts" class="pad">
         <?php
@@ -13,8 +13,8 @@
                 <!-- Update existing host records -->
                 <thead>
                 <tr class="heading_row">
-                    <td><span><?php echo $this->_("Namesilo.tab_hosts.field_hostname"); ?></span></td>
-                    <td><span><?php $this->_("Namesilo.tab_hosts.field_ip"); ?></span></td>
+                    <td><span><?php echo $this->_('Namesilo.tab_hosts.field_hostname'); ?></span></td>
+                    <td><span><?php $this->_('Namesilo.tab_hosts.field_ip'); ?></span></td>
                 </tr>
                 </thead>
                 <tbody>
@@ -23,7 +23,7 @@
                     ?>
                     <tr>
                         <td><?php echo $index == 0 ? $host->host . '.' . $domain : false; ?></td>
-                        <td><?php $this->Form->fieldText("hosts[" . $this->Html->ifSet($host->host) . "][]", $ip); ?></td>
+                        <td><?php $this->Form->fieldText('hosts[' . $this->Html->ifSet($host->host) . '][]', $ip); ?></td>
                     </tr>
                     <?php
                 }
@@ -31,7 +31,7 @@
                     ?>
                     <tr>
                         <td></td>
-                        <td><?php $this->Form->fieldText("hosts[" . $this->Html->ifSet($host->host) . "][]"); ?></td>
+                        <td><?php $this->Form->fieldText('hosts[' . $this->Html->ifSet($host->host) . '][]'); ?></td>
                     </tr>
                     <?php
                 }
@@ -43,14 +43,14 @@
             <!-- Add New Host Record -->
             <thead>
             <tr class="heading_row">
-                <td><span><?php echo $this->_("Namesilo.tab_hosts.field_hostname"); ?></span></td>
-                <td><span><?php $this->_("Namesilo.tab_hosts.field_ip"); ?></span></td>
+                <td><span><?php echo $this->_('Namesilo.tab_hosts.field_hostname'); ?></span></td>
+                <td><span><?php $this->_('Namesilo.tab_hosts.field_ip'); ?></span></td>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td><?php $this->Form->fieldText("new_host"); echo '.' . $domain; ?></td>
-                <td><?php $this->Form->fieldText("new_host_ip"); ?></td>
+                <td><?php $this->Form->fieldText('new_host'); echo '.' . $domain; ?></td>
+                <td><?php $this->Form->fieldText('new_host_ip'); ?></td>
             </tr>
             </tbody>
         </table>
