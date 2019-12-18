@@ -1,2 +1,1 @@
-
-	<p><?php $this->_('Namesilo.notice.StatusSuspended'); ?></p>
+    <p><?php $this->_('Namesilo.notice.StatusSuspended'); ?></p>

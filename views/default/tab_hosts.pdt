@@ -1,6 +1,5 @@
-
     <div class="title_row first">
-        <h3><?php $this->_('Namesilo.tab_hosts.title');?></h3>
+        <h3><?php $this->_('Namesilo.tab_hosts.title'); ?></h3>
     </div>
     <div id="domain-hosts" class="pad">
         <?php
@@ -8,7 +7,7 @@
         ?>
         <table class="table">
             <?php
-            foreach($vars->hosts as $host) {
+            foreach ($vars->hosts as $host) {
                 ?>
                 <!-- Update existing host records -->
                 <thead>
@@ -19,7 +18,7 @@
                 </thead>
                 <tbody>
                 <?php
-                foreach($host->ip as $index=>$ip) {
+                foreach ($host->ip as $index => $ip) {
                     ?>
                     <tr>
                         <td><?php echo $index == 0 ? $host->host . '.' . $domain : false; ?></td>
@@ -27,7 +26,7 @@
                     </tr>
                     <?php
                 }
-                if(count($host->ip) < 12) {
+                if (count($host->ip) < 12) {
                     ?>
                     <tr>
                         <td></td>
@@ -49,22 +48,23 @@
             </thead>
             <tbody>
             <tr>
-                <td><?php $this->Form->fieldText('new_host'); echo '.' . $domain; ?></td>
+                <td><?php $this->Form->fieldText('new_host');
+                    echo '.' . $domain; ?></td>
                 <td><?php $this->Form->fieldText('new_host_ip'); ?></td>
             </tr>
             </tbody>
         </table>
         <div class="button_row">
-            <?php
-            $button_attributes = [
-                'class' => 'btn btn-primary pull-right',
-                'value' => 'manageHosts',
-                'type' => 'submit',
-            ];
+                <?php
+                $button_attributes = [
+                    'class' => 'btn btn-primary pull-right',
+                    'value' => 'manageHosts',
+                    'type' => 'submit',
+                ];
 
-            $this->Form->fieldButton('action', $this->_('Namesilo.tab_hosts.field_submit', true), $button_attributes);
-            ?>
-        </div>
+                $this->Form->fieldButton('action', $this->_('Namesilo.tab_hosts.field_submit', true), $button_attributes);
+                ?>
+            </div>
         <?php
         $this->Form->end();
         ?>

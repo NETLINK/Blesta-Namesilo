@@ -1,26 +1,26 @@
-
-	<div class="row panel-fix">
+    <div class="row panel-fix">
         <div class="col-md-12">
-            <h4><?php $this->_('Namesilo.tab_settings.section_verification');?></h4>
+            <h4><?php $this->_('Namesilo.tab_settings.section_verification'); ?></h4>
             <div class="form-group">
-                <p><?php $this->_('Namesilo.tab_settings.verification_text'); echo $this->Html->ifSet($vars->registrant_verification_info->email_address); ?>:
-                <?php if($vars->registrant_verification_info->verified == 'Yes'){ ?>
+                <p><?php $this->_('Namesilo.tab_settings.verification_text');
+                    echo $this->Html->ifSet($vars->registrant_verification_info->email_address); ?>:
+                    <?php if ($vars->registrant_verification_info->verified == 'Yes'){ ?>
                     <span style="color:green"><?php $this->_('Namesilo.tab_settings.verified'); ?></span>!</p>
-                <?php }else{ ?>
+                <?php } else { ?>
                     <span style="color:red;font-weight:bold"><?php $this->_('Namesilo.tab_settings.not_verified'); ?></span>!</p>
                     <p><?php $this->_('Namesilo.tab_settings.not_verified_warning'); ?></p>
                     <?php $this->Form->create(); ?>
                     <p>
                         <?php
                         $this->Form->create();
-                        $this->Form->fieldHidden('resend_verification_email',$vars->registrant_verification_info->email_address);
+                        $this->Form->fieldHidden('resend_verification_email', $vars->registrant_verification_info->email_address);
                         ?>
                         <button class="btn btn-default pull-right" type="submit">
-                            <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_resend_verification_email');?>
+                            <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_resend_verification_email'); ?>
                         </button>
-                    <?php
-                    $this->Form->end();
-                    ?>
+                        <?php
+                        $this->Form->end();
+                        ?>
                     </p>
                 <?php } ?>
             </div>
@@ -30,35 +30,35 @@
         $this->Form->create();
         ?>
         <div class="col-md-12">
-			<h4><?php $this->_('Namesilo.tab_settings.field_registrar_lock');?></h4>
-			<div class="form-group">
-				<div class="radio">
-					<label>
-						<?php
+            <h4><?php $this->_('Namesilo.tab_settings.field_registrar_lock'); ?></h4>
+            <div class="form-group">
+                <div class="radio">
+                    <label>
+                        <?php
                         $this->Form->fieldRadio('registrar_lock', 'Yes', $this->Html->ifSet($vars->registrar_lock) == 'Yes');
                         $this->_('Namesilo.tab_settings.field_registrar_lock_yes');
                         ?>
-					</label>
-				</div>
-				<div class="radio">
-					<label>
-						<?php
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <?php
                         $this->Form->fieldRadio('registrar_lock', 'No', $this->Html->ifSet($vars->registrar_lock) == 'No');
                         $this->_('Namesilo.tab_settings.field_registrar_lock_no');
                         ?>
-					</label>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="checkbox">
-					<label>
-						<?php
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <?php
                         $this->Form->fieldCheckbox('request_epp', 'true', $this->Html->ifSet($vars->request_epp) == 'true');
                         $this->_('Namesilo.tab_settings.field_request_epp');
                         ?>
-					</label>
-				</div>
-			</div>
+                    </label>
+                </div>
+            </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
@@ -70,11 +70,11 @@
                     </label>
                 </div>
             </div>
-		</div>
+        </div>
         <button class="btn btn-default pull-right" type="submit">
-            <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_submit');?>
+            <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_submit'); ?>
         </button>
         <?php
         $this->Form->end();
         ?>
-	</div>
+    </div>
