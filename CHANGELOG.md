@@ -5,6 +5,7 @@
 - Formatted all source code to PSR-2 standards for Blesta
 - Fixed a couple "undefined variable" errors encountered on initial installation
 - Updated the look of the submit buttons
+- Fixed a "Undefined property" error, when there are no domains available in Audit Domains
 
 ## [1.8.5] = 2018-11-19
 ### Added

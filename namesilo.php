@@ -11,12 +11,19 @@
  */
 class Namesilo extends Module
 {
+    /**
+     * @var string Debug email address
+     */
     private static $debug_to = 'root@localhost';
 
-    // Namesilo response codes (array)
+    /**
+     * @var array Namesilo response codes
+     */
     private static $codes;
 
-    // Pending statutes (array)
+    /**
+     * @var array Pending statutes
+     */
     private static $pending = [ 'in_review', 'pending' ];
 
     private static $defaultModuleView;
@@ -28,17 +35,22 @@ class Namesilo extends Module
      */
     public function __construct()
     {
-        # Load config.json
+        // Load config.json
         $this->loadConfig(__DIR__ . DS . 'config.json');
-        # Load components required by this module
-        Loader::loadComponents($this, [ 'Input' ]);
-        # Load the language required by this module
+
+        // Load components required by this module
+        Loader::loadComponents($this, ['Input']);
+
+        // Load the language required by this module
         Language::loadLang('namesilo', null, __DIR__ . DS . 'language' . DS);
-        # Load configuration
+
+        // Load configuration
         Configure::load('namesilo', __DIR__ . DS . 'config' . DS);
-        # Get Namesilo response codes
+
+        // Get Namesilo response codes
         self::$codes = Configure::get('Namesilo.status.codes');
-        # Set default module view
+
+        // Set default module view
         self::$defaultModuleView = 'components' . DS . 'modules' . DS . 'namesilo' . DS;
     }
 
@@ -301,7 +313,6 @@ class Namesilo extends Module
             unset($input_fields['private']);
         }
 
-
         if (isset($vars['use_module']) && $vars['use_module'] == 'true') {
             if ($package->meta->type == 'domain') {
                 $vars['years'] = 1;
@@ -492,7 +503,7 @@ class Namesilo extends Module
         if ($package->meta->type == 'domain') {
             $fields = $this->serviceFieldsToObject($service->fields);
 
-            # Make sure auto renew is off
+            // Make sure auto renew is off
             $domains = new NamesiloDomains($api);
             $response = $domains->setAutoRenewal($fields->{'domain'}, false);
             $this->processResponse($api, $response);
@@ -701,7 +712,6 @@ class Namesilo extends Module
             Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
             Loader::loadModels($this, ['Services', 'Record', 'ModuleManager']);
 
-
             $module_row = $this->getNamesiloRow();
 
             $api = $this->getApi(
@@ -717,22 +727,28 @@ class Namesilo extends Module
                 $vars['portfolio'] = $module_row->meta->portfolio;
             }
 
-            $domain_list = $domains->getList($vars)->response()->domains->domain;
+            $response = $domains->getList($vars)->response();
+            $domain_list = $this->Html->ifSet($response->domains->domain);
 
             $vars['domains'] = [];
-            foreach ($domain_list as $domain) {
-                $record = $this->Record->select('*')->from('services')
-                    ->leftJoin('service_fields', 'services.id', '=', 'service_fields.service_id', false)
-                    ->where('services.status', 'IN', ['active', 'suspended'])
-                    ->where('service_fields.value', '=', $domain)
-                    ->where('services.module_row_id', '=', $module_row->id)
-                    ->where('service_fields.key', '=', 'domain')
-                    ->numResults();
-                if (!$record) {
-                    $vars['domains'][] = $domain;
+
+            if (!empty($domain_list)) {
+                foreach ($domain_list as $domain) {
+                    $record = $this->Record->select('*')->from('services')
+                        ->leftJoin('service_fields', 'services.id', '=', 'service_fields.service_id', false)
+                        ->where('services.status', 'IN', ['active', 'suspended'])
+                        ->where('service_fields.value', '=', $domain)
+                        ->where('services.module_row_id', '=', $module_row->id)
+                        ->where('service_fields.key', '=', 'domain')
+                        ->numResults();
+
+                    if (!$record) {
+                        $vars['domains'][] = $domain;
+                    }
                 }
             }
 
+            // Set view
             $this->view->set('vars', (object)$vars);
 
             return $this->view->fetch();
@@ -772,7 +788,9 @@ class Namesilo extends Module
                 $vars['changes'][] = $this->getRenewInfo($service_id->id, $domains);
             }
 
+            // Set view
             $this->view->set('vars', $vars);
+
             return $this->view->fetch();
         } else {
             // Load the view into this object, so helpers can be automatically added to the view
@@ -781,7 +799,7 @@ class Namesilo extends Module
             $this->view->setDefaultView(self::$defaultModuleView);
 
             // Load the helpers required for this view
-            Loader::loadHelpers($this, [ 'Form', 'Html', 'Widget' ]);
+            Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
 
             // Set unspecified checkboxes
             if (!empty($vars)) {
@@ -790,7 +808,9 @@ class Namesilo extends Module
                 }
             }
 
+            // Set view
             $this->view->set('vars', (object)$vars);
+
             return $this->view->fetch();
         }
     }
@@ -1851,7 +1871,6 @@ class Namesilo extends Module
 
         return $hosts;
     }
-
 
     /**
      * Handle updating host information
