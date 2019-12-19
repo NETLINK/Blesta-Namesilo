@@ -230,7 +230,7 @@ class Namesilo extends Module
                     'valid' => [
                         'rule' => ['array_key_exists', Configure::get('Namesilo.domain_fields.ca')['cawd']['options']],
                         'message' => Language::_('Namesilo.!error.CA.CIRAWhoisDisplay.invalid', true)
-                        ]
+                    ]
                 ],
                 'caln' => [
                     'empty' => [
@@ -243,7 +243,7 @@ class Namesilo extends Module
                     'valid' => [
                         'rule' => ['array_key_exists', Configure::get('Namesilo.domain_fields.ca')['caln']['options']],
                         'message' => Language::_('Namesilo.!error.CA.CIRALanguage.invalid', true)
-                        ]
+                    ]
                 ],
             ];
             $rules = array_merge($rules, $rule);
@@ -989,6 +989,7 @@ class Namesilo extends Module
 
         $tlds = $this->getTlds($module_row);
         sort($tlds);
+
         foreach ($tlds as $tld) {
             $tld_label = $fields->label($tld, 'tld_' . $tld);
             $tld_options->attach(
@@ -2371,9 +2372,18 @@ class Namesilo extends Module
             return unserialize(base64_decode($tlds));
         }
 
-        $result = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true')->submit('getPrices');
-
         $tlds = [];
+
+        if (empty($row)) {
+            return $tlds;
+        }
+
+        $result = $this->getApi(
+            $row->meta->user,
+            $row->meta->key,
+            $row->meta->sandbox == 'true'
+        )->submit('getPrices');
+
         foreach ($result->response() as $tld => $v) {
             if (!is_object($v)) {
                 continue;
@@ -2396,6 +2406,7 @@ class Namesilo extends Module
                 }
             }
         }
+
         return $tlds;
     }
 
