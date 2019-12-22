@@ -376,12 +376,13 @@ class Namesilo extends Module {
 							$fields['years'] = $total_years - 1;
 							$response = $domains->renew($fields);
 							$this->processResponse($api,$response);
+						} else {
+							if(isset($vars['contact_id']))
+								$domains->deleteContacts(array('contact_id'=>$vars['contact_id']));
+
+							return;
 						}
 
-						if(isset($vars['contact_id']))
-							$domains->deleteContacts(array('contact_id'=>$vars['contact_id']));
-
-						return;
 					}
 				}
 			}
