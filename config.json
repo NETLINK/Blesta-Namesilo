@@ -1,7 +1,7 @@
 {
-	"version": "1.9.0",
-	"name": "NameSilo Domains Module",
-	"description": "Resell domains through NameSilo.",
+	"version": "1.10.0",
+	"name": "Namesilo.name",
+	"description": "Namesilo.description",
 	"authors": [
         {
 			"name": "Phillips Data Inc.",
@@ -15,5 +15,21 @@
 			"name": "NETLINK IT SERVICES",
 			"url": "http://www.netlink.ie/"
 		}
-	]
+	],
+    "package": {
+        "name_key": "domain"
+    },
+    "service": {
+        "name_key": "domain"
+    },
+    "module": {
+        "row": "Namesilo.module_row",
+        "rows": "Namesilo.module_row_plural",
+        "row_key": "user"
+    },
+    "email_tags": {
+        "module": [],
+        "package": [],
+        "service": ["domain"]
+    }
 }
