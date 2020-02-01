@@ -17,6 +17,7 @@ $lang['Namesilo.manage.module_rows.edit'] = 'Edit';
 $lang['Namesilo.manage.module_rows.delete'] = 'Delete';
 $lang['Namesilo.manage.module_rows.confirm_delete'] = 'Are you sure you want to delete this account?';
 $lang['Namesilo.manage.module_rows_no_results'] = 'There are no accounts.';
+$lang['Namesilo.manage.create_packages'] = 'Create Packages';
 $lang['Namesilo.manage.sync_renew_dates'] = 'Sync Renew Dates';
 $lang['Namesilo.manage.audit_domains'] = 'Audit Domains';
 
@@ -25,6 +26,66 @@ $lang['Namesilo.add_row.audit_domains.box_title'] = 'Audit Domains';
 $lang['Namesilo.manage.audit_domains.description'] = "This is a summary of domains from the Namesilo API compared against domains currently active/suspended in Blesta.  This is to help ensure that you aren't paying for domains that you aren't being paid for.";
 $lang['Namesilo.manage.audit_domains.no_issues'] = 'No issues detected.';
 $lang['Namesilo.manage.audit_domains.results'] = 'Audit Results';
+
+// Create packages
+$lang['Namesilo.manage.create_packages.box_title'] = 'Create Domain Packages';
+$lang['Namesilo.manage.create_packages.heading_basic'] = 'Basic';
+$lang['Namesilo.manage.create_packages.heading_module_options'] = 'Module Options';
+$lang['Namesilo.manage.create_packages.heading_available_tlds'] = 'Available TLDs';
+$lang['Namesilo.manage.create_packages.heading_pricing'] = 'Pricing';
+$lang['Namesilo.manage.create_packages.heading_group'] = 'Group Membership';
+$lang['Namesilo.manage.create_packages_heading.price_markup'] = 'Price Markup (%)';
+$lang['Namesilo.manage.create_packages_heading.renew_price_markup'] = 'Renewal Price Markup (%)';
+$lang['Namesilo.manage.create_packages_heading.options'] = 'Options';
+$lang['Namesilo.manage.create_packages_heading.tld'] = 'TLD';
+$lang['Namesilo.manage.create_packages_heading.currency'] = 'Currency';
+$lang['Namesilo.manage.create_packages_heading.previous_registration_price'] = 'Previous Registration Price';
+$lang['Namesilo.manage.create_packages_heading.previous_renewal_price'] = 'Previous Renewal Price';
+$lang['Namesilo.manage.create_packages_heading.current_registration_price'] = 'Current Registration Price';
+$lang['Namesilo.manage.create_packages_heading.current_renewal_price'] = 'Current Renewal Price';
+$lang['Namesilo.manage.create_packages_heading.price'] = 'Price';
+$lang['Namesilo.manage.create_packages_heading.renew_price'] = 'Renewal Price';
+$lang['Namesilo.manage.create_packages.text_tags'] = 'Tags:';
+$lang['Namesilo.manage.create_packages.field_packagename'] = 'Package Name';
+$lang['Namesilo.manage.create_packages.field_description'] = 'Description';
+$lang['Namesilo.manage.create_packages.field_description_html'] = 'HTML';
+$lang['Namesilo.manage.create_packages.field_description_text'] = 'Text';
+$lang['Namesilo.manage.create_packages.field_upgrades_use_renewal'] = 'Use renewal prices for package upgrades';
+$lang['Namesilo.manage.create_packages.field_price_enable_renews_all'] = 'Enable All Renewal Prices';
+$lang['Namesilo.manage.create_packages.field_taxable'] = 'Taxable';
+$lang['Namesilo.manage.create_packages.field_package_group'] = 'Package Group';
+$lang['Namesilo.manage.create_packages.text_create_packages'] = 'In order to prevent timeouts a maximum of %1$s packages can be saved at a time. Run this as many times as needed to create all packages.';
+$lang['Namesilo.manage.create_packages.create_packages_btn'] = 'Create Packages';
+
+// Edit packages
+$lang['Namesilo.manage.edit_packages.box_title'] = 'Edit Domain Packages';
+$lang['Namesilo.manage.edit_packages.heading_basic'] = 'Basic';
+$lang['Namesilo.manage.edit_packages.heading_module_options'] = 'Module Options';
+$lang['Namesilo.manage.edit_packages.heading_available_tlds'] = 'Available TLDs';
+$lang['Namesilo.manage.edit_packages.heading_pricing'] = 'Pricing';
+$lang['Namesilo.manage.edit_packages.heading_group'] = 'Group Membership';
+$lang['Namesilo.manage.edit_packages_heading.price_markup'] = 'Price Markup (%)';
+$lang['Namesilo.manage.edit_packages_heading.renew_price_markup'] = 'Renewal Price Markup (%)';
+$lang['Namesilo.manage.edit_packages_heading.options'] = 'Options';
+$lang['Namesilo.manage.edit_packages_heading.tld'] = 'TLD';
+$lang['Namesilo.manage.edit_packages_heading.currency'] = 'Currency';
+$lang['Namesilo.manage.edit_packages_heading.previous_registration_price'] = 'Previous Registration Price';
+$lang['Namesilo.manage.edit_packages_heading.previous_renewal_price'] = 'Previous Renewal Price';
+$lang['Namesilo.manage.edit_packages_heading.current_registration_price'] = 'Current Registration Price';
+$lang['Namesilo.manage.edit_packages_heading.current_renewal_price'] = 'Current Renewal Price';
+$lang['Namesilo.manage.edit_packages_heading.price'] = 'Price';
+$lang['Namesilo.manage.edit_packages_heading.renew_price'] = 'Renewal Price';
+$lang['Namesilo.manage.edit_packages.text_tags'] = 'Tags:';
+$lang['Namesilo.manage.edit_packages.field_packagename'] = 'Package Name';
+$lang['Namesilo.manage.edit_packages.field_description'] = 'Description';
+$lang['Namesilo.manage.edit_packages.field_description_html'] = 'HTML';
+$lang['Namesilo.manage.edit_packages.field_description_text'] = 'Text';
+$lang['Namesilo.manage.edit_packages.field_upgrades_use_renewal'] = 'Use renewal prices for package upgrades';
+$lang['Namesilo.manage.edit_packages.field_price_enable_renews_all'] = 'Enable All Renewal Prices';
+$lang['Namesilo.manage.edit_packages.field_taxable'] = 'Taxable';
+$lang['Namesilo.manage.edit_packages.field_package_group'] = 'Package Group';
+$lang['Namesilo.manage.edit_packages.text_edit_packages'] = 'In order to prevent timeouts a maximum of %1$s packages can be saved at a time. Run this as many times as needed to edit all packages.';
+$lang['Namesilo.manage.edit_packages.edit_packages_btn'] = 'Edit Packages';
 
 // Sync renew dates
 $lang['Namesilo.manage.sync_renew_dates.box_title'] = 'Sync Domain Renewal Dates';
@@ -217,6 +278,9 @@ $lang['Namesilo.domain.CIRALanguage'] = 'Language';
 $lang['Namesilo.domain.CIRALanguage.en'] = 'English';
 $lang['Namesilo.domain.CIRALanguage.fr'] = 'French';
 
+// Success messages
+$lang['Namesilo.!success.packages_created'] = 'The packages have been successfully created.';
+$lang['Namesilo.!success.packages_updated'] = 'The packages have been successfully updated.';
 
 // Errors
 $lang['Namesilo.!error.FRLegalType.format'] = 'Please select a valid Legal Type';
@@ -242,5 +306,7 @@ $lang['Namesilo.!error.CA.CIRAWhoisDisplay.invalid'] = 'Invalid whois display op
 $lang['Namesilo.!error.CA.CIRALanaguage.invalid'] = 'Invalid language submitted.';
 $lang['Namesilo.!error.CA.CIRALegalType.other'] = 'Only individual legal types may be processed automatically.  Please contact us for more information.';
 
+// Tooltips
+$lang['Namesilo.!tooltip.upgrades_use_renewal'] = 'When enabled, upgrading to this package will use renewal prices if they are set. The regular price will be used if this setting is disabled.';
 
 require_once __DIR__ . '/notices.php';

@@ -39,7 +39,7 @@ class Namesilo extends Module
         $this->loadConfig(__DIR__ . DS . 'config.json');
 
         // Load components required by this module
-        Loader::loadComponents($this, ['Input']);
+        Loader::loadComponents($this, ['Input', 'Record']);
 
         // Load the language required by this module
         Language::loadLang('namesilo', null, __DIR__ . DS . 'language' . DS);
@@ -646,49 +646,126 @@ class Namesilo extends Module
      */
     public function manageModule($module, array &$vars)
     {
-        // Load the view into this object, so helpers can be automatically added to the view
-        $this->view = new View('manage', 'default');
-        $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView(self::$defaultModuleView);
+        $action = isset($_GET['action']) ? $_GET['action'] : null;
 
-        #
-        #
-        # TODO: add tab to check status of all transfers: check if possible with Namesilo...
-        # ref: NamesiloDomainsTransfer->getList()
-        #
-        #
-        $link_buttons = [];
-        foreach ($module->rows as $row) {
-            if (isset($row->meta->key)) {
-                $link_buttons[] = [
-                    'name' => Language::_('Namesilo.manage.sync_renew_dates', true),
-                    'attributes' => [
-                        'href' => [
-                            'href' => $this->base_uri . 'settings/company/modules/addrow/'
-                                . $module->id . '?action=sync_renew_dates'
-                        ]
-                    ]
-                ];
-                $link_buttons[] = [
-                    'name' => Language::_('Namesilo.manage.audit_domains', true),
-                    'attributes' => [
-                        'href' => $this->base_uri . 'settings/company/modules/addrow/'
-                            . $module->id . '?action=audit_domains'
-                    ]
-                ];
-                break;
+        if ($action == 'create_packages') {
+            // Load Namesilo packages
+            Loader::load(__DIR__ . DS . 'includes' . DS . 'namesilo_packages.php');
+            $this->NamesiloPackages = new NamesiloPackages();
+
+            // Fetch stored packages vars, if available
+            $module_row = $this->getRow();
+            $packages_vars = $this->NamesiloPackages->getPackagesVars($module_row->id);
+
+            $vars = [];
+            $this->view = new View((!empty($packages_vars) ? 'edit_packages' : 'create_packages'), 'default');
+            $this->view->base_uri = $this->base_uri;
+            $this->view->setDefaultView(self::$defaultModuleView);
+
+            // Load the helpers required for this view
+            Loader::loadHelpers($this, ['Form', 'Html', 'Javascript', 'Widget', 'CurrencyFormat']);
+            Loader::loadModels($this, ['Languages', 'Settings', 'Currencies', 'Packages']);
+
+            // Fetch TLD prices
+            $tlds = $this->getPrices();
+
+            // Get all currencies
+            $currencies = $this->Form->collapseObjectArray($this->Currencies->getAll(Configure::get('Blesta.company_id')), 'code', 'code');
+
+            // Fetch module rows
+            $module_rows = $this->getRowsOptions();
+
+            // Fetch all available package groups
+            $package_groups = $this->Form->collapseObjectArray(
+                $this->Packages->getAllGroups(Configure::get('Blesta.company_id')),
+                'name',
+                'id'
+            );
+
+            // Calculate maximum packages that can be created at a time
+            $max_packages = round((ini_get('max_input_vars') - 30) / ((count($currencies) * 3) + 1), 0, PHP_ROUND_HALF_DOWN);
+
+            // Create packages
+            if (!empty($_POST)) {
+                $result = $this->NamesiloPackages->process($vars);
+
+                if (is_array($result)) {
+                    $error = reset($result);
+                    $this->setMessage('error', $error);
+                } else {
+                    $this->setMessage('success', Language::_('Namesilo.!success.packages_' . (!empty($packages_vars) ? 'updated' : 'created'), true));
+                }
             }
+
+            // Set view
+            $this->view->set('tlds', $tlds);
+            $this->view->set('module_rows', $module_rows);
+            $this->view->set('languages', $this->Languages->getAll(Configure::get('Blesta.company_id')));
+            $this->view->set('currencies', $currencies);
+            $this->view->set('package_groups', $package_groups);
+            $this->view->set('max_packages', $max_packages);
+            $this->view->set('vars', !empty($_POST) ? (object)$_POST : (!empty($packages_vars) ? (object)$packages_vars : (object)$vars));
+
+            $this->view->set('messages', $this->getMessages());
+            $this->view->set('package_name_tags', $this->getPackageNameTags());
+
+            return $this->view->fetch();
+        } else {
+            // Load the view into this object, so helpers can be automatically added to the view
+            $this->view = new View('manage', 'default');
+            $this->view->base_uri = $this->base_uri;
+            $this->view->setDefaultView(self::$defaultModuleView);
+
+            #
+            #
+            # TODO: add tab to check status of all transfers: check if possible with Namesilo...
+            # ref: NamesiloDomainsTransfer->getList()
+            #
+            #
+            $link_buttons = [];
+            foreach ($module->rows as $row) {
+                if (isset($row->meta->key)) {
+                    $link_buttons = [
+                        [
+                            'name' => Language::_('Namesilo.manage.create_packages', true),
+                            'attributes' => [
+                                'href' => [
+                                    'href' => $this->base_uri . 'settings/company/modules/manage/'
+                                        . $module->id . '?action=create_packages'
+                                ]
+                            ]
+                        ],
+                        [
+                            'name' => Language::_('Namesilo.manage.sync_renew_dates', true),
+                            'attributes' => [
+                                'href' => [
+                                    'href' => $this->base_uri . 'settings/company/modules/addrow/'
+                                        . $module->id . '?action=sync_renew_dates'
+                                ]
+                            ]
+                        ],
+                        [
+                            'name' => Language::_('Namesilo.manage.audit_domains', true),
+                            'attributes' => [
+                                'href' => $this->base_uri . 'settings/company/modules/addrow/'
+                                    . $module->id . '?action=audit_domains'
+                            ]
+                        ]
+                    ];
+                    break;
+                }
+            }
+
+            $this->view->set('module', $module);
+            $this->view->set('link_buttons', $link_buttons);
+
+            // Load the helpers required for this view
+            Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
+
+            $this->view->set('module', $module);
+
+            return $this->view->fetch();
         }
-
-        $this->view->set('module', $module);
-        $this->view->set('link_buttons', $link_buttons);
-
-        // Load the helpers required for this view
-        Loader::loadHelpers($this, [ 'Form', 'Html', 'Widget' ]);
-
-        $this->view->set('module', $module);
-
-        return $this->view->fetch();
     }
 
     /**
@@ -710,9 +787,9 @@ class Namesilo extends Module
 
             // Load the helpers required for this view
             Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
-            Loader::loadModels($this, ['Services', 'Record', 'ModuleManager']);
+            Loader::loadModels($this, ['Services', 'ModuleManager']);
 
-            $module_row = $this->getNamesiloRow();
+            $module_row = $this->getRow();
 
             $api = $this->getApi(
                 $module_row->meta->user,
@@ -734,7 +811,8 @@ class Namesilo extends Module
 
             if (!empty($domain_list)) {
                 foreach ($domain_list as $domain) {
-                    $record = $this->Record->select('*')->from('services')
+                    $record = $this->Record->select()
+                        ->from('services')
                         ->leftJoin('service_fields', 'services.id', '=', 'service_fields.service_id', false)
                         ->where('services.status', 'IN', ['active', 'suspended'])
                         ->where('service_fields.value', '=', $domain)
@@ -763,9 +841,9 @@ class Namesilo extends Module
 
             // Load the helpers required for this view
             Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
-            Loader::loadModels($this, ['Services', 'Clients', 'Record', 'ModuleManager', 'ClientGroups']);
+            Loader::loadModels($this, ['Services', 'Clients', 'ModuleManager', 'ClientGroups']);
 
-            $module_row = $this->getNamesiloRow();
+            $module_row = $this->getRow();
 
             $api = $this->getApi(
                 $module_row->meta->user,
@@ -865,7 +943,7 @@ class Namesilo extends Module
         if (isset($_POST['sync_services'])) {
             Loader::loadModels($this, ['ModuleManager', 'Services', 'Clients', 'ClientGroups']);
 
-            $module_row = $this->getNamesiloRow();
+            $module_row = $this->getRow();
 
             foreach ($_POST['sync_services'] as $service_id) {
                 $api = $this->getApi(
@@ -926,7 +1004,6 @@ class Namesilo extends Module
      */
     public function editModuleRow($module_row, array &$vars)
     {
-        // Same as adding
         return $this->addModuleRow($vars);
     }
 
@@ -2340,11 +2417,11 @@ class Namesilo extends Module
     private function getTld($domain, $row = null)
     {
         if ($row == null) {
-            $row = $this->getNamesiloRow();
+            $row = $this->getRow();
         }
 
         if ($row == null) {
-            $row = $this->getNamesiloRow();
+            $row = $this->getRow();
         }
 
         $tlds = $this->getTlds($row);
@@ -2516,23 +2593,134 @@ class Namesilo extends Module
     }
 
     /**
+     * Retrieves all the Namesilo prices
+     *
+     * @return array An array containing all the TLDs with their respective prices
+     */
+    protected function getPrices()
+    {
+        Loader::loadModels($this, ['Currencies']);
+
+        $row = $this->getRow();
+
+        $api = $this->getApi(
+            $row->meta->user,
+            $row->meta->key,
+            $row->meta->sandbox == 'true'
+        );
+        $result = $api->submit('getPrices')->response();
+        $tlds = [];
+
+        if (isset($result->detail) && $result->detail == 'success') {
+            $tlds = (array)$result;
+            unset($tlds['code']);
+            unset($tlds['detail']);
+        }
+
+        // Get all currencies
+        $currencies = $this->Currencies->getAll(Configure::get('Blesta.company_id'));
+
+        // Convert namesilo prices to all currencies
+        $pricing = [];
+
+        foreach ($tlds as $tld => $tld_pricing) {
+            $tld = '.' . trim($tld, '.');
+
+            foreach ($currencies as $currency) {
+                $pricing[$tld][$currency->code] = (object)[
+                    'registration' => $this->Currencies->convert($tld_pricing->registration, 'USD', $currency->code, Configure::get('Blesta.company_id')),
+                    'renew' => $this->Currencies->convert($tld_pricing->renew, 'USD', $currency->code, Configure::get('Blesta.company_id'))
+                ];
+            }
+        }
+
+        return $pricing;
+    }
+
+    /**
+     * Returns a string containing all package name tags available by default
+     *
+     * @return string A string containing all package name tags available by default
+     */
+    private function getPackageNameTags()
+    {
+        // Fetch the parser options to determine the start and end characters for template variables
+        $parser_options = Configure::get('Blesta.parser_options');
+
+        // Build all tags available by default in the welcome email
+        $package_name_tags = '';
+
+        $tags = [
+            'domain' => ['tld', 'tld_uppercase']
+        ];
+
+        if (!empty($tags)) {
+            $i = 0;
+            foreach ($tags as $group => $group_tags) {
+                foreach ($group_tags as $tag) {
+                    $package_name_tags .= ($i++ > 0 ? ' ' : '') .
+                        $parser_options['VARIABLE_START'] . $group . '.' . $tag . $parser_options['VARIABLE_END'];
+                }
+            }
+        }
+
+        return $package_name_tags;
+    }
+
+    /**
+     * Retrieves all the Namesilo module rows
+     *
+     * @return array An array containing all the module rows
+     */
+    private function getRows()
+    {
+        Loader::loadModels($this, ['ModuleManager']);
+
+        $module_rows = [];
+        $modules = $this->ModuleManager->getInstalled();
+
+        foreach ($modules as $module) {
+            $module_data = $this->ModuleManager->get($module->id);
+
+            foreach ($module_data->rows as $module_row) {
+                if (isset($module_row->meta->namesilo_module)) {
+                    $module_rows[] = $module_row;
+                }
+            }
+        }
+
+        return $module_rows;
+    }
+
+    /**
      * Retrieves the Namesilo module row
      *
      * @return null|stdClass An stdClass object representing the module row if found, otherwise void
      */
-    private function getNamesiloRow()
+    private function getRow()
     {
-        Loader::loadModels($this, ['ModuleManager']);
+        $module_rows = $this->getRows();
 
-        $modules = $this->ModuleManager->getInstalled();
-        foreach ($modules as $module) {
-            $module_data = $this->ModuleManager->get($module->id);
-            foreach ($module_data->rows as $module_row) {
-                if (isset($module_row->meta->namesilo_module)) {
-                    return $module_row;
-                }
+        return isset($module_rows[0]) ? $module_rows[0] : null;
+    }
+
+    /**
+     * Retrieves all the Namesilo module row options
+     *
+     * @return array An array containing all the module row options
+     */
+    private function getRowsOptions()
+    {
+        $rows_options = [];
+        $module_rows = $this->getRows();
+
+        foreach ($module_rows as $module_row) {
+            if (isset($module_row->meta->namesilo_module)) {
+                $rows_options[$module_row->id] = $module_row->meta->user;
             }
         }
+
+        return $rows_options;
     }
 
     /**
