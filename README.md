@@ -44,3 +44,10 @@ The module provides the following template tags for use in welcome email templat
 | package.meta.ns | Array of default nameservers configured on the package.  This may not match what the customer submitted if they changed it. |
 
 **[Get your Namesilo account here](https://www.namesilo.com/)**
+
+### Blesta Compatibility
+
+|Blesta Version|Module Version|
+|--------------|--------------|
+|< v4.9.0|v1.9.0|
+|>= v4.9.0|v1.10.0+|
