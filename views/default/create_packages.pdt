@@ -239,7 +239,7 @@
                         </ul>
                     </li>
                     <li>
-                        <table class="table">
+                        <table class="table" id="tld_rows">
                             <thead>
                                 <tr class="heading_row">
                                     <td><?php $this->_('Namesilo.manage.create_packages_heading.tld');?></td>
@@ -253,45 +253,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $i = 0;
-                                foreach ($tlds as $tld => $pricing) {
-                                    foreach ($currencies as $currency) {
-                                    ?>
-                                    <tr class="price_row<?php echo $this->Html->concat(' ', ($i % 2 == 1) ? ' odd_row' : '', '');?> tld_<?php echo $this->Html->safe(trim($tld, '.'));?>">
-                                        <td class="medium">
-                                            <strong><?php echo $this->Html->safe($tld);?></strong>
-                                        </td>
-                                        <td class="medium">
-                                            <?php echo $this->Html->safe($currency);?>
-                                        </td>
-                                        <td class="medium">
-                                            <span class="previous_registration_price"><?php echo $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['previous_registration_price'], $pricing[$currency]->registration), $currency);?></span>
-                                        </td>
-                                        <td class="medium">
-                                            <span class="previous_renewal_price"><?php echo $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['previous_renewal_price'], $pricing[$currency]->renew), $currency);?></span>
-                                        </td>
-                                        <td class="medium">
-                                            <span class="current_registration_price"><?php echo $this->CurrencyFormat->format($this->Html->ifSet($pricing[$currency]->registration), $currency);?></span>
-                                        </td>
-                                        <td class="medium">
-                                            <span class="current_renewal_price"><?php echo $this->CurrencyFormat->format($this->Html->ifSet($pricing[$currency]->renew), $currency);?></span>
-                                        </td>
-                                        <td class="medium">
-                                            <?php $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price'], $pricing[$currency]->registration), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price stretch']);?>
-                                        </td>
-                                        <td class="medium">
-                                            <?php
-                                            $this->Form->fieldCheckbox('pricing[' . $tld . '][' . $currency . '][price_enable_renews]', '1', ($this->Html->ifSet($vars->pricing[$tld][$currency]['price_enable_renews'], '1') == '1'), ['class' => 'price_enable_renews']);
-                                            $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price_renews]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price_renews'], $pricing[$currency]->renew), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price_renews stretch']);
-                                            ?>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                        $i++;
-                                    }
-                                }
-                                ?>
                             </tbody>
                         </table>
                     </li>
@@ -330,6 +291,30 @@
         <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/adapters/jquery.js';?>"></script>
         <script type="text/javascript">
             $(document).ready(function () {
+                // Load TLD rows
+                <?php
+                $url = explode('?', $_SERVER['REQUEST_URI'], 2);
+                ?>
+                $('input.tld').prop('disabled', true);
+
+                $('#tld_rows tbody').load('<?php echo $this->Html->ifSet($url[0]);?>?action=tld_rows', function() {
+                    // Hide all rows after loading the contents
+                    $('.table .price_row').hide();
+
+                    // Enable all the checkboxes
+                    $('input.tld').prop('disabled', false);
+
+                    $('input.tld:checked').each(function() {
+                        var tld = $(this).attr('id');
+
+                        $('.tld_' + tld).show();
+                        $('.table .tld_' + tld + ' input').prop('disabled', false);
+                    });
+
+                    updatePriceRows();
+                    <?php if (count($tlds) > $max_packages) { ?>limitTlds();<?php } ?>
+                });
+
                 // Toggle package name and description
                 <?php
                 foreach ($this->Html->ifSet($languages, []) as $lang) {
@@ -341,36 +326,62 @@
                 $('textarea.wysiwyg').ckeditor(function() {}, {language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
                 $('div.tab_content').blestaTabbedContent();
 
-                // Update prices
-                $('input[name="price_markup"]').on('input', function() {
-                    var price_markup = Number($(this).val());
+                // Zebra-stripe pricing rows
+                function updatePriceRows() {
+                    var i = 0;
+                    $('.price_row').each(function() {
+                        if ($(this).is(":visible")) {
+                            if (i++ % 2 == 1)
+                                $(this).addClass('odd_row');
+                            else
+                                $(this).removeClass('odd_row');
+                        }
+                    });
+                }
+
+                // Update registration prices
+                function updatePrices()
+                {
+                    var price_markup = Number($('input[name="price_markup"]').val());
 
                     if (!isNaN(price_markup)) {
                         $('.price_row').each(function() {
-                            var current_registration_price = parseFloat($(this).find('.current_registration_price').text().substring(1));
-                            var price = (current_registration_price + (current_registration_price * (price_markup / 100))).toFixed(4);
+                            if ($(this).is(":visible")) {
+                                var current_registration_price = parseFloat($(this).find('.current_registration_price').text().replace(/[^\d.-]/g, ''));
+                                var price = (current_registration_price + (current_registration_price * (price_markup / 100))).toFixed(4);
 
-                            $(this).find('.price').val(price);
+                                $(this).find('.price').val(price);
+                            }
                         });
                     } else {
-                        $(this).val(0);
+                        $('input[name="price_markup"]').val(0);
                     }
+                }
+
+                $('input[name="price_markup"]').on('input', function() {
+                    updatePrices();
                 });
 
                 // Update renewal prices
-                $('input[name="renew_price_markup"]').on('input', function() {
-                    var renew_price_markup = Number($(this).val());
+                function updateRenewalPrices() {
+                    var renew_price_markup = Number($('input[name="renew_price_markup"]').val());
 
                     if (!isNaN(renew_price_markup)) {
                         $('.price_row').each(function() {
-                            var current_renewal_price = parseFloat($(this).find('.current_renewal_price').text().substring(1));
-                            var price_renews = (current_renewal_price + (current_renewal_price * (renew_price_markup / 100))).toFixed(4);
+                            if ($(this).is(":visible")) {
+                                var current_renewal_price = parseFloat($(this).find('.current_renewal_price').text().replace(/[^\d.-]/g, ''));
+                                var price_renews = (current_renewal_price + (current_renewal_price * (renew_price_markup / 100))).toFixed(4);
 
-                            $(this).find('.price_renews').val(price_renews);
+                                $(this).find('.price_renews').val(price_renews);
+                            }
                         });
                     } else {
-                        $(this).val(0);
+                        $('input[name="renew_price_markup"]').val(0);
                     }
+                }
+
+                $('input[name="renew_price_markup"]').on('input', function() {
+                    updateRenewalPrices();
                 });
 
                 // Enable/Disable renewal prices
@@ -424,13 +435,17 @@
                         $('.tld_' + tld).hide();
                         $('.table .tld_' + tld + ' input').prop('disabled', true);
                     }
+
+                    updatePriceRows();
+                    updatePrices();
+                    updateRenewalPrices();
                 });
 
                 <?php
                 if (count($tlds) > $max_packages) {
                 ?>
                 // Limit how many TLDs can be selected
-                $('input.tld').change(function() {
+                function limitTlds() {
                     var enabled_tlds = $('input.tld:checked').length;
 
                     if (enabled_tlds >= <?php echo $this->Html->ifSet($max_packages); ?>) {
@@ -438,6 +453,10 @@
                     } else {
                         $('input.tld:not(:checked)').prop('disabled', false);
                     }
+                }
+
+                $('input.tld').change(function() {
+                    limitTlds();
                 });
                 <?php
                 }
