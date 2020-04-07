@@ -329,7 +329,9 @@
                             var current_registration_price = $(this).find('.current_registration_price').data('price');
                             var price = (current_registration_price + (current_registration_price * (price_markup / 100))).toFixed(4);
 
-                            $(this).find('.price').val(price);
+                            if (!$(this).find('.price').data('locked')) {
+                                $(this).find('.price').val(price);
+                            }
                         });
                     } else {
                         $('input[name="price_markup"]').val(0);
@@ -355,7 +357,9 @@
                             var current_renewal_price = $(this).find('.current_renewal_price').data('price');
                             var price_renews = (current_renewal_price + (current_renewal_price * (renew_price_markup / 100))).toFixed(4);
 
-                            $(this).find('.price_renews').val(price_renews);
+                            if (!$(this).find('.price_renews').data('locked')) {
+                                $(this).find('.price_renews').val(price_renews);
+                            }
                         });
                     } else {
                         $('input[name="renew_price_markup"]').val(0);
@@ -366,12 +370,22 @@
                     updateRenewalPrice();
                 });
 
+                // Lock custom price
+                $('#tld_rows').on('keypress', '.price', function() {
+                    $(this).css('background', '#FFFED9').data('locked', true);
+                });
+
+                // Lock custom renewal price
+                $('#tld_rows').on('keypress', '.price_renews', function() {
+                    $(this).css('background', '#FFFED9').data('locked', true);
+                });
+
                 // Enable/Disable renewal prices
                 $('#price_enable_renews_all').on('change', function() {
                     if (this.checked) {
                         $('.price_enable_renews').each(function() {
                             $(this).prop('checked', true);
-                            $(this).parent().find('.price_renews').prop('disabled', false);
+                            $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF').data('locked', false);
                         });
 
                         $('input[name="renew_price_markup"]').trigger('input');
@@ -380,19 +394,19 @@
                             var price = $(this).parent().parent().find('.price').val();
 
                             $(this).prop('checked', false);
-                            $(this).parent().find('.price_renews').val(price).prop('disabled', true);
+                            $(this).parent().find('.price_renews').val(price).prop('disabled', true).css('background', '#FFF').data('locked', false);
                         });
                     }
                 });
 
                 $('#tld_rows').on('change', '.price_enable_renews', function() {
                     if (this.checked) {
-                        $(this).parent().find('.price_renews').prop('disabled', false);
+                        $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF').data('locked', false);
                         $('input[name="renew_price_markup"]').trigger('input');
                     } else {
                         var price = $(this).parent().parent().find('.price').val();
 
-                        $(this).parent().find('.price_renews').val(price).prop('disabled', true);
+                        $(this).parent().find('.price_renews').val(price).prop('disabled', true).css('background', '#FFF').data('locked', false);
                     }
                 });
 

@@ -29,12 +29,12 @@ foreach ($this->Html->ifSet($currencies, []) as $currency) {
             </span>
         </td>
         <td class="medium">
-            <?php $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price'], $pricing[$currency]->registration), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price stretch']);?>
+            <?php $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price'], $pricing[$currency]->registration), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price stretch', 'data-locked' => 'false']);?>
         </td>
         <td class="medium">
             <?php
             $this->Form->fieldCheckbox('pricing[' . $tld . '][' . $currency . '][price_enable_renews]', '1', ($this->Html->ifSet($vars->pricing[$tld][$currency]['price_enable_renews'], '1') == '1'), ['class' => 'price_enable_renews']);
-            $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price_renews]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price_renews'], $pricing[$currency]->renew), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price_renews stretch']);
+            $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price_renews]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price_renews'], $pricing[$currency]->renew), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price_renews stretch', 'data-locked' => 'false']);
             ?>
         </td>
     </tr>
