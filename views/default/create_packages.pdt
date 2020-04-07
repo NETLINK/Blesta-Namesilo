@@ -291,30 +291,6 @@
         <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/adapters/jquery.js';?>"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                // Load TLD rows
-                <?php
-                $url = explode('?', $_SERVER['REQUEST_URI'], 2);
-                ?>
-                $('input.tld').prop('disabled', true);
-
-                $('#tld_rows tbody').load('<?php echo $this->Html->ifSet($url[0]);?>?action=tld_rows', function() {
-                    // Hide all rows after loading the contents
-                    $('.table .price_row').hide();
-
-                    // Enable all the checkboxes
-                    $('input.tld').prop('disabled', false);
-
-                    $('input.tld:checked').each(function() {
-                        var tld = $(this).attr('id');
-
-                        $('.tld_' + tld).show();
-                        $('.table .tld_' + tld + ' input').prop('disabled', false);
-                    });
-
-                    updatePriceRows();
-                    <?php if (count($tlds) > $max_packages) { ?>limitTlds();<?php } ?>
-                });
-
                 // Toggle package name and description
                 <?php
                 foreach ($this->Html->ifSet($languages, []) as $lang) {
@@ -323,35 +299,37 @@
                 }
                 ?>
 
-                $('textarea.wysiwyg').ckeditor(function() {}, {language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
-                $('div.tab_content').blestaTabbedContent();
-
                 // Zebra-stripe pricing rows
                 function updatePriceRows() {
                     var i = 0;
                     $('.price_row').each(function() {
-                        if ($(this).is(":visible")) {
-                            if (i++ % 2 == 1)
-                                $(this).addClass('odd_row');
-                            else
-                                $(this).removeClass('odd_row');
-                        }
+                        if (i++ % 2 == 1)
+                            $(this).addClass('odd_row');
+                        else
+                            $(this).removeClass('odd_row');
                     });
                 }
 
-                // Update registration prices
-                function updatePrices()
+                $('textarea.wysiwyg').ckeditor(function() {}, {language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
+                $('div.tab_content').blestaTabbedContent();
+
+                // Update registration price
+                function updatePrice(tld = null)
                 {
                     var price_markup = Number($('input[name="price_markup"]').val());
 
                     if (!isNaN(price_markup)) {
-                        $('.price_row').each(function() {
-                            if ($(this).is(":visible")) {
-                                var current_registration_price = parseFloat($(this).find('.current_registration_price').text().replace(/[^\d.-]/g, ''));
-                                var price = (current_registration_price + (current_registration_price * (price_markup / 100))).toFixed(4);
+                        var price_row = '.price_row';
 
-                                $(this).find('.price').val(price);
-                            }
+                        if (tld !== null) {
+                            price_row = '.' + tld + '_row';
+                        }
+
+                        $(price_row).each(function () {
+                            var current_registration_price = $(this).find('.current_registration_price').data('price');
+                            var price = (current_registration_price + (current_registration_price * (price_markup / 100))).toFixed(4);
+
+                            $(this).find('.price').val(price);
                         });
                     } else {
                         $('input[name="price_markup"]').val(0);
@@ -359,21 +337,25 @@
                 }
 
                 $('input[name="price_markup"]').on('input', function() {
-                    updatePrices();
+                    updatePrice();
                 });
 
-                // Update renewal prices
-                function updateRenewalPrices() {
+                // Update renewal price
+                function updateRenewalPrice(tld = null) {
                     var renew_price_markup = Number($('input[name="renew_price_markup"]').val());
 
                     if (!isNaN(renew_price_markup)) {
-                        $('.price_row').each(function() {
-                            if ($(this).is(":visible")) {
-                                var current_renewal_price = parseFloat($(this).find('.current_renewal_price').text().replace(/[^\d.-]/g, ''));
-                                var price_renews = (current_renewal_price + (current_renewal_price * (renew_price_markup / 100))).toFixed(4);
+                        var price_row = '.price_row';
 
-                                $(this).find('.price_renews').val(price_renews);
-                            }
+                        if (tld !== null) {
+                            price_row = '.' + tld + '_row';
+                        }
+
+                        $(price_row).each(function() {
+                            var current_renewal_price = $(this).find('.current_renewal_price').data('price');
+                            var price_renews = (current_renewal_price + (current_renewal_price * (renew_price_markup / 100))).toFixed(4);
+
+                            $(this).find('.price_renews').val(price_renews);
                         });
                     } else {
                         $('input[name="renew_price_markup"]').val(0);
@@ -381,11 +363,11 @@
                 }
 
                 $('input[name="renew_price_markup"]').on('input', function() {
-                    updateRenewalPrices();
+                    updateRenewalPrice();
                 });
 
                 // Enable/Disable renewal prices
-                $('#price_enable_renews_all').change(function() {
+                $('#price_enable_renews_all').on('change', function() {
                     if (this.checked) {
                         $('.price_enable_renews').each(function() {
                             $(this).prop('checked', true);
@@ -403,7 +385,7 @@
                     }
                 });
 
-                $('.price_enable_renews').change(function() {
+                $('#tld_rows').on('change', '.price_enable_renews', function() {
                     if (this.checked) {
                         $(this).parent().find('.price_renews').prop('disabled', false);
                         $('input[name="renew_price_markup"]').trigger('input');
@@ -415,37 +397,47 @@
                 });
 
                 // Show/Hide price rows
-                $('.table .price_row').hide();
-                $('.table .price_row input').prop('disabled', true);
+                function getTldRow(tld, update_prices = true) {
+                    <?php
+                    $url = explode('?', $_SERVER['REQUEST_URI'], 2);
+                    ?>
+                    $.get('<?php echo $this->Html->ifSet($url[0]);?>?action=tld_rows&tld=' + tld, function(row) {
+                        $('#tld_rows tbody').append(row);
+
+                        updatePriceRows();
+
+                        if (update_prices) {
+                            updatePrice(tld);
+                            updateRenewalPrice(tld);
+                        }
+                    });
+                }
 
                 $('input.tld:checked').each(function() {
                     var tld = $(this).attr('id');
+                    getTldRow(tld, false);
 
-                    $('.tld_' + tld).show();
-                    $('.table .tld_' + tld + ' input').prop('disabled', false);
+                    <?php if (count($tlds) > $max_packages) { ?>limitPackages();<?php } ?>
                 });
 
-                $('input.tld').change(function() {
+                $('input.tld').on('change', function() {
                     var tld = $(this).attr('id');
 
                     if (this.checked) {
-                        $('.tld_' + tld).show();
-                        $('.table .tld_' + tld + ' input').prop('disabled', false);
+                        getTldRow(tld);
                     } else {
-                        $('.tld_' + tld).hide();
-                        $('.table .tld_' + tld + ' input').prop('disabled', true);
+                        $('.' + tld + '_row').each(function() {
+                            $(this).remove();
+                            updatePriceRows();
+                        });
                     }
-
-                    updatePriceRows();
-                    updatePrices();
-                    updateRenewalPrices();
                 });
 
                 <?php
                 if (count($tlds) > $max_packages) {
                 ?>
                 // Limit how many TLDs can be selected
-                function limitTlds() {
+                function limitPackages() {
                     var enabled_tlds = $('input.tld:checked').length;
 
                     if (enabled_tlds >= <?php echo $this->Html->ifSet($max_packages); ?>) {
@@ -455,8 +447,8 @@
                     }
                 }
 
-                $('input.tld').change(function() {
-                    limitTlds();
+                $('input.tld').on('change', function() {
+                    limitPackages();
                 });
                 <?php
                 }

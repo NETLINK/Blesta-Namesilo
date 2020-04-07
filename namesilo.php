@@ -748,6 +748,7 @@ class Namesilo extends Module
 
             // Fetch TLD prices
             $tlds = $this->getPrices();
+            $tld = array_key_exists('.' . $_GET['tld'], $tlds) ? '.' . $_GET['tld'] : null;
 
             // Get all currencies
             $currencies = $this->Form->collapseObjectArray(
@@ -757,7 +758,8 @@ class Namesilo extends Module
             );
 
             // Set view
-            $this->view->set('tlds', $tlds);
+            $this->view->set('tld', $tld);
+            $this->view->set('pricing', $tlds[$tld]);
             $this->view->set('currencies', $currencies);
             $this->view->set('vars', !empty($vars) ? (object)$vars : (object)$settings);
 

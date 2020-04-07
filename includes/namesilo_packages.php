@@ -15,7 +15,7 @@ class NamesiloPackages extends Namesilo
     {
         parent::__construct();
 
-        set_time_limit(60 * 60 * 15); // 15 minutes
+        set_time_limit(60 * 15); // 15 minutes
 
         // Load the required models
         Loader::loadModels($this, ['ModuleManager', 'Packages']);
@@ -93,7 +93,6 @@ class NamesiloPackages extends Namesilo
                 }
             }
 
-
             $this->savePackagesMap($tld_packages_map, $module_row_id);
             $this->saveSettings($vars, $module_row_id);
 
@@ -129,6 +128,9 @@ class NamesiloPackages extends Namesilo
      */
     public function savePackagesMap(array $vars, $module_row_id)
     {
+        $packages_map = $this->getPackagesMap($module_row_id);
+        $vars = array_merge($packages_map, $vars);
+
         $fields = [
             'module_row_id' => $module_row_id,
             'key' => 'tld_packages_map',
@@ -136,7 +138,7 @@ class NamesiloPackages extends Namesilo
         ];
 
         return $this->Record->duplicate('module_row_meta.value', '=', $fields['value'])
-            ->insert('module_row_meta', $fields);;
+            ->insert('module_row_meta', $fields);
     }
 
     /**
@@ -234,7 +236,7 @@ class NamesiloPackages extends Namesilo
      *      - period The period, 'day', 'week', 'month', 'year', 'onetime' (optional, default 'month')
      *      - price The price of this term (optional, default 0.00)
      *      - setup_fee The setup fee for this package (optional, default 0.00)
-     *      - cancel_fee The cancelation fee for this package (optional, default 0.00)
+     *      - cancel_fee The cancellation fee for this package (optional, default 0.00)
      *      - currency The ISO 4217 currency code for this pricing
      *  - taxable Whether or not this package is taxable (optional, default 0)
      *  - groups A numerically indexed array of package group assignments (optional)
