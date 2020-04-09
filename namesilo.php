@@ -654,7 +654,7 @@ class Namesilo extends Module
         // Load the required models
         Loader::loadModels($this, ['Languages', 'Settings', 'Currencies', 'Packages']);
 
-        if ($action == 'create_packages') {
+        if ($action == 'manage_packages') {
             // Load Namesilo packages
             Loader::load(__DIR__ . DS . 'includes' . DS . 'namesilo_packages.php');
             $this->NamesiloPackages = new NamesiloPackages();
@@ -666,7 +666,7 @@ class Namesilo extends Module
             $post = $vars;
             $vars = [];
 
-            $this->view = new View((!empty($settings) ? 'edit_packages' : 'create_packages'), 'default');
+            $this->view = new View('manage_packages', 'default');
             $this->view->base_uri = $this->base_uri;
             $this->view->setDefaultView(self::$defaultModuleView);
 
@@ -788,11 +788,11 @@ class Namesilo extends Module
                 if (isset($row->meta->key)) {
                     $link_buttons = [
                         [
-                            'name' => Language::_('Namesilo.manage.create_packages', true),
+                            'name' => Language::_('Namesilo.manage.manage_packages', true),
                             'attributes' => [
                                 'href' => [
                                     'href' => $this->base_uri . 'settings/company/modules/manage/'
-                                        . $module->id . '?action=create_packages'
+                                        . $module->id . '?action=manage_packages'
                                 ]
                             ]
                         ],

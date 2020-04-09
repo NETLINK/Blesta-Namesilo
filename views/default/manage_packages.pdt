@@ -277,7 +277,7 @@
         <div class="inner">
             <div class="button_row">
                 <?php
-                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.create_packages.create_packages_btn', true), ['class' => 'btn btn-primary pull-right']);
+                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.create_packages.save_packages_btn', true), ['class' => 'btn btn-primary pull-right']);
                 ?>
             </div>
         </div>
@@ -385,28 +385,23 @@
                     if (this.checked) {
                         $('.price_enable_renews').each(function() {
                             $(this).prop('checked', true);
-                            $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF').data('locked', false);
+                            $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF');
                         });
 
                         $('input[name="renew_price_markup"]').trigger('input');
                     } else {
                         $('.price_enable_renews').each(function() {
-                            var price = $(this).parent().parent().find('.price').val();
-
                             $(this).prop('checked', false);
-                            $(this).parent().find('.price_renews').val(price).prop('disabled', true).css('background', '#FFF').data('locked', false);
+                            $(this).parent().find('.price_renews').prop('disabled', true).css('background', '#FFF').data('locked', false);
                         });
                     }
                 });
 
                 $('#tld_rows').on('change', '.price_enable_renews', function() {
                     if (this.checked) {
-                        $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF').data('locked', false);
-                        $('input[name="renew_price_markup"]').trigger('input');
+                        $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF');
                     } else {
-                        var price = $(this).parent().parent().find('.price').val();
-
-                        $(this).parent().find('.price_renews').val(price).prop('disabled', true).css('background', '#FFF').data('locked', false);
+                        $(this).parent().find('.price_renews').prop('disabled', true).css('background', '#FFF').data('locked', false);
                     }
                 });
 
