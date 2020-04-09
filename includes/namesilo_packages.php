@@ -45,6 +45,15 @@ class NamesiloPackages extends Namesilo
                     // Get module row
                     $module_row = $this->ModuleManager->getRow($module_row_id);
 
+                    // Set unset checkboxes
+                    $fields = ['upgrades_use_renewal', 'taxable', 'price_enable_renews_all'];
+
+                    foreach ($fields as $field) {
+                        if (!isset($vars[$field])) {
+                            $vars[$field] = 0;
+                        }
+                    }
+
                     // Build parameters
                     $tld = '.' . trim($tld, '.');
                     $params = [
@@ -52,19 +61,17 @@ class NamesiloPackages extends Namesilo
                         'descriptions' => $this->parseDescriptionTags($vars['descriptions'], $tld),
                         'status' => 'active',
                         'qty_unlimited' => 'true',
-                        'upgrades_use_renewal' => isset($vars['upgrades_use_renewal']) ? $vars['upgrades_use_renewal'] : 0,
+                        'upgrades_use_renewal' => $vars['upgrades_use_renewal'],
                         'module_id' => $module_row->module_id,
                         'module_row' => $module_row_id,
                         'pricing' => $price_rows,
-                        'taxable' => isset($vars['taxable']) ? $vars['taxable'] : 0,
+                        'taxable' => $vars['taxable'],
                         'meta' => [
                             'type' => 'domain',
                             'tlds' => [$tld]
                         ],
                         'select_group_type' => 'existing',
-                        'groups' => [
-                            isset($vars['package_group']) ? $vars['package_group'] : 0
-                        ],
+                        'groups' => [$vars['package_group']],
                         'company_id' => Configure::get('Blesta.company_id')
                     ];
                     $params['meta'] = array_merge($params['meta'], $vars['meta']);
@@ -190,6 +197,11 @@ class NamesiloPackages extends Namesilo
 
             foreach ($pricing as $currency => $price_row) {
                 if ($currency !== 'tld') {
+                    // Set unset checkboxes
+                    if (!isset($vars['pricing'][$tld][$currency]['price_enable_renews'])) {
+                        $vars['pricing'][$tld][$currency]['price_enable_renews'] = 0;
+                    }
+
                     $tld_pricing[$tld] = $vars['pricing'][$tld];
                     $tld_pricing[$tld][$currency]['previous_registration_price'] = $prices[$tld][$currency]->registration;
                     $tld_pricing[$tld][$currency]['previous_renewal_price'] = $prices[$tld][$currency]->renew;
