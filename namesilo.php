@@ -693,14 +693,14 @@ class Namesilo extends Module
                 'id'
             );
 
-            // Calculate maximum packages that can be created at a time
+            // Calculate maximum packages that can be saved at a time
             $max_packages = round(
                 (ini_get('max_input_vars') - 30) / ((count($currencies) * 3) + 1),
                 0,
                 PHP_ROUND_HALF_DOWN
             );
 
-            // Create packages
+            // Save packages
             if (!empty($post)) {
                 $this->NamesiloPackages->process($post);
 
@@ -710,7 +710,7 @@ class Namesilo extends Module
                     $this->setMessage(
                         'success',
                         Language::_(
-                            'Namesilo.!success.packages_' . (!empty($settings) ? 'updated' : 'created'),
+                            'Namesilo.!success.packages_saved',
                             true
                         )
                     );

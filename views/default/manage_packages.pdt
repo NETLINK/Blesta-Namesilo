@@ -29,19 +29,19 @@
 
         <?php
         $this->Widget->clear();
-        $this->Widget->create($this->_('Namesilo.manage.create_packages.box_title', true));
+        $this->Widget->create($this->_('Namesilo.manage.manage_packages.box_title', true));
 
         $this->Form->create(null, ['id' => 'add_packages', 'class' => 'disable-on-submit']);
         ?>
         <div class="inner">
             <div class="title_row first">
-                <h3><?php $this->_('Namesilo.manage.create_packages.heading_basic');?></h3>
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_basic');?></h3>
             </div>
             <div class="pad">
                 <ul>
                     <li>
                         <?php
-                        $this->Form->label($this->_('Namesilo.manage.create_packages.text_tags', true));
+                        $this->Form->label($this->_('Namesilo.manage.manage_packages.text_tags', true));
                         ?>
                         <div class="accent_box">
                             <?php $this->Html->_($package_name_tags);?>
@@ -93,13 +93,13 @@
                                         <ul>
                                             <li>
                                                 <?php
-                                                $this->Form->label($this->_('Namesilo.manage.create_packages.field_packagename', true), 'name_' . $this->Html->ifSet($lang->code));
+                                                $this->Form->label($this->_('Namesilo.manage.manage_packages.field_packagename', true), 'name_' . $this->Html->ifSet($lang->code));
                                                 $this->Form->fieldHidden('names[' . $i . '][lang]', $this->Html->ifSet($lang->code));
                                                 ?>
                                                 <div><?php $this->Form->fieldText('names[' . $i . '][name]', $found ? $this->Html->ifSet($name->name) : null, ['id' => 'name_' . $this->Html->ifSet($lang->code)]);?></div>
                                             </li>
                                             <li>
-                                                <h4><a id="description_area_<?php $this->Html->_($lang->code)?>" href="#" class="show_content"><i class="fa fa-caret-down"></i> <?php $this->_('Namesilo.manage.create_packages.field_description');?></a></h4>
+                                                <h4><a id="description_area_<?php $this->Html->_($lang->code)?>" href="#" class="show_content"><i class="fa fa-caret-down"></i> <?php $this->_('Namesilo.manage.manage_packages.field_description');?></a></h4>
                                                 <div id="description_content_<?php $this->Html->_($lang->code)?>" class="pad_top<?php echo !$show_description ? ' hidden' : ' show';?>">
                                                     <div>
                                                         <?php
@@ -108,10 +108,10 @@
                                                         <div class="tab_content">
                                                             <ul class="tabs">
                                                                 <li<?php echo $current_text_description ? ' class="current"' : '';?>>
-                                                                    <a href="#"><?php $this->Form->label($this->_('Namesilo.manage.create_packages.field_description_html', true));?></a>
+                                                                    <a href="#"><?php $this->Form->label($this->_('Namesilo.manage.manage_packages.field_description_html', true));?></a>
                                                                 </li>
                                                                 <li<?php echo !$current_text_description ? ' class="current"' : '';?>>
-                                                                    <a href="#"><?php $this->Form->label($this->_('Namesilo.manage.create_packages.field_description_text', true));?></a>
+                                                                    <a href="#"><?php $this->Form->label($this->_('Namesilo.manage.manage_packages.field_description_text', true));?></a>
                                                                 </li>
                                                             </ul>
                                                             <div class="inner_content">
@@ -133,7 +133,7 @@
                     <li>
                         <?php
                         $this->Form->fieldCheckbox('upgrades_use_renewal', '1', ($this->Html->ifSet($vars->upgrades_use_renewal, '1') == '1'), ['id' => 'upgrades_use_renewal']);
-                        $this->Form->label($this->_('Namesilo.manage.create_packages.field_upgrades_use_renewal', true), 'upgrades_use_renewal', ['class' => 'inline']);
+                        $this->Form->label($this->_('Namesilo.manage.manage_packages.field_upgrades_use_renewal', true), 'upgrades_use_renewal', ['class' => 'inline']);
                         ?>
                         <span class="tooltip"><?php $this->_('AppController.tooltip.text');?> <div><?php $this->_('Namesilo.!tooltip.upgrades_use_renewal');?></div></span>
                     </li>
@@ -141,7 +141,7 @@
             </div>
 
             <div class="title_row">
-                <h3><?php $this->_('Namesilo.manage.create_packages.heading_module_options');?></h3>
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_module_options');?></h3>
             </div>
             <div class="pad">
                 <ul>
@@ -167,13 +167,13 @@
             </div>
 
             <div class="title_row">
-                <h3><?php $this->_('Namesilo.manage.create_packages.heading_available_tlds');?></h3>
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_available_tlds');?></h3>
             </div>
             <div class="pad">
                 <?php
                 if (count($tlds) > $max_packages) {
                     ?>
-                    <p><?php $this->_('Namesilo.manage.create_packages.text_create_packages', false, $max_packages); ?></p>
+                    <p><?php $this->_('Namesilo.manage.manage_packages.text_manage_packages', false, $max_packages); ?></p>
                     <?php
                 }
                 ?>
@@ -199,7 +199,7 @@
             </div>
 
             <div class="title_row">
-                <h3><?php $this->_('Namesilo.manage.create_packages.heading_pricing');?></h3>
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_pricing');?></h3>
             </div>
             <div class="pad">
                 <ul>
@@ -207,9 +207,9 @@
                         <table class="table">
                             <thead>
                                 <tr class="heading_row">
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.price_markup');?></td>
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.renew_price_markup');?></td>
-                                    <td colspan="2"><?php $this->_('Namesilo.manage.create_packages_heading.options');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.price_markup');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.renew_price_markup');?></td>
+                                    <td colspan="2"><?php $this->_('Namesilo.manage.manage_packages_heading.options');?></td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -223,7 +223,7 @@
                                     <td class="large" colspan="2">
                                         <?php
                                         $this->Form->fieldCheckbox('price_enable_renews_all', '1', ($this->Html->ifSet($vars->price_enable_renews_all, '1') == '1'), ['id' => 'price_enable_renews_all']);
-                                        $this->Form->label($this->_('Namesilo.manage.create_packages.field_price_enable_renews_all', true), 'price_enable_renews_all', ['class' => 'inline']);
+                                        $this->Form->label($this->_('Namesilo.manage.manage_packages.field_price_enable_renews_all', true), 'price_enable_renews_all', ['class' => 'inline']);
                                         ?>
                                     </td>
                                 </tr>
@@ -233,7 +233,7 @@
                             <li class="pad_top">
                                 <?php
                                 $this->Form->fieldCheckbox('taxable', '1', ($this->Html->ifSet($vars->taxable, '0') == '1'), ['id' => 'taxable']);
-                                $this->Form->label($this->_('Namesilo.manage.create_packages.field_taxable', true), 'taxable', ['class' => 'inline']);
+                                $this->Form->label($this->_('Namesilo.manage.manage_packages.field_taxable', true), 'taxable', ['class' => 'inline']);
                                 ?>
                             </li>
                         </ul>
@@ -242,14 +242,14 @@
                         <table class="table" id="tld_rows">
                             <thead>
                                 <tr class="heading_row">
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.tld');?></td>
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.currency');?></td>
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.previous_registration_price');?></td>
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.previous_renewal_price');?></td>
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.current_registration_price');?></td>
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.current_renewal_price');?></td>
-                                    <td><?php $this->_('Namesilo.manage.create_packages_heading.price');?></td>
-                                    <td class="last"><?php $this->_('Namesilo.manage.create_packages_heading.renew_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.tld');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.currency');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.previous_registration_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.previous_renewal_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.current_registration_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.current_renewal_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.price');?></td>
+                                    <td class="last"><?php $this->_('Namesilo.manage.manage_packages_heading.renew_price');?></td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -260,13 +260,13 @@
             </div>
 
             <div class="title_row">
-                <h3><?php $this->_('Namesilo.manage.create_packages.heading_group');?></h3>
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_group');?></h3>
             </div>
             <div class="pad">
                 <ul>
                     <li>
                         <?php
-                        $this->Form->label($this->_('Namesilo.manage.create_packages.field_package_group', true), 'package_group');
+                        $this->Form->label($this->_('Namesilo.manage.manage_packages.field_package_group', true), 'package_group');
                         $this->Form->fieldSelect('package_group', $package_groups, $this->Html->ifSet($vars->package_group));
                         ?>
                     </li>
@@ -277,7 +277,7 @@
         <div class="inner">
             <div class="button_row">
                 <?php
-                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.create_packages.save_packages_btn', true), ['class' => 'btn btn-primary pull-right']);
+                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.manage_packages.save_packages_btn', true), ['class' => 'btn btn-primary pull-right']);
                 ?>
             </div>
         </div>
