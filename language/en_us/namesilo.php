@@ -1,6 +1,7 @@
 <?php
 // Basics
-$lang['Namesilo.name'] = 'Namesilo';
+$lang['Namesilo.name'] = 'NameSilo Domains Module';
+$lang['Namesilo.description'] = 'Resell domains through NameSilo.';
 $lang['Namesilo.module_row'] = 'Account';
 $lang['Namesilo.module_row_plural'] = 'Accounts';
 
