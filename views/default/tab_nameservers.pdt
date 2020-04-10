@@ -1,24 +1,23 @@
-
-	<?php
+    <?php
     $this->Form->create();
     ?>
-	<div class="pad">
-		<ul>
-			<?php
-            for ($i=0; $i<5; $i++) {
-            ?>
-			<li>
-				<?php
-                $this->Form->label($this->_('Namesilo.tab_nameserver.field_ns', true, $i+1), 'ns' . $i+1);
-                $this->Form->fieldText('ns[]', $this->Html->ifSet($vars->ns[$i]), ['id' => 'ns' . $i+1]);
+    <div class="pad">
+        <ul>
+            <?php
+            for ($i = 0; $i < 5; $i++) {
                 ?>
-			</li>
-			<?php
+                <li>
+                    <?php
+                    $this->Form->label($this->_('Namesilo.tab_nameserver.field_ns', true, $i + 1), 'ns' . $i + 1);
+                    $this->Form->fieldText('ns[]', $this->Html->ifSet($vars->ns[$i]), ['id' => 'ns' . $i + 1]);
+                    ?>
+                </li>
+                <?php
             }
             ?>
-		</ul>
-	</div>
-	<div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_nameservers.field_submit');?></a></div>
-	<?php
+        </ul>
+    </div>
+    <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_nameservers.field_submit'); ?></a></div>
+    <?php
     $this->Form->end();
     ?>

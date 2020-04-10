@@ -1,0 +1,466 @@
+        <?php
+        if (!empty($messages)) {
+            foreach ((array)$messages as $type => $message) {
+                if ($type == 'notice') {
+                    $type = 'alert';
+                }
+                ?>
+                <section class="error_section">
+                    <article class="error_box<?php echo($type !== 'success' ? ' ' . $type : '');?>">
+                        <a href="#" class="close">×</a>
+                        <div class="icon-line fa-2x">
+                            <i class="fa fa-<?php echo($type == 'success' ? 'check' : ($type == 'alert' ? 'exclamation-triangle' : 'close'));?>"></i>
+                            <?php
+                            foreach ((array)$message['message'] as $field_message) {
+                                foreach ((array)$field_message as $text_message) {
+                                    ?>
+                                    <p><?php echo $text_message; ?></p>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </div>
+                    </article>
+                </section>
+                <?php
+            }
+        }
+        ?>
+
+        <?php
+        $this->Widget->clear();
+        $this->Widget->create($this->_('Namesilo.manage.manage_packages.box_title', true));
+
+        $this->Form->create(null, ['id' => 'add_packages', 'class' => 'disable-on-submit']);
+        ?>
+        <div class="inner">
+            <div class="title_row first">
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_basic');?></h3>
+            </div>
+            <div class="pad">
+                <ul>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Namesilo.manage.manage_packages.text_tags', true));
+                        ?>
+                        <div class="accent_box">
+                            <?php $this->Html->_($package_name_tags);?>
+                        </div>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <div class="tab_content inverse">
+                            <ul class="tabs">
+                                <?php
+                                foreach ($languages as $lang) {
+                                    ?>
+                                    <li<?php echo($this->Html->ifSet($lang->code) == Configure::get('Blesta.language') ? ' class="current"' : '');?>>
+                                        <a href="#"><?php $this->Html->_($lang->name);?></a>
+                                    </li>
+                                    <?php
+                                }
+                                ?>
+                            </ul>
+                            <div class="inner_content">
+                                <?php
+                                foreach ($languages as $i => $lang) {
+                                    $found = false;
+                                    foreach ((array) $this->Html->ifSet($vars->names) as $name) {
+                                        $name = (object) $name;
+
+                                        if ($this->Html->ifSet($name->lang) == $lang->code) {
+                                            $found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    $show_description = false;
+                                    $current_text_description = false;
+                                    foreach ((array)$this->Html->ifSet($vars->descriptions) as $description) {
+                                        $description = (object) $description;
+
+                                        if ($this->Html->ifSet($description->lang) == $lang->code) {
+                                            if (!empty($description->text) || !empty($description->html)) {
+                                                $show_description = true;
+                                                $current_text_description = !empty($description->html);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    ?>
+                                    <div>
+                                        <ul>
+                                            <li>
+                                                <?php
+                                                $this->Form->label($this->_('Namesilo.manage.manage_packages.field_packagename', true), 'name_' . $this->Html->ifSet($lang->code));
+                                                $this->Form->fieldHidden('names[' . $i . '][lang]', $this->Html->ifSet($lang->code));
+                                                ?>
+                                                <div><?php $this->Form->fieldText('names[' . $i . '][name]', $found ? $this->Html->ifSet($name->name) : null, ['id' => 'name_' . $this->Html->ifSet($lang->code)]);?></div>
+                                            </li>
+                                            <li>
+                                                <h4><a id="description_area_<?php $this->Html->_($lang->code)?>" href="#" class="show_content"><i class="fa fa-caret-down"></i> <?php $this->_('Namesilo.manage.manage_packages.field_description');?></a></h4>
+                                                <div id="description_content_<?php $this->Html->_($lang->code)?>" class="pad_top<?php echo !$show_description ? ' hidden' : ' show';?>">
+                                                    <div>
+                                                        <?php
+                                                        $this->Form->fieldHidden('descriptions[' . $i . '][lang]', $this->Html->ifSet($lang->code));
+                                                        ?>
+                                                        <div class="tab_content">
+                                                            <ul class="tabs">
+                                                                <li<?php echo $current_text_description ? ' class="current"' : '';?>>
+                                                                    <a href="#"><?php $this->Form->label($this->_('Namesilo.manage.manage_packages.field_description_html', true));?></a>
+                                                                </li>
+                                                                <li<?php echo !$current_text_description ? ' class="current"' : '';?>>
+                                                                    <a href="#"><?php $this->Form->label($this->_('Namesilo.manage.manage_packages.field_description_text', true));?></a>
+                                                                </li>
+                                                            </ul>
+                                                            <div class="inner_content">
+                                                                <div><?php $this->Form->fieldTextarea('descriptions[' . $i . '][html]', $this->Html->ifSet($description->html), ['class' => 'wysiwyg']);?></div>
+                                                                <div><?php $this->Form->fieldTextarea('descriptions[' . $i . '][text]', $this->Html->ifSet($description->text), ['data-markdown-editor' => '']);?></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->fieldCheckbox('upgrades_use_renewal', '1', ($this->Html->ifSet($vars->upgrades_use_renewal, '1') == '1'), ['id' => 'upgrades_use_renewal']);
+                        $this->Form->label($this->_('Namesilo.manage.manage_packages.field_upgrades_use_renewal', true), 'upgrades_use_renewal', ['class' => 'inline']);
+                        ?>
+                        <span class="tooltip"><?php $this->_('AppController.tooltip.text');?> <div><?php $this->_('Namesilo.!tooltip.upgrades_use_renewal');?></div></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="title_row">
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_module_options');?></h3>
+            </div>
+            <div class="pad">
+                <ul>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Namesilo.module_row', true), 'module_row');
+                        $this->Form->fieldSelect('module_row', $module_rows, $this->Html->ifSet($vars->module_row));
+                        ?>
+                    </li>
+                    <?php
+                    for ($i = 1; $i <= 5; $i++) {
+                        ?>
+                        <li>
+                            <?php
+                            $this->Form->label($this->_('Namesilo.package_fields.ns' . $i, true), 'namesilo_ns' . $i);
+                            $this->Form->fieldText('meta[ns][]', $this->Html->ifSet($vars->meta['ns'][$i - 1]), ['id' => 'namesilo_ns' . $i]);
+                            ?>
+                        </li>
+                        <?php
+                    }
+                    ?>
+                </ul>
+            </div>
+
+            <div class="title_row">
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_available_tlds');?></h3>
+            </div>
+            <div class="pad">
+                <?php
+                if (count($tlds) > $max_packages) {
+                    ?>
+                    <p><?php $this->_('Namesilo.manage.manage_packages.text_manage_packages', false, $max_packages); ?></p>
+                    <?php
+                }
+                ?>
+
+                <ul>
+                    <li>
+                        <div class="row">
+                            <?php
+                            foreach ($tlds as $tld => $pricing) {
+                                ?>
+                                <div class="col-md-2">
+                                    <?php
+                                    $this->Form->fieldCheckbox('pricing[' . $tld . '][tld]', '1', ($this->Html->ifSet($vars->pricing[$tld]['tld'], '0') == '1'), ['class' => 'tld', 'id' => trim($tld, '.')]);
+                                    $this->Form->label($tld, 'tld', ['class' => 'inline']);
+                                    ?>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="title_row">
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_pricing');?></h3>
+            </div>
+            <div class="pad">
+                <ul>
+                    <li>
+                        <table class="table">
+                            <thead>
+                                <tr class="heading_row">
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.price_markup');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.renew_price_markup');?></td>
+                                    <td colspan="2"><?php $this->_('Namesilo.manage.manage_packages_heading.options');?></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="medium">
+                                        <?php $this->Form->fieldText('price_markup', $this->Html->ifSet($vars->price_markup), ['class' => 'stretch']);?>
+                                    </td>
+                                    <td class="medium">
+                                        <?php $this->Form->fieldText('renew_price_markup', $this->Html->ifSet($vars->renew_price_markup), ['class' => 'stretch']);?>
+                                    </td>
+                                    <td class="large" colspan="2">
+                                        <?php
+                                        $this->Form->fieldCheckbox('price_enable_renews_all', '1', ($this->Html->ifSet($vars->price_enable_renews_all, '1') == '1'), ['id' => 'price_enable_renews_all']);
+                                        $this->Form->label($this->_('Namesilo.manage.manage_packages.field_price_enable_renews_all', true), 'price_enable_renews_all', ['class' => 'inline']);
+                                        ?>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul>
+                            <li class="pad_top">
+                                <?php
+                                $this->Form->fieldCheckbox('taxable', '1', ($this->Html->ifSet($vars->taxable, '0') == '1'), ['id' => 'taxable']);
+                                $this->Form->label($this->_('Namesilo.manage.manage_packages.field_taxable', true), 'taxable', ['class' => 'inline']);
+                                ?>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <table class="table" id="tld_rows">
+                            <thead>
+                                <tr class="heading_row">
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.tld');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.currency');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.previous_registration_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.previous_renewal_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.current_registration_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.current_renewal_price');?></td>
+                                    <td><?php $this->_('Namesilo.manage.manage_packages_heading.price');?></td>
+                                    <td class="last"><?php $this->_('Namesilo.manage.manage_packages_heading.renew_price');?></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="title_row">
+                <h3><?php $this->_('Namesilo.manage.manage_packages.heading_group');?></h3>
+            </div>
+            <div class="pad">
+                <ul>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Namesilo.manage.manage_packages.field_package_group', true), 'package_group');
+                        $this->Form->fieldSelect('package_group', $package_groups, $this->Html->ifSet($vars->package_group));
+                        ?>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="inner">
+            <div class="button_row">
+                <?php
+                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.manage_packages.save_packages_btn', true), ['class' => 'btn btn-primary pull-right']);
+                ?>
+            </div>
+        </div>
+        <?php
+        $this->Form->end();
+
+        $this->Widget->end();
+        ?>
+
+        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/ckeditor.js';?>"></script>
+        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/adapters/jquery.js';?>"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Toggle package name and description
+                <?php
+                foreach ($this->Html->ifSet($languages, []) as $lang) {
+                    echo " $(this).blestaBindToggleEvent('#description_area_" . $this->Html->ifSet($lang->code) . "',"
+                        . " '#description_content_" . $this->Html->ifSet($lang->code) . "');";
+                }
+                ?>
+
+                // Zebra-stripe pricing rows
+                function updatePriceRows() {
+                    var i = 0;
+                    $('.price_row').each(function() {
+                        if (i++ % 2 == 1)
+                            $(this).addClass('odd_row');
+                        else
+                            $(this).removeClass('odd_row');
+                    });
+                }
+
+                $('textarea.wysiwyg').ckeditor(function() {}, {language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
+                $('div.tab_content').blestaTabbedContent();
+
+                // Update registration price
+                function updatePrice(tld = null)
+                {
+                    var price_markup = Number($('input[name="price_markup"]').val());
+
+                    if (!isNaN(price_markup)) {
+                        var price_row = '.price_row';
+
+                        if (tld !== null) {
+                            price_row = '.' + tld + '_row';
+                        }
+
+                        $(price_row).each(function () {
+                            var current_registration_price = $(this).find('.current_registration_price').data('price');
+                            var price = (current_registration_price + (current_registration_price * (price_markup / 100))).toFixed(4);
+
+                            if (!$(this).find('.price').data('locked')) {
+                                $(this).find('.price').val(price);
+                            }
+                        });
+                    } else {
+                        $('input[name="price_markup"]').val(0);
+                    }
+                }
+
+                $('input[name="price_markup"]').on('input', function() {
+                    updatePrice();
+                });
+
+                // Update renewal price
+                function updateRenewalPrice(tld = null) {
+                    var renew_price_markup = Number($('input[name="renew_price_markup"]').val());
+
+                    if (!isNaN(renew_price_markup)) {
+                        var price_row = '.price_row';
+
+                        if (tld !== null) {
+                            price_row = '.' + tld + '_row';
+                        }
+
+                        $(price_row).each(function() {
+                            var current_renewal_price = $(this).find('.current_renewal_price').data('price');
+                            var price_renews = (current_renewal_price + (current_renewal_price * (renew_price_markup / 100))).toFixed(4);
+
+                            if (!$(this).find('.price_renews').data('locked')) {
+                                $(this).find('.price_renews').val(price_renews);
+                            }
+                        });
+                    } else {
+                        $('input[name="renew_price_markup"]').val(0);
+                    }
+                }
+
+                $('input[name="renew_price_markup"]').on('input', function() {
+                    updateRenewalPrice();
+                });
+
+                // Lock custom price
+                $('#tld_rows').on('keypress', '.price', function() {
+                    $(this).css('background', '#FFFED9').data('locked', true);
+                });
+
+                // Lock custom renewal price
+                $('#tld_rows').on('keypress', '.price_renews', function() {
+                    $(this).css('background', '#FFFED9').data('locked', true);
+                });
+
+                // Enable/Disable renewal prices
+                $('#price_enable_renews_all').on('change', function() {
+                    if (this.checked) {
+                        $('.price_enable_renews').each(function() {
+                            $(this).prop('checked', true);
+                            $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF');
+                        });
+
+                        $('input[name="renew_price_markup"]').trigger('input');
+                    } else {
+                        $('.price_enable_renews').each(function() {
+                            $(this).prop('checked', false);
+                            $(this).parent().find('.price_renews').prop('disabled', true).css('background', '#FFF').data('locked', false);
+                        });
+                    }
+                });
+
+                $('#tld_rows').on('change', '.price_enable_renews', function() {
+                    if (this.checked) {
+                        $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF');
+                    } else {
+                        $(this).parent().find('.price_renews').prop('disabled', true).css('background', '#FFF').data('locked', false);
+                    }
+                });
+
+                // Show/Hide price rows
+                function getTldRow(tld, update_prices = true) {
+                    <?php
+                    $url = explode('?', $_SERVER['REQUEST_URI'], 2);
+                    ?>
+                    $.get('<?php echo $this->Html->ifSet($url[0]);?>?action=tld_rows&tld=' + tld, function(row) {
+                        $('#tld_rows tbody').append(row);
+
+                        updatePriceRows();
+
+                        if (update_prices) {
+                            updatePrice(tld);
+                            updateRenewalPrice(tld);
+                        }
+                    });
+                }
+
+                $('input.tld:checked').each(function() {
+                    var tld = $(this).attr('id');
+                    getTldRow(tld, false);
+
+                    <?php if (count($tlds) > $max_packages) { ?>limitPackages();<?php } ?>
+                });
+
+                $('input.tld').on('change', function() {
+                    var tld = $(this).attr('id');
+
+                    if (this.checked) {
+                        getTldRow(tld);
+                    } else {
+                        $('.' + tld + '_row').each(function() {
+                            $(this).remove();
+                            updatePriceRows();
+                        });
+                    }
+                });
+
+                <?php
+                if (count($tlds) > $max_packages) {
+                ?>
+                // Limit how many TLDs can be selected
+                function limitPackages() {
+                    var enabled_tlds = $('input.tld:checked').length;
+
+                    if (enabled_tlds >= <?php echo $this->Html->ifSet($max_packages); ?>) {
+                        $('input.tld:not(:checked)').prop('disabled', true);
+                    } else {
+                        $('input.tld:not(:checked)').prop('disabled', false);
+                    }
+                }
+
+                $('input.tld').on('change', function() {
+                    limitPackages();
+                });
+                <?php
+                }
+                ?>
+            });
+        </script>

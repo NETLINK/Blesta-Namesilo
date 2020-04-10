@@ -1,3 +1,4 @@
 _notes
 *.bak
 /nbproject/
+.idea

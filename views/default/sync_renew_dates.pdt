@@ -1,86 +1,85 @@
-<?php
-
-if(isset($_REQUEST['msg'])) {
-    if ($_REQUEST['msg'] == 'success') { ?>
-        <section class="error_section">
-            <article class="error_box">
-                <a class="close" href="#">&times;</a>
-                <p> <?php echo 'Success' ?></p>
-            </article>
-        </section>
         <?php
-    }
-}
-
-$this->Widget->clear();
-$this->Widget->create($this->_('Namesilo.manage.sync_renew_dates.box_title', true));
-?>
-<div class="inner">
-    <p><?php echo $this->_('Namesilo.manage.sync_renew_dates.description', true); ?></p>
-    <?php if(count($vars['changes']) > 0){ ?>
-    <div class="title_row first">
-        <h3><?php $this->_('Namesilo.manage.sync_renew_dates.out_of_sync');?></h3>
-    </div>
-    <?php $this->Form->create(); ?>
-    <table class="table">
-        <tbody>
-            <tr class="heading_row">
-                <td></td>
-                <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
-                <td>Old Renew Date</td>
-                <td>New Renew Date</td>
-            </tr>
-            <?php
-            foreach($vars['changes'] as $change){
-                if(isset($change['error']) && !$change['error']) {
-                    ?>
-                    <tr>
-                        <td>
-                            <?php
-                            $this->Form->fieldCheckbox('sync_services[]', $this->Html->ifSet($change['service_id']), 'true');
-                            ?>
-                        </td>
-                        <td><?php echo $this->Html->ifSet($change['domain']); ?></td>
-                        <td><?php echo $this->Html->ifSet($change['date_before']); ?></td>
-                        <td><?php echo $this->Html->ifSet($change['date_after']); ?></td>
-                    </tr>
-                    <?php
-                }
+        if (isset($_REQUEST['msg'])) {
+            if ($_REQUEST['msg'] == 'success') { ?>
+                <section class="error_section">
+                    <article class="error_box">
+                        <a class="close" href="#">&times;</a>
+                        <p> <?php echo 'Success' ?></p>
+                    </article>
+                </section>
+                <?php
             }
-            ?>
-        </tbody>
-    </table>
-    <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.manage.sync_renew_dates.sync_btn');?></a></div>
-    <?php $this->Form->end(); ?>
-    <?php } ?>
+        }
 
-    <?php if(count($vars['changes']) > 0){ ?>
-    <div class="title_row first" style="margin-top:15px !important">
-        <h3><?php $this->_('Namesilo.manage.sync_renew_dates.errors');?></h3>
-    </div>
-    <table class="table">
-        <tbody>
-            <tr class="heading_row">
-                <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
-                <td>Result</td>
-            </tr>
-            <?php
-            foreach($vars['changes'] as $change){
-                if(isset($change['error']) && $change['error']) {
-                    ?>
-                    <tr>
-                        <td><?php echo $this->Html->ifSet($change['domain']); ?></td>
-                        <td><?php echo $this->Html->ifSet($change['error']['detail']); ?></td>
-                    </tr>
-                    <?php
-                }
-            }
-            ?>
-        </tbody>
-    </table>
-    <?php } ?>
+        $this->Widget->clear();
+        $this->Widget->create($this->_('Namesilo.manage.sync_renew_dates.box_title', true));
+        ?>
+            <div class="inner">
+                <p><?php echo $this->_('Namesilo.manage.sync_renew_dates.description', true); ?></p>
+                <?php if (count($vars['changes']) > 0) { ?>
+                    <div class="title_row first">
+                        <h3><?php $this->_('Namesilo.manage.sync_renew_dates.out_of_sync'); ?></h3>
+                    </div>
+                    <?php $this->Form->create(); ?>
+                    <table class="table">
+                        <tbody>
+                        <tr class="heading_row">
+                            <td></td>
+                            <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
+                            <td>Old Renew Date</td>
+                            <td>New Renew Date</td>
+                        </tr>
+                        <?php
+                        foreach ($vars['changes'] as $change) {
+                            if (isset($change['error']) && !$change['error']) {
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php
+                                        $this->Form->fieldCheckbox('sync_services[]', $this->Html->ifSet($change['service_id']), 'true');
+                                        ?>
+                                    </td>
+                                    <td><?php echo $this->Html->ifSet($change['domain']); ?></td>
+                                    <td><?php echo $this->Html->ifSet($change['date_before']); ?></td>
+                                    <td><?php echo $this->Html->ifSet($change['date_after']); ?></td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.manage.sync_renew_dates.sync_btn'); ?></a></div>
+                    <?php $this->Form->end(); ?>
+                <?php } ?>
 
-</div>
-<?php
-$this->Widget->end();
-?>
+                <?php if (count($vars['changes']) > 0) { ?>
+                    <div class="title_row first" style="margin-top:15px !important">
+                        <h3><?php $this->_('Namesilo.manage.sync_renew_dates.errors'); ?></h3>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr class="heading_row">
+                            <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
+                            <td>Result</td>
+                        </tr>
+                        <?php
+                        foreach ($vars['changes'] as $change) {
+                            if (isset($change['error']) && $change['error']) {
+                                ?>
+                                <tr>
+                                    <td><?php echo $this->Html->ifSet($change['domain']); ?></td>
+                                    <td><?php echo $this->Html->ifSet($change['error']['detail']); ?></td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                <?php } ?>
+
+            </div>
+        <?php
+        $this->Widget->end();
+        ?>

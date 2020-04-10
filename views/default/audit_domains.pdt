@@ -1,34 +1,34 @@
-<?php
-$this->Widget->clear();
-$this->Widget->create($this->_('Namesilo.add_row.audit_domains.box_title', true));
-?>
-<div class="inner">
-    <p><?php echo $this->_('Namesilo.manage.audit_domains.description', true); ?></p>
-    <div class="title_row first">
-        <h3><?php $this->_('Namesilo.manage.audit_domains.results');?></h3>
-    </div>
-    <?php if(count($vars->domains) > 0){ ?>
-    <table>
-
-        <tr>
-            <th><?php echo $this->_('Namesilo.domain.domain', true); ?></th>
-            <th>Issue/Return</th>
-        </tr>
         <?php
-        foreach($vars->domains as $domain){
-            ?>
-                <tr>
-                    <td><?php echo $this->Html->ifSet($service['domain']); ?></td>
-                    <td>No corresponding billing record in Blesta.</td>
-                </tr>
-            <?php
-        }
+        $this->Widget->clear();
+        $this->Widget->create($this->_('Namesilo.add_row.audit_domains.box_title', true));
         ?>
-    </table>
-    <?php }else{ ?>
-    <p><?php echo $this->_('Namesilo.manage.audit_domains.no_issues', true); ?></p>
-    <?php } ?>
-</div>
-<?php
-$this->Widget->end();
-?>
+            <div class="inner">
+                <p><?php echo $this->_('Namesilo.manage.audit_domains.description', true); ?></p>
+                <div class="title_row first">
+                    <h3><?php $this->_('Namesilo.manage.audit_domains.results'); ?></h3>
+                </div>
+                <?php if (count($vars->domains) > 0) { ?>
+                    <table>
+
+                        <tr>
+                            <th><?php echo $this->_('Namesilo.domain.domain', true); ?></th>
+                            <th>Issue/Return</th>
+                        </tr>
+                        <?php
+                        foreach ($vars->domains as $domain) {
+                            ?>
+                            <tr>
+                                <td><?php echo $this->Html->ifSet($service['domain']); ?></td>
+                                <td>No corresponding billing record in Blesta.</td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </table>
+                <?php } else { ?>
+                    <p><?php echo $this->_('Namesilo.manage.audit_domains.no_issues', true); ?></p>
+                <?php } ?>
+            </div>
+        <?php
+        $this->Widget->end();
+        ?>
