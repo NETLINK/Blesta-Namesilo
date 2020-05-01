@@ -1,0 +1,24 @@
+{
+    "name": "blesta/namesilo",
+    "description": "NameSilo Module",
+    "license": "proprietary",
+    "type": "blesta-module",
+    "require": {
+        "php": ">=5.4.0",
+        "blesta/composer-installer": "~1.0"
+    },
+    "authors": [
+        {
+            "name": "Phillips Data, Inc.",
+            "email": "you@youremail.com"
+        },
+		{
+			"name": "KnownHost LLC",
+            "email": "you@youremail.com"
+		},
+		{
+			"name": "NETLINK IT SERVICES",
+            "email": "you@youremail.com"
+		}
+    ]
+}
