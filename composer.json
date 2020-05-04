@@ -10,15 +10,15 @@
     "authors": [
         {
             "name": "Phillips Data, Inc.",
-            "email": "you@youremail.com"
+            "email": "jonathan@phillipsdata.com"
         },
-		{
-			"name": "KnownHost LLC",
-            "email": "you@youremail.com"
-		},
-		{
-			"name": "NETLINK IT SERVICES",
-            "email": "you@youremail.com"
-		}
+        {
+            "name": "KnownHost LLC",
+            "email": "support@knownhost.com"
+        },
+        {
+            "name": "NETLINK IT SERVICES",
+            "email": "info@netlink.ie"
+        }
     ]
 }
