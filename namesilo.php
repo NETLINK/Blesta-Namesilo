@@ -2192,11 +2192,11 @@ class Namesilo extends Module
         $result = $domains->check(['domains' => $domain ]);
 
         if (self::$codes[$result->status()][1] == 'fail') {
+            $this->processResponse($api, $result);
             return false;
         }
 
         $response = $result->response();
-        $this->processResponse($api, $result);
 
         $available = isset($response->available->{'domain'}) && $response->available->{'domain'} == $domain;
 
