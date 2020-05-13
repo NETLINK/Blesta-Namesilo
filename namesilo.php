@@ -2190,9 +2190,9 @@ class Namesilo extends Module
 
         $domains = new NamesiloDomains($api);
         $result = $domains->check(['domains' => $domain ]);
+        $this->processResponse($api, $result);
 
         if (self::$codes[$result->status()][1] == 'fail') {
-            $this->processResponse($api, $result);
             return false;
         }
 
