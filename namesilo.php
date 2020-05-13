@@ -2196,6 +2196,7 @@ class Namesilo extends Module
         }
 
         $response = $result->response();
+        $this->processResponse($api, $result);
 
         $available = isset($response->available->{'domain'}) && $response->available->{'domain'} == $domain;
 
@@ -2362,7 +2363,7 @@ class Namesilo extends Module
         $last_request = $api->lastRequest();
         $url = substr($last_request['url'], 0, strpos($last_request['url'], '?'));
         $this->log($url, serialize($last_request['args']), 'input', true);
-        $this->log($url, $response->raw(), 'output', self::$codes[$response->status()][1] == 'success');
+        $this->log($url, serialize($response->response()), 'output', self::$codes[$response->status()][1] == 'success');
     }
 
     /**
