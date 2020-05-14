@@ -104,10 +104,13 @@ class NamesiloResponse
      */
     private function formatResponse($data, $assoc = false)
     {
+        $data = json_decode(json_encode($data));
+
         foreach ($data as $key => $value) {
             if (is_object($value)) {
                 foreach ($value as $item => $parameter) {
                     if (isset($parameter->{'@attributes'})) {
+                        $data->{$key} = (object)array_merge((array)$data->{$key}, (array)$parameter->{'@attributes'});
                         unset($parameter->{'@attributes'});
 
                         if (count((array)$parameter) == 1) {
