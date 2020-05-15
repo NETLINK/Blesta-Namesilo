@@ -132,15 +132,17 @@ class NamesiloResponse
                 }
             }
 
-            if (is_array($attributes->{$key})) {
+            if (!is_scalar($attributes->{$key})) {
                 foreach ($attributes->{$key} as $a_key => $items) {
-                    if (count((array)$items) == 1 && is_array($attributes->{$key}) && !is_scalar($items)) {
-                        $attributes->{$key}[$a_key] = $items->{0};
-                    }
+                    if (!is_scalar($items)) {
+                        if (count((array) $items) == 1 && is_array($attributes->{$key})) {
+                            $attributes->{$key}[$a_key] = $items->{0};
+                        }
 
-                    if (count((array)$items) == 1 && is_object($attributes->{$key}) && !is_scalar($items)) {
-                        if (isset($items->{0})) {
-                            $attributes->{$key}->{$a_key} = $items->{0};
+                        if (count((array) $items) == 1 && is_object($attributes->{$key})) {
+                            if (isset($items->{0})) {
+                                $attributes->{$key}->{$a_key} = $items->{0};
+                            }
                         }
                     }
                 }
