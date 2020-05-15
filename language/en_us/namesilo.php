@@ -251,6 +251,7 @@ $lang['Namesilo.domain.CIRALanguage.fr'] = 'French';
 
 // Success messages
 $lang['Namesilo.!success.packages_saved'] = 'The packages have been successfully saved.';
+$lang['Namesilo.!success.epp_code_sent'] = "The EPP Code/Transfer Key has been sent to the administrative contact for this domain name via email.";
 
 // Errors
 $lang['Namesilo.!error.FRLegalType.format'] = 'Please select a valid Legal Type';

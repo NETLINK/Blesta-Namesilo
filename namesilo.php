@@ -2126,6 +2126,14 @@ class Namesilo extends Module
                     if (isset($post['request_epp'])) {
                         $response = $transfer->getEpp(['domain' => $fields->domain]);
                         $this->processResponse($api, $response);
+                        unset($post['request_epp']);
+                        $this->setMessage(
+                            'success',
+                            Language::_(
+                                'Namesilo.!success.epp_code_sent',
+                                true
+                            )
+                        );
                     }
 
                     if (isset($post['whois_privacy_before']) || isset($post['whois_privacy'])) {
