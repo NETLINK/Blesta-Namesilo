@@ -176,19 +176,6 @@ class NamesiloDomains
     }
 
     /**
-     * Gets the RegistrarLock status for the requested domain.
-     *
-     * @param array $vars An array of input params including:
-     *
-     *  - domain Domain name to get status
-     * @return NamesiloResponse
-     */
-    public function getRegistrarLock(array $vars)
-    {
-        return $this->api->submit('getDomainInfo', $vars);
-    }
-
-    /**
      * Sets the RegistrarLock status for a domain.
      *
      * @param array $vars An array of input params including:

@@ -2126,6 +2126,14 @@ class Namesilo extends Module
                     if (isset($post['request_epp'])) {
                         $response = $transfer->getEpp(['domain' => $fields->domain]);
                         $this->processResponse($api, $response);
+                        unset($post['request_epp']);
+                        $this->setMessage(
+                            'success',
+                            Language::_(
+                                'Namesilo.!success.epp_code_sent',
+                                true
+                            )
+                        );
                     }
 
                     if (isset($post['whois_privacy_before']) || isset($post['whois_privacy'])) {
@@ -2140,23 +2148,20 @@ class Namesilo extends Module
 
                     $vars = (object)$post;
                 }
-            } else {
-                $response = $domains->getRegistrarLock(['domain' => $fields->domain ])->response();
-                if (isset($response->locked)) {
-                    $vars->registrar_lock = $response->locked;
-                }
-
-                $info = $domains->getDomainInfo(['domain' => $fields->domain]);
-                $info_response = $info->response();
-                if (isset($info_response->private)) {
-                    $vars->whois_privacy = $info_response->private;
-                }
             }
 
-            if (!isset($info)) {
-                $info = $domains->getDomainInfo(['domain' => $fields->domain]);
+            $info = $domains->getDomainInfo(['domain' => $fields->domain]);
+            $info_response = $info->response();
+
+            if (isset($info_response->private)) {
+                $vars->whois_privacy = $info_response->private;
             }
-            $registrant_id = $info->response(true)['contact_ids']['registrant'];
+
+            if (isset($info_response->locked)) {
+                $vars->registrar_lock = $info_response->locked;
+            }
+
+            $registrant_id = $info_response->contact_ids->registrant;
             $registrant_info = $domains->getContacts(['contact_id' => $registrant_id]);
             $registrant_email = $registrant_info->response()->contact->email;
 
