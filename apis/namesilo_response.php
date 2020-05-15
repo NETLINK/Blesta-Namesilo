@@ -111,7 +111,7 @@ class NamesiloResponse
     }
 
     /**
-     * Formats the given $data into a stdClass object by first JSON encoding, then JSON decoding it
+     * Formats the SimpleXML parsed response, removing @attributes
      *
      * @param stdClass $attributes The object to format
      * @return stdClass A stdClass object with the attributes properly formatted
