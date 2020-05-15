@@ -2141,15 +2141,14 @@ class Namesilo extends Module
                     $vars = (object)$post;
                 }
             } else {
-                $response = $domains->getRegistrarLock(['domain' => $fields->domain ])->response();
-                if (isset($response->locked)) {
-                    $vars->registrar_lock = $response->locked;
-                }
-
                 $info = $domains->getDomainInfo(['domain' => $fields->domain]);
                 $info_response = $info->response();
                 if (isset($info_response->private)) {
                     $vars->whois_privacy = $info_response->private;
+                }
+
+                if (isset($info_response->locked)) {
+                    $vars->registrar_lock = $info_response->locked;
                 }
             }
 
