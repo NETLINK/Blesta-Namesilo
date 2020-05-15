@@ -105,24 +105,48 @@ class NamesiloResponse
     private function formatResponse($data, $assoc = false)
     {
         $data = json_decode(json_encode($data));
+        $data = $this->formatAttributes($data);
 
-        foreach ($data as $key => $value) {
-            if (is_object($value)) {
-                foreach ($value as $item => $parameter) {
-                    if (isset($parameter->{'@attributes'})) {
-                        $data->{$key} = (object)array_merge((array)$data->{$key}, (array)$parameter->{'@attributes'});
-                        unset($parameter->{'@attributes'});
+        return json_decode(json_encode($data), $assoc);
+    }
 
-                        if (count((array)$parameter) == 1) {
-                            $data->{$key}->{$item} = $parameter->{0};
-                        } else {
-                            $data->{$key}->{$item} = (array)$parameter;
+    /**
+     * Formats the given $data into a stdClass object by first JSON encoding, then JSON decoding it
+     *
+     * @param stdClass $attributes The object to format
+     * @return stdClass A stdClass object with the attributes properly formatted
+     */
+    private function formatAttributes($attributes)
+    {
+        foreach ($attributes as $key => $attribute) {
+            if (is_array($attribute)) {
+                $attributes->{$key} = $this->formatAttributes((object)$attribute);
+                $attributes->{$key} = (array)$attributes->{$key};
+            }
+
+            if (is_object($attribute)) {
+                $attributes->{$key} = $this->formatAttributes($attribute);
+
+                if (isset($attribute->{'@attributes'})) {
+                    unset($attributes->{$key}->{'@attributes'});
+                }
+            }
+
+            if (is_array($attributes->{$key})) {
+                foreach ($attributes->{$key} as $a_key => $items) {
+                    if (count((array)$items) == 1 && is_array($attributes->{$key}) && !is_scalar($items)) {
+                        $attributes->{$key}[$a_key] = $items->{0};
+                    }
+
+                    if (count((array)$items) == 1 && is_object($attributes->{$key}) && !is_scalar($items)) {
+                        if (isset($items->{0})) {
+                            $attributes->{$key}->{$a_key} = $items->{0};
                         }
                     }
                 }
             }
         }
 
-        return json_decode(json_encode($data), $assoc);
+        return $attributes;
     }
 }
