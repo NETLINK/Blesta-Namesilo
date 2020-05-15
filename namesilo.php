@@ -2140,22 +2140,20 @@ class Namesilo extends Module
 
                     $vars = (object)$post;
                 }
-            } else {
-                $info = $domains->getDomainInfo(['domain' => $fields->domain]);
-                $info_response = $info->response();
-                if (isset($info_response->private)) {
-                    $vars->whois_privacy = $info_response->private;
-                }
-
-                if (isset($info_response->locked)) {
-                    $vars->registrar_lock = $info_response->locked;
-                }
             }
 
-            if (!isset($info)) {
-                $info = $domains->getDomainInfo(['domain' => $fields->domain]);
+            $info = $domains->getDomainInfo(['domain' => $fields->domain]);
+            $info_response = $info->response();
+
+            if (isset($info_response->private)) {
+                $vars->whois_privacy = $info_response->private;
             }
-            $registrant_id = $info->response(true)['contact_ids']['registrant'];
+
+            if (isset($info_response->locked)) {
+                $vars->registrar_lock = $info_response->locked;
+            }
+
+            $registrant_id = $info_response->contact_ids->registrant;
             $registrant_info = $domains->getContacts(['contact_id' => $registrant_id]);
             $registrant_email = $registrant_info->response()->contact->email;
 
