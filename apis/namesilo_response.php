@@ -104,22 +104,51 @@ class NamesiloResponse
      */
     private function formatResponse($data, $assoc = false)
     {
-        foreach ($data as $key => $value) {
-            if (is_object($value)) {
-                foreach ($value as $item => $parameter) {
-                    if (isset($parameter->{'@attributes'})) {
-                        unset($parameter->{'@attributes'});
+        $data = json_decode(json_encode($data));
+        $data = $this->formatAttributes($data);
 
-                        if (count((array)$parameter) == 1) {
-                            $data->{$key}->{$item} = $parameter->{0};
-                        } else {
-                            $data->{$key}->{$item} = (array)$parameter;
+        return json_decode(json_encode($data), $assoc);
+    }
+
+    /**
+     * Formats the SimpleXML parsed response, removing @attributes
+     *
+     * @param stdClass $attributes The object to format
+     * @return stdClass A stdClass object with the attributes properly formatted
+     */
+    private function formatAttributes($attributes)
+    {
+        foreach ($attributes as $key => $attribute) {
+            if (is_array($attribute)) {
+                $attributes->{$key} = $this->formatAttributes((object)$attribute);
+                $attributes->{$key} = (array)$attributes->{$key};
+            }
+
+            if (is_object($attribute)) {
+                $attributes->{$key} = $this->formatAttributes($attribute);
+
+                if (isset($attribute->{'@attributes'})) {
+                    unset($attributes->{$key}->{'@attributes'});
+                }
+            }
+
+            if (isset($attributes->{$key}) && !is_scalar($attributes->{$key})) {
+                foreach ($attributes->{$key} as $a_key => $items) {
+                    if (!is_scalar($items)) {
+                        if (count((array) $items) == 1 && is_array($attributes->{$key})) {
+                            $attributes->{$key}[$a_key] = $items->{0};
+                        }
+
+                        if (count((array) $items) == 1 && is_object($attributes->{$key})) {
+                            if (isset($items->{0})) {
+                                $attributes->{$key}->{$a_key} = $items->{0};
+                            }
                         }
                     }
                 }
             }
         }
 
-        return json_decode(json_encode($data), $assoc);
+        return $attributes;
     }
 }
