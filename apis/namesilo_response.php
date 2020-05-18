@@ -132,7 +132,7 @@ class NamesiloResponse
                 }
             }
 
-            if (!is_scalar($attributes->{$key})) {
+            if (isset($attributes->{$key}) && !is_scalar($attributes->{$key})) {
                 foreach ($attributes->{$key} as $a_key => $items) {
                     if (!is_scalar($items)) {
                         if (count((array) $items) == 1 && is_array($attributes->{$key})) {
