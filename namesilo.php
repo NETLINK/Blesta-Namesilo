@@ -606,9 +606,19 @@ class Namesilo extends Module
                 'id'
             );
 
+            // Fetch all installed languages
+            $languages = $this->Languages->getAll(Configure::get('Blesta.company_id'));
+
             // Calculate maximum packages that can be saved at a time
+            $count_fields_per_currency = 5;
+            $count_fields_per_language = 7;
+            $count_settings_fields = 16;
+
             $max_packages = round(
-                (ini_get('max_input_vars') - 30) / ((count($currencies) * 3) + 1),
+                (
+                    (ini_get('max_input_vars') - (count($languages) * $count_fields_per_language) - $count_settings_fields) /
+                    ((count($currencies) * $count_fields_per_currency) + 1)
+                ),
                 0,
                 PHP_ROUND_HALF_DOWN
             );
@@ -633,7 +643,7 @@ class Namesilo extends Module
             // Set view
             $this->view->set('tlds', $tlds);
             $this->view->set('module_rows', $module_rows);
-            $this->view->set('languages', $this->Languages->getAll(Configure::get('Blesta.company_id')));
+            $this->view->set('languages', $languages);
             $this->view->set('currencies', $currencies);
             $this->view->set('package_groups', $package_groups);
             $this->view->set('max_packages', $max_packages);
@@ -957,7 +967,35 @@ class Namesilo extends Module
      */
     public function editModuleRow($module_row, array &$vars)
     {
-        return $this->addModuleRow($vars);
+        $meta_fields = ['user', 'key', 'sandbox', 'portfolio', 'payment_id', 'namesilo_module'];
+        $encrypted_fields = ['key'];
+
+        // Merge package settings on to the module row meta
+        $module_row_meta = array_merge($vars, (array)$module_row->meta);
+
+        // Set unspecified checkboxes
+        if (empty($meta['sandbox'])) {
+            $meta['sandbox'] = 'false';
+        }
+
+        $this->Input->setRules($this->getRowRules($vars));
+
+        // Validate module row
+        if ($this->Input->validates($vars)) {
+            // Build the meta data for this row
+            $meta = [];
+            foreach ($module_row_meta as $key => $value) {
+                if (in_array($key, $meta_fields) || array_key_exists($key, (array)$module_row->meta)) {
+                    $meta[] = [
+                        'key' => $key,
+                        'value' => $value,
+                        'encrypted' => in_array($key, $encrypted_fields) ? 1 : 0
+                    ];
+                }
+            }
+
+            return $meta;
+        }
     }
 
     /**
