@@ -30,6 +30,6 @@
     "email_tags": {
         "module": [],
         "package": [],
-        "service": ["domain"]
+        "service": ["domain", "transfer", "private", "ns1", "ns2", "ns3", "ns4", "ns5"]
     }
 }
