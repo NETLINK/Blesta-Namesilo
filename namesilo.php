@@ -572,10 +572,6 @@ class Namesilo extends Module
             Loader::load(__DIR__ . DS . 'includes' . DS . 'namesilo_packages.php');
             $this->NamesiloPackages = new NamesiloPackages();
 
-            // Fetch stored packages vars, if available
-            $module_row = $this->getRow();
-            $settings = $this->NamesiloPackages->getSettings($module_row->id);
-
             $post = $vars;
             $vars = [];
 
@@ -629,6 +625,12 @@ class Namesilo extends Module
                     );
                 }
             }
+
+            // Fetch stored settings
+            $module_row = $this->getRow();
+            $settings = $this->NamesiloPackages->getSettings($module_row->id);
+
+            $post = array_merge($settings, $post);
 
             // Set view
             $this->view->set('tlds', $tlds);
