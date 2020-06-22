@@ -248,7 +248,9 @@
                                     <td><?php $this->_('Namesilo.manage.manage_packages_heading.previous_renewal_price');?></td>
                                     <td><?php $this->_('Namesilo.manage.manage_packages_heading.current_registration_price');?></td>
                                     <td><?php $this->_('Namesilo.manage.manage_packages_heading.current_renewal_price');?></td>
+                                    <td class="icon"><?php $this->_('Namesilo.manage.manage_packages_heading.lock');?></td>
                                     <td><?php $this->_('Namesilo.manage.manage_packages_heading.price');?></td>
+                                    <td class="icon"><?php $this->_('Namesilo.manage.manage_packages_heading.lock');?></td>
                                     <td class="last"><?php $this->_('Namesilo.manage.manage_packages_heading.renew_price');?></td>
                                 </tr>
                             </thead>
@@ -370,14 +372,21 @@
                     updateRenewalPrice();
                 });
 
-                // Lock custom price
-                $('#tld_rows').on('keypress', '.price', function() {
-                    $(this).css('background', '#FFFED9').data('locked', true);
+                // Lock custom price and custom renewal price
+                $('#tld_rows').on('change', '.price_lock', function() {
+                    if (this.checked) {
+                        $(this).parent().parent().find('.price').data('locked', true);
+                    } else {
+                        $(this).parent().parent().find('.price').data('locked', false);
+                    }
                 });
 
-                // Lock custom renewal price
-                $('#tld_rows').on('keypress', '.price_renews', function() {
-                    $(this).css('background', '#FFFED9').data('locked', true);
+                $('#tld_rows').on('change', '.price_renews_lock', function() {
+                    if (this.checked) {
+                        $(this).parent().parent().find('.price_renews').data('locked', true);
+                    } else {
+                        $(this).parent().parent().find('.price_renews').data('locked', false);
+                    }
                 });
 
                 // Enable/Disable renewal prices
@@ -385,23 +394,27 @@
                     if (this.checked) {
                         $('.price_enable_renews').each(function() {
                             $(this).prop('checked', true);
-                            $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF');
+                            $(this).parent().find('.price_renews').prop('disabled', false);
+                            $(this).parent().parent().find('.price_renews_lock').prop('disabled', false).prop("checked", false);
                         });
 
                         $('input[name="renew_price_markup"]').trigger('input');
                     } else {
                         $('.price_enable_renews').each(function() {
                             $(this).prop('checked', false);
-                            $(this).parent().find('.price_renews').prop('disabled', true).css('background', '#FFF').data('locked', false);
+                            $(this).parent().find('.price_renews').prop('disabled', true).data('locked', false);
+                            $(this).parent().parent().find('.price_renews_lock').prop('disabled', true).prop("checked", false);
                         });
                     }
                 });
 
                 $('#tld_rows').on('change', '.price_enable_renews', function() {
                     if (this.checked) {
-                        $(this).parent().find('.price_renews').prop('disabled', false).css('background', '#FFF');
+                        $(this).parent().find('.price_renews').prop('disabled', false);
+                        $(this).parent().parent().find('.price_renews_lock').prop('disabled', false).prop("checked", false);
                     } else {
-                        $(this).parent().find('.price_renews').prop('disabled', true).css('background', '#FFF').data('locked', false);
+                        $(this).parent().find('.price_renews').prop('disabled', true).data('locked', false);
+                        $(this).parent().parent().find('.price_renews_lock').prop('disabled', true).prop("checked", false);
                     }
                 });
 

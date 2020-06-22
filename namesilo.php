@@ -606,9 +606,19 @@ class Namesilo extends Module
                 'id'
             );
 
+            // Fetch all installed languages
+            $languages = $this->Languages->getAll(Configure::get('Blesta.company_id'));
+
             // Calculate maximum packages that can be saved at a time
+            $count_fields_per_currency = 5;
+            $count_fields_per_language = 7;
+            $count_settings_fields = 16;
+
             $max_packages = round(
-                (ini_get('max_input_vars') - 30) / ((count($currencies) * 3) + 1),
+                (
+                    (ini_get('max_input_vars') - (count($languages) * $count_fields_per_language) - $count_settings_fields) /
+                    ((count($currencies) * $count_fields_per_currency) + 1)
+                ),
                 0,
                 PHP_ROUND_HALF_DOWN
             );
@@ -633,7 +643,7 @@ class Namesilo extends Module
             // Set view
             $this->view->set('tlds', $tlds);
             $this->view->set('module_rows', $module_rows);
-            $this->view->set('languages', $this->Languages->getAll(Configure::get('Blesta.company_id')));
+            $this->view->set('languages', $languages);
             $this->view->set('currencies', $currencies);
             $this->view->set('package_groups', $package_groups);
             $this->view->set('max_packages', $max_packages);

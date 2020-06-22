@@ -44,6 +44,7 @@ $lang['Namesilo.manage.manage_packages_heading.previous_registration_price'] = '
 $lang['Namesilo.manage.manage_packages_heading.previous_renewal_price'] = 'Previous Renewal Price';
 $lang['Namesilo.manage.manage_packages_heading.current_registration_price'] = 'Current Registration Price';
 $lang['Namesilo.manage.manage_packages_heading.current_renewal_price'] = 'Current Renewal Price';
+$lang['Namesilo.manage.manage_packages_heading.lock'] = 'Lock';
 $lang['Namesilo.manage.manage_packages_heading.price'] = 'Price';
 $lang['Namesilo.manage.manage_packages_heading.renew_price'] = 'Renewal Price';
 $lang['Namesilo.manage.manage_packages.text_tags'] = 'Tags:';

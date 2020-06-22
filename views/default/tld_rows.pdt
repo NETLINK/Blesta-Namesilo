@@ -28,8 +28,18 @@ foreach ($this->Html->ifSet($currencies, []) as $currency) {
                 <?php echo $this->CurrencyFormat->format($this->Html->ifSet($pricing[$currency]->renew), $currency);?>
             </span>
         </td>
+        <td class="icon center">
+            <?php
+            $this->Form->fieldCheckbox('pricing[' . $tld . '][' . $currency . '][price_lock]', '1', ($this->Html->ifSet($vars->pricing[$tld][$currency]['price_lock'], '0') == '1'), ['class' => 'price_lock']);
+            ?>
+        </td>
         <td class="medium">
-            <?php $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price'], $pricing[$currency]->registration), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price stretch', 'data-locked' => 'false']);?>
+            <?php $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price'], $pricing[$currency]->registration), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), ['class' => 'price stretch', 'data-locked' => ($this->Html->ifSet($vars->pricing[$tld][$currency]['price_lock'], '0') == '1' ? 'true' : 'false')]);?>
+        </td>
+        <td class="icon center">
+            <?php
+            $this->Form->fieldCheckbox('pricing[' . $tld . '][' . $currency . '][price_renews_lock]', '1', ($this->Html->ifSet($vars->pricing[$tld][$currency]['price_renews_lock'], '0') == '1'), ['class' => 'price_renews_lock']);
+            ?>
         </td>
         <td class="medium">
             <?php
@@ -38,7 +48,7 @@ foreach ($this->Html->ifSet($currencies, []) as $currency) {
                 $disabled = ['disabled' => 'disabled'];
             }
             $this->Form->fieldCheckbox('pricing[' . $tld . '][' . $currency . '][price_enable_renews]', '1', ($this->Html->ifSet($vars->pricing[$tld][$currency]['price_enable_renews'], '1') == '1'), ['class' => 'price_enable_renews']);
-            $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price_renews]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price_renews'], $pricing[$currency]->renew), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), array_merge(['class' => 'price_renews stretch', 'data-locked' => 'false'], $disabled));
+            $this->Form->fieldText('pricing[' . $tld . '][' . $currency . '][price_renews]', $this->CurrencyFormat->format($this->Html->ifSet($vars->pricing[$tld][$currency]['price_renews'], $pricing[$currency]->renew), $currency, ['prefix' => false, 'suffix' => false, 'with_separator' => false, 'code' => false, 'decimals' => 4]), array_merge(['class' => 'price_renews stretch', 'data-locked' => ($this->Html->ifSet($vars->pricing[$tld][$currency]['price_renews_lock'], '0') == '1' ? 'true' : 'false')], $disabled));
             ?>
         </td>
     </tr>
