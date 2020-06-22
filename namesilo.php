@@ -957,7 +957,35 @@ class Namesilo extends Module
      */
     public function editModuleRow($module_row, array &$vars)
     {
-        return $this->addModuleRow($vars);
+        $meta_fields = ['user', 'key', 'sandbox', 'portfolio', 'payment_id', 'namesilo_module'];
+        $encrypted_fields = ['key'];
+
+        // Merge package settings on to the module row meta
+        $module_row_meta = array_merge($vars, (array)$module_row->meta);
+
+        // Set unspecified checkboxes
+        if (empty($meta['sandbox'])) {
+            $meta['sandbox'] = 'false';
+        }
+
+        $this->Input->setRules($this->getRowRules($vars));
+
+        // Validate module row
+        if ($this->Input->validates($vars)) {
+            // Build the meta data for this row
+            $meta = [];
+            foreach ($module_row_meta as $key => $value) {
+                if (in_array($key, $meta_fields) || array_key_exists($key, (array)$module_row->meta)) {
+                    $meta[] = [
+                        'key' => $key,
+                        'value' => $value,
+                        'encrypted' => in_array($key, $encrypted_fields) ? 1 : 0
+                    ];
+                }
+            }
+
+            return $meta;
+        }
     }
 
     /**
