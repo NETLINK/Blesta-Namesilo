@@ -252,6 +252,20 @@ Configure::set('Namesilo.domain_fields.ca', [
     ]
 ]);
 
+// Email templates
+Configure::set('Namesilo.email_templates', [
+    'en_us' => [
+        'lang' => 'en_us',
+        'text' => 'Your new domain has been successfully registered!
+
+Domain: {service.domain}
+
+Thank you for your business!',
+        'html' => '<p>Your new domain has been successfully registered!</p>
+<p>Domain: {service.domain}</p>
+<p>Thank you for your business!</p>'
+    ]
+]);
 
 require_once __DIR__ . '/codes.php';
 require_once __DIR__ . '/notices.php';
