@@ -820,6 +820,32 @@ class Namesilo extends Module
 
             $module_row = $this->getRow();
 
+            $services = $this->Record->select(['services.id', 'services.client_id'])
+                ->from('services')
+                ->where('module_row_id', '=', $module_row->id)
+                ->where('status', '=', 'active')
+                ->fetchAll();
+
+            $vars['service_ids'] = [];
+
+            foreach ($services as $service) {
+                $vars['service_ids'][] = $service->id;
+            }
+
+            // Set view
+            $this->view->set('vars', $vars);
+            $this->view->set('url', $this->base_uri . 'settings/company/modules/addrow/' . $module_row->id);
+
+            return $this->view->fetch();
+        } elseif  ($action == 'get_renew_info') {
+			$service_id = isset($_GET['service_id']) ? $_GET['service_id'] : null;
+			if (is_null($service_id)) {
+                // exit() to prevent any output other than json from being rendered
+				exit();
+			}
+
+            $module_row = $this->getRow();
+
             $api = $this->getApi(
                 $module_row->meta->user,
                 $module_row->meta->key,
@@ -827,24 +853,10 @@ class Namesilo extends Module
                 null,
                 true
             );
+
             $domains = new NamesiloDomains($api);
-
-            $services = $this->Record->select(['services.id', 'services.client_id'])
-                ->from('services')
-                ->where('module_row_id', '=', $module_row->id)
-                ->where('status', '=', 'active')
-                ->fetchAll();
-
-            $vars['changes'] = [];
-
-            foreach ($services as $service_id) {
-                $vars['changes'][] = $this->getRenewInfo($service_id->id, $domains);
-            }
-
-            // Set view
-            $this->view->set('vars', $vars);
-
-            return $this->view->fetch();
+            $vars = $this->getRenewInfo($service_id,$domains);
+            exit(json_encode($vars));
         } else {
             // Set unspecified checkboxes
             if (!empty($vars)) {
@@ -2572,13 +2584,18 @@ class Namesilo extends Module
         $target_date_obj = $expires->modify('- ' . (3 + $suspend_days) . ' days');
         $target_date = $target_date_obj->format('Y-m-d H:i:s');
 
-        if ($date_renews->diff($target_date_obj)->format('%a') > 0) {
+        $diff = $date_renews->diff($target_date_obj)->format('%a');
+        if ($diff > 0) {
+            // Highlight if its greater than 90 days
+            $highlight = $diff >= 90;
             $vars = [
                 'service_id' => $service_id,
                 'domain' => $service->name,
                 'date_before' => $date_renews->format('Y-m-d H:i:s'),
                 'date_after' => $target_date,
-                'error' => false
+                'error' => false,
+                'checked' => !$highlight,
+                'highlight' => $highlight
             ];
         }
 
