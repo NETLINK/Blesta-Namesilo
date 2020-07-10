@@ -1,5 +1,5 @@
         <script>
-            var service_ids = JSON.parse('<?php echo json_encode($this->Html->ifSet($vars['service_ids']), '[]'); ?>');
+            var service_ids = JSON.parse('<?php echo json_encode($vars['service_ids']); ?>');
             var services_done = 0;
 
             $(function() {
