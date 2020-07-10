@@ -820,7 +820,7 @@ class Namesilo extends Module
 
             $module_row = $this->getRow();
 
-            $services = $this->Record->select(['services.id', 'services.client_id'])
+            $services = $this->Record->select(['services.id'])
                 ->from('services')
                 ->where('module_row_id', '=', $module_row->id)
                 ->where('status', '=', 'active')
