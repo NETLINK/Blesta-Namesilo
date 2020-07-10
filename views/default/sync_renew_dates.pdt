@@ -1,5 +1,5 @@
         <script>
-            var service_ids = JSON.parse('<?php echo json_encode($vars['service_ids']); ?>');
+            var service_ids = JSON.parse('<?php echo json_encode($vars->service_ids); ?>');
             var services_done = 0;
 
             $(function() {
@@ -19,7 +19,7 @@
                 var service_id = service_ids.pop();
                 if(service_id !== undefined) {
                     $.getJSON(
-                        '<?php echo $this->Html->ifSet($url); ?>',
+                        '<?php echo $this->Html->ifSet($vars->renew_info_url); ?>',
                         {
                             'service_id': service_id,
                             'action': 'get_renew_info'

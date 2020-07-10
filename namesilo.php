@@ -833,8 +833,8 @@ class Namesilo extends Module
             }
 
             // Set view
-            $this->view->set('vars', $vars);
-            $this->view->set('url', $this->base_uri . 'settings/company/modules/addrow/' . $module_row->id);
+            $vars['renew_info_url'] = $this->base_uri . 'settings/company/modules/addrow/' . $module_row->id;
+            $this->view->set('vars', (object)$vars);
 
             return $this->view->fetch();
         } elseif  ($action == 'get_renew_info') {
