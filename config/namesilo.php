@@ -1,5 +1,34 @@
 <?php
 
+// DNS Record fields
+Configure::set("Namesilo.dns_records", [
+    'record_type' => [
+        'label' => 'Record type:',
+        'type' => 'select',
+        'options' => [
+            '' => Language::_("AppController.select.please", true),
+            'A'  => 'A - Record',
+            'AAAA' => 'AAAA - Record',
+            'CNAME' => 'CNAME - Record',
+            'MX' => 'MX - Record',
+            'TXT' => 'TXT - Record'
+        ]
+    ],
+    'host' => [
+        'label' => 'Host:',
+        'type'  => 'text'
+    ],
+    'value' => [
+        'label' => 'Value / Target:',
+        'type' => 'text'
+    ],
+    'ttl' => [
+        'label' => 'TTL',
+        'type' => 'text'
+
+    ]
+]);
+
 // Transfer fields
 Configure::set('Namesilo.transfer_fields', [
     'domain' => [

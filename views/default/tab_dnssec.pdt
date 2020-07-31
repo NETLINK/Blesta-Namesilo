@@ -1,9 +1,12 @@
-    <div id="ds-records" class="pad">
+    <div id="ds-records">
         <div class="title_row first">
             <h3><?php $this->_('Namesilo.tab_dnssec.title_disclaimer'); ?></h3>
         </div>
-        <p><?php $this->_('Namesilo.tab_dnssec.warning_message1'); ?></p>
-        <p><?php $this->_('Namesilo.tab_dnssec.warning_message2'); ?></p>
+        <div class="pad">
+            <p><?php $this->_('Namesilo.tab_dnssec.warning_message1'); ?></p>
+            <p><?php $this->_('Namesilo.tab_dnssec.warning_message2'); ?></p>
+        </div>
+
         <div class="title_row">
             <h3><?php $this->_('Namesilo.tab_dnssec.title_list'); ?></h3>
         </div>

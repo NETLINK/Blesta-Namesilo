@@ -130,4 +130,39 @@ class NamesiloDomainsDns
     {
         return $this->api->submit('dnsSecDeleteRecord', $vars);
     }
+
+    /**
+     * Retrieves DNS records
+     * https://www.namesilo.com/api_reference.php#dnsListRecords
+     */
+    public function dnsListRecords(array $vars)
+    {
+        return $this->api->submit('dnsListRecords', $vars);
+    }
+
+    /**
+     * Add a DNS record
+     * https://www.namesilo.com/api_reference.php#dnsAddRecord
+     */
+    public function dnsAddRecord(array $vars)
+    {
+        return $this->api->submit('dnsAddRecord', $vars);
+    }
+
+    /**
+     * Update a DNS record
+     * https://www.namesilo.com/api_reference.php#dnsUpdateRecord
+     */
+    public function dnsUpdateRecord(array $vars) {
+        return $this->api->submit('dnsUpdateRecord', $vars);
+    }
+
+    /**
+     * Delete a DNS record
+     * https://www.namesilo.com/api_reference.php#dnsDeleteRecord
+     */
+    public function dnsDeleteRecord(array $vars)
+    {
+        return $this->api->submit('dnsDeleteRecord', $vars);
+    }
 }

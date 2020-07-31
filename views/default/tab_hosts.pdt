@@ -1,7 +1,7 @@
     <div class="title_row first">
         <h3><?php $this->_('Namesilo.tab_hosts.title'); ?></h3>
     </div>
-    <div id="domain-hosts" class="pad">
+    <div id="domain-hosts">
         <?php
         $this->Form->create($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabHosts/');
         ?>
