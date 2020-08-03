@@ -4,7 +4,7 @@
         <div class="title_row first">
             <h3><?php $this->_('Namesilo.tab_dnsrecord.title_list');?></h3>
         </div>
-        <table class="table">
+        <table class="table table-curved table-striped">
             <thead>
                 <tr class="heading_row">
                     <td><span><?php $this->_('Namesilo.dnsrecord.record_type');?></span></td>
@@ -14,47 +14,47 @@
                     <td><span><?php $this->_('Namesilo.dnsrecord.field_delete');?></span></td>
                 </tr>
             </thead>
+            <!-- List existing ds records -->
+            <tbody>
             <?php
             if (count($vars->records) > 0 && isset($vars->records[0])) {
                 foreach ($vars->records[0] as $record) {
                     ?>
-                    <!-- List existing ds records -->
-                    <tbody>
-                        <tr>
-                            <td><?php echo $this->Html->ifSet($record->type);?></td>
-                            <td><?php echo $this->Html->ifSet($record->host);?></td>
-                            <td><?php echo $this->Html->ifSet($record->value);?></td>
-                            <td><?php echo $this->Html->ifSet($record->ttl);?></td>
-                            <td>
-                                <?php
-                                $this->Form->create(
-                                    $this->base_uri . 'services/manage/' . $this->Html->ifSet(
-                                        $service_id
-                                    ) . '/tabClientDnsRecords/'
-                                );
-                                $this->Form->fieldHidden('record_id', $this->Html->ifSet($record->record_id));
+                    <tr>
+                        <td><?php echo $this->Html->ifSet($record->type);?></td>
+                        <td><?php echo $this->Html->ifSet($record->host);?></td>
+                        <td><?php echo $this->Html->ifSet($record->value);?></td>
+                        <td><?php echo $this->Html->ifSet($record->ttl);?></td>
+                        <td>
+                            <?php
+                            $this->Form->create(
+                                $this->base_uri . 'services/manage/' . $this->Html->ifSet(
+                                    $service_id
+                                ) . '/tabClientDnsRecords/'
+                            );
+                            $this->Form->fieldHidden('record_id', $this->Html->ifSet($record->record_id));
 
-                                $button_attributes = [
-                                    'class' => 'btn',
-                                    'value' => 'deleteDnsRecord',
-                                    'type' => 'submit',
-                                ];
+                            $button_attributes = [
+                                'class' => 'btn',
+                                'value' => 'deleteDnsRecord',
+                                'type' => 'submit',
+                            ];
 
-                                $this->Form->fieldButton(
-                                    'action',
-                                    $this->_('Namesilo.tab_dnssec.field_delete', true),
-                                    $button_attributes
-                                );
+                            $this->Form->fieldButton(
+                                'action',
+                                $this->_('Namesilo.tab_dnssec.field_delete', true),
+                                $button_attributes
+                            );
 
-                                $this->Form->end();
-                                ?>
-                            </td>
-                        </tr>
-                    </tbody>
+                            $this->Form->end();
+                            ?>
+                        </td>
+                    </tr>
                     <?php
                 }
             }
             ?>
+            </tbody>
         </table>
 
         <div class="title_row">
