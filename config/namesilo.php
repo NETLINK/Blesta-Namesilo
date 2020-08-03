@@ -3,29 +3,16 @@
 // DNS Record fields
 Configure::set("Namesilo.dns_records", [
     'record_type' => [
-        'label' => 'Record type:',
+        'label' => Language::_('Namesilo.dns_records.record_type', true),
         'type' => 'select',
         'options' => [
             '' => Language::_("AppController.select.please", true),
-            'A'  => 'A - Record',
-            'AAAA' => 'AAAA - Record',
-            'CNAME' => 'CNAME - Record',
-            'MX' => 'MX - Record',
-            'TXT' => 'TXT - Record'
+            'A' => Language::_('Namesilo.dns_records.record_type.a_record', true),
+            'AAAA' => Language::_('Namesilo.dns_records.record_type.aaaa_record', true),
+            'CNAME' => Language::_('Namesilo.dns_records.record_type.cname_record', true),
+            'MX' => Language::_('Namesilo.dns_records.record_type.mx_record', true),
+            'TXT' => Language::_('Namesilo.dns_records.record_type.txt_record', true)
         ]
-    ],
-    'host' => [
-        'label' => 'Host:',
-        'type'  => 'text'
-    ],
-    'value' => [
-        'label' => 'Value / Target:',
-        'type' => 'text'
-    ],
-    'ttl' => [
-        'label' => 'TTL',
-        'type' => 'text'
-
     ]
 ]);
 

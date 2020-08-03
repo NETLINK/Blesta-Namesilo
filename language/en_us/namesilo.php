@@ -138,13 +138,20 @@ $lang['Namesilo.tab_dnsrecord.title_list'] = 'Current DNS Records';
 $lang['Namesilo.tab_dnsrecord.title_add'] = 'Add a DNS Record';
 $lang['Namesilo.tab_dnsrecord.field_delete'] = 'Delete Record(s)';
 $lang['Namesilo.tab_dnsrecord.field_add'] = 'Add Record';
-$lang['Namesilo.tab_dnsrecord.help_text_1'] = 'On this page you can add or delete A, AAAA, CNAME and MX DNS records. Please be ware that it might take some few minutes for DNS records to propagate.';
+$lang['Namesilo.tab_dnsrecord.help_text_1'] = 'On this page you can add or delete A, AAAA, CNAME, MX and TXT DNS records. Please be ware that it might take some few minutes for DNS records to propagate.';
 
 $lang['Namesilo.dnsrecord.record_type'] = 'Type';
 $lang['Namesilo.dnsrecord.host'] = 'Host';
 $lang['Namesilo.dnsrecord.value'] = 'Value';
 $lang['Namesilo.dnsrecord.ttl'] = 'TTL';
 $lang['Namesilo.dnsrecord.field_delete'] = 'Delete Record(s)';
+
+$lang['Namesilo.dns_records.record_type'] = 'Record Type';
+$lang['Namesilo.dns_records.record_type.a_record'] = 'A Record';
+$lang['Namesilo.dns_records.record_type.aaaa_record'] = 'AAAA Record';
+$lang['Namesilo.dns_records.record_type.cname_record'] = 'CNAME Record';
+$lang['Namesilo.dns_records.record_type.mx_record'] = 'MX Record';
+$lang['Namesilo.dns_records.record_type.txt_record'] = 'TXT Record';
 
 // Settings
 $lang['Namesilo.tab_settings.title'] = 'Settings';
