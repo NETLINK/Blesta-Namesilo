@@ -1,5 +1,6 @@
 {
 	"version": "1.12.0",
+    "type": "registrar",
 	"name": "Namesilo.name",
 	"description": "Namesilo.description",
 	"authors": [
