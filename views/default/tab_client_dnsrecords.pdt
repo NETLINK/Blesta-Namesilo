@@ -1,4 +1,4 @@
-    <div id="ds-records" class="pad">
+    <div id="dns-records" class="pad">
         <p><?php $this->_('Namesilo.tab_dnsrecord.help_text_1');?></p>
 
         <div class="title_row first">
@@ -14,11 +14,10 @@
                     <td><span><?php $this->_('Namesilo.dnsrecord.field_delete');?></span></td>
                 </tr>
             </thead>
-            <!-- List existing ds records -->
             <tbody>
             <?php
-            if (count($vars->records) > 0 && isset($vars->records[0])) {
-                foreach ($vars->records[0] as $record) {
+            if (count($vars->records) > 0 && isset($vars->records)) {
+                foreach ($vars->records as $record) {
                     ?>
                     <tr>
                         <td><?php echo $this->Html->ifSet($record->type);?></td>
@@ -66,30 +65,29 @@
         );
         ?>
         <div class="form-group">
-                <?php $this->Form->label($this->_('Namesilo.dnsrecord.record_type'), 'record_type');?>
-                <?php $this->Form->fieldSelect('record_type', $vars->selects['record_type']['options'], null, ['class' => 'form-control']);?>
+            <?php $this->Form->label($this->_('Namesilo.dnsrecord.record_type'), 'record_type');?>
+            <?php $this->Form->fieldSelect('record_type', $vars->selects['record_type']['options'], null, ['class' => 'form-control']);?>
 
-                <?php $this->Form->label($this->_('Namesilo.dnsrecord.host'), 'host');?>
-                <?php $this->Form->fieldText('host', null, ['class' => 'form-control']);?>
+            <?php $this->Form->label($this->_('Namesilo.dnsrecord.host'), 'host');?>
+            <?php $this->Form->fieldText('host', null, ['class' => 'form-control']);?>
 
-                <?php $this->Form->label($this->_('Namesilo.dnsrecord.value'), 'value');?>
-                <?php $this->Form->fieldText('value', null, ['class' => 'form-control']);?>
+            <?php $this->Form->label($this->_('Namesilo.dnsrecord.value'), 'value');?>
+            <?php $this->Form->fieldText('value', null, ['class' => 'form-control']);?>
 
-                <?php $this->Form->label($this->_('Namesilo.dnsrecord.ttl'), 'ttl');?>
-                <?php $this->Form->fieldText('ttl', 7207, ['class' => 'form-control']);?>
-
-            </div>
+            <?php $this->Form->label($this->_('Namesilo.dnsrecord.ttl'), 'ttl');?>
+            <?php $this->Form->fieldText('ttl', 7207, ['class' => 'form-control']);?>
+        </div>
         <div class="button_row">
-                <?php
-                    $button_attributes = [
-                        'class' => 'btn btn-primary',
-                        'value' => 'addDnsRecord',
-                        'type' => 'submit',
-                    ];
+            <?php
+                $button_attributes = [
+                    'class' => 'btn btn-primary',
+                    'value' => 'addDnsRecord',
+                    'type' => 'submit',
+                ];
 
-                    $this->Form->fieldButton('action', $this->_('Namesilo.tab_dnsrecord.field_add', true), $button_attributes);
-                ?>
-            </div>
+                $this->Form->fieldButton('action', $this->_('Namesilo.tab_dnsrecord.field_add', true), $button_attributes);
+            ?>
+        </div>
         <?php
         $this->Form->end();
         ?>

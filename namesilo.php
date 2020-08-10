@@ -2201,7 +2201,7 @@ class Namesilo extends Module
 
             // Get a consistent format because XML parsing in PHP is inconsistent
             if (isset($records->resource_record) && !is_array($records->resource_record)) {
-                $records->resource_record = [$records->resource_record];
+                $records->resource_record = (array)$records->resource_record;
             }
 
             $vars->selects = Configure::get('Namesilo.dns_records');
