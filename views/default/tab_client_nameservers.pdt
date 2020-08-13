@@ -6,8 +6,8 @@
             for ($i = 0; $i < 5; $i++) {
                 ?>
                 <div class="form-group">
-                    <?php $this->Form->label( $this->_( 'Namesilo.tab_nameserver.field_ns', true, $i+1 ), 'ns' . $i+1 ); ?>
-                    <?php $this->Form->fieldText( 'ns[]', $this->Html->ifSet( $vars->ns[$i] ),  [ 'id' => 'ns' . $i+1, 'class' => 'form-control', 'placeholder' => $this->_( 'Namesilo.tab_nameserver.field_ns', true, $i+1 ) ] ); ?>
+                    <?php $this->Form->label( $this->_( 'Namesilo.tab_nameserver.field_ns', true, $i+1 ), 'ns' . ($i+1) ); ?>
+                    <?php $this->Form->fieldText( 'ns[]', $this->Html->ifSet( $vars->ns[$i] ),  [ 'id' => 'ns' . ($i+1), 'class' => 'form-control', 'placeholder' => $this->_( 'Namesilo.tab_nameserver.field_ns', true, $i+1 ) ] ); ?>
                 </div>
                 <?php
             }

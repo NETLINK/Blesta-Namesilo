@@ -8,8 +8,8 @@
                 ?>
                 <li>
                     <?php
-                    $this->Form->label($this->_('Namesilo.tab_nameserver.field_ns', true, $i + 1), 'ns' . $i + 1);
-                    $this->Form->fieldText('ns[]', $this->Html->ifSet($vars->ns[$i]), ['id' => 'ns' . $i + 1]);
+                    $this->Form->label($this->_('Namesilo.tab_nameserver.field_ns', true, $i + 1), 'ns' . ($i + 1));
+                    $this->Form->fieldText('ns[]', $this->Html->ifSet($vars->ns[$i]), ['id' => 'ns' . ($i + 1)]);
                     ?>
                 </li>
                 <?php

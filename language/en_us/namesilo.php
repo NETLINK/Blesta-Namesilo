@@ -126,11 +126,34 @@ $lang['Namesilo.tab_dnssec.field_delete'] = 'Delete';
 $lang['Namesilo.tab_dnssec.title_disclaimer'] = 'Disclaimer';
 $lang['Namesilo.tab_dnssec.warning_message1'] = 'You can use this page to manage the DS records for your domain. You should only use this page if you are comfortable with DS records and DNSSEC.';
 $lang['Namesilo.tab_dnssec.warning_message2'] = 'When you manage DS records, <strong>the domain will stop resolving correctly</strong> if your nameservers are not configured correctly with the associated DNSSEC resource records.';
+
 $lang['Namesilo.dnssec.algorithm'] = 'Algorithm';
 $lang['Namesilo.dnssec.digest_type'] = 'Digest Type';
 $lang['Namesilo.dnssec.digest'] = 'Digest';
 $lang['Namesilo.dnssec.key_tag'] = 'Key Tag';
 
+// DNS records
+$lang['Namesilo.tab_dnsrecord.title'] = 'DNS Records';
+$lang['Namesilo.tab_dnsrecord.title_list'] = 'Current DNS Records';
+$lang['Namesilo.tab_dnsrecord.title_add'] = 'Add a DNS Record';
+$lang['Namesilo.tab_dnsrecord.field_delete'] = 'Delete Record(s)';
+$lang['Namesilo.tab_dnsrecord.field_add'] = 'Add Record';
+$lang['Namesilo.tab_dnsrecord.help_text_1'] = 'On this page you can add or delete A, AAAA, CNAME, MX and TXT DNS records. Please be ware that it might take some few minutes for DNS records to propagate.';
+
+$lang['Namesilo.dnsrecord.record_type'] = 'Type';
+$lang['Namesilo.dnsrecord.host'] = 'Host';
+$lang['Namesilo.dnsrecord.value'] = 'Value';
+$lang['Namesilo.dnsrecord.ttl'] = 'TTL';
+$lang['Namesilo.dnsrecord.field_delete'] = 'Delete Record(s)';
+
+$lang['Namesilo.dns_records.record_type'] = 'Record Type';
+$lang['Namesilo.dns_records.record_type.a_record'] = 'A Record';
+$lang['Namesilo.dns_records.record_type.aaaa_record'] = 'AAAA Record';
+$lang['Namesilo.dns_records.record_type.cname_record'] = 'CNAME Record';
+$lang['Namesilo.dns_records.record_type.mx_record'] = 'MX Record';
+$lang['Namesilo.dns_records.record_type.txt_record'] = 'TXT Record';
+
+// Settings
 $lang['Namesilo.tab_settings.title'] = 'Settings';
 $lang['Namesilo.tab_settings.field_registrar_lock'] = 'Registrar Lock';
 $lang['Namesilo.tab_settings.field_registrar_lock_yes'] = 'Set the registrar lock. Recommended to prevent unauthorized transfer.';
@@ -182,15 +205,9 @@ $lang['Namesilo.nameserver.ns3'] = 'Name Server 3';
 $lang['Namesilo.nameserver.ns4'] = 'Name Server 4';
 $lang['Namesilo.nameserver.ns5'] = 'Name Server 5';
 
-//$lang['Namesilo.domain.IdnCode'] = "";
-//$lang['Namesilo.domain.Nameservers'] = "";
-//$lang['Namesilo.domain.AddFreeWhoisguard'] = "";
-//$lang['Namesilo.domain.WGEnabled Enables'] = "";
-//$lang['Namesilo.domain.AddFreePositiveSSL'] = "";
 
 // Whois Fields
 $lang['Namesilo.whois.Organization'] = 'Organization';
-//$lang['Namesilo.whois.RegistrantJobTitle'] = "Job Title";
 $lang['Namesilo.whois.Nickname'] = 'Nickname';
 $lang['Namesilo.whois.FirstName'] = 'First Name';
 $lang['Namesilo.whois.LastName'] = 'Last Name';
@@ -198,12 +215,9 @@ $lang['Namesilo.whois.Address1'] = 'Address 1';
 $lang['Namesilo.whois.Address2'] = 'Address 2';
 $lang['Namesilo.whois.City'] = 'City';
 $lang['Namesilo.whois.StateProvince'] = 'State/Province';
-//$lang['Namesilo.whois.RegistrantStateProvinceChoice'] = "State/Province Choice";
 $lang['Namesilo.whois.PostalCode'] = 'Postal Code';
 $lang['Namesilo.whois.Country'] = 'Country';
 $lang['Namesilo.whois.Phone'] = 'Phone';
-//$lang['Namesilo.whois.RegistrantPhoneExt'] = "Phone Extension";
-//$lang['Namesilo.whois.RegistrantFax'] = "Fax";
 $lang['Namesilo.whois.EmailAddress'] = 'Email';
 
 // .US domain fields

@@ -1435,6 +1435,7 @@ class Namesilo extends Module
                 'tabNameservers' => Language::_('Namesilo.tab_nameservers.title', true),
                 'tabHosts' => Language::_('Namesilo.tab_hosts.title', true),
                 'tabDnssec' => Language::_('Namesilo.tab_dnssec.title', true),
+                'tabDnsRecords' => Language::_('Namesilo.tab_dnsrecord.title', true),
                 'tabSettings' => Language::_('Namesilo.tab_settings.title', true),
                 'tabAdminActions' => Language::_('Namesilo.tab_adminactions.title', true),
             ];
@@ -1457,6 +1458,7 @@ class Namesilo extends Module
                 'tabClientNameservers' => Language::_('Namesilo.tab_nameservers.title', true),
                 'tabClientHosts' => Language::_('Namesilo.tab_hosts.title', true),
                 'tabClientDnssec' => Language::_('Namesilo.tab_dnssec.title', true),
+                'tabClientDnsRecords' => Language::_('Namesilo.tab_dnsrecord.title', true),
                 'tabClientSettings' => Language::_('Namesilo.tab_settings.title', true),
             ];
         }
@@ -1538,6 +1540,21 @@ class Namesilo extends Module
     }
 
     /**
+     * Admin DNS Records tab
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabDnsRecords($package, $service, array $get  =null, array $post = null, array $files = null)
+    {
+        return $this->manageDnsRecords('tab_dnsrecords', $package, $service, $get, $post, $files);
+    }
+
+    /**
      * Admin Nameservers tab
      *
      * @param stdClass $package A stdClass object representing the current package
@@ -1580,6 +1597,21 @@ class Namesilo extends Module
     public function tabClientDnssec($package, $service, array $get = null, array $post = null, array $files = null)
     {
         return $this->manageDnssec('tab_client_dnssec', $package, $service, $get, $post, $files);
+    }
+
+    /**
+     * Client DNS Records tab
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabClientDnsRecords($package, $service, array $get = null, array $post = null, array $files = null)
+    {
+        return $this->manageDnsRecords('tab_client_dnsrecords', $package, $service, $get, $post, $files);
     }
 
     /**
@@ -2079,6 +2111,101 @@ class Namesilo extends Module
 
             $vars->selects = Configure::get('Namesilo.dnssec');
             $vars->records = $ds->ds_record;
+            $this->view->set('vars', $vars);
+            $this->view->set('client_id', $service->client_id);
+            $this->view->set('service_id', $service->id);
+        }
+
+        $this->view->setDefaultView(self::$defaultModuleView);
+
+        return $this->view->fetch();
+    }
+
+    /**
+     * Handle updating DNS Record information
+     *
+     * @param string $view The name of the view to fetch
+     * @param stdClass $package An stdClass object representing the package
+     * @param stdClass $service An stdClass object representing the service
+     * @param array $get Any GET arguments (optional)
+     * @param array $post Any POST arguments (optional)
+     * @param array $files Any FILES data (optional)
+     * @return string The rendered view
+     */
+    private function manageDnsRecords($view, $package, $service, array $get = null, array $post = null, array $files = null)
+    {
+        $vars = new stdClass();
+
+        if (in_array($service->status, self::$pending)) {
+            $this->view = new View('pending', 'default');
+        } else if ($view == 'tab_client_dnsrecords' && $service->status == 'suspended') {
+            $this->view = new View('suspended', 'default');
+        } else {
+            // if the domain is pending transfer display a notice of such
+            $checkDomainStatus = $this->checkDomainStatus($service, $package);
+            if (isset($checkDomainStatus)) {
+                return $checkDomainStatus;
+            }
+
+            $this->view = new View($view, 'default');
+            $this->view->base_uri = $this->base_uri;
+
+            // Load the helpers required for this view
+            Loader::loadHelpers($this, ['Form', 'Html']);
+
+            $row = $this->getModuleRow($package->module_row);
+            $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
+            $dns = new NamesiloDomainsDns($api);
+
+            $fields = $this->serviceFieldsToObject($service->fields);
+            $this->view->set('domain', $fields->domain);
+
+            if (!empty($post)) {
+                if (isset($post['action'])) {
+                    if ($post['action'] == 'addDnsRecord') {
+                        $response = $dns->dnsAddRecord(
+                            [
+                                'domain' => $fields->domain,
+                                'rrtype' => $post['record_type'],
+                                'rrhost' => $post['host'],
+                                'rrvalue' => $post['value'],
+                                'rrttl' => $post['ttl'],
+                            ]
+                        );
+                        $this->processResponse($api, $response);
+                    } elseif ($post['action'] == 'updateDnsRecord') {
+                        $response = $dns->dnsUpdateRecord(
+                            [
+                                'domain' => $fields->domain,
+                                'rrid' => $post['record_id'],
+                                'rrtype' => $post['record_type'],
+                                'rrhost' => $post['host'],
+                                'rrvalue' => $post['value'],
+                                'rrttl' => $post['ttl'],
+                            ]
+                        );
+                        $this->processResponse($api, $response);
+                    } elseif ($post['action'] == 'deleteDnsRecord') {
+                        $response = $dns->dnsDeleteRecord(
+                            [
+                                'domain' => $fields->domain,
+                                'rrid' => $post['record_id'],
+                            ]
+                        );
+                        $this->processResponse($api, $response);
+                    }
+                }
+            }
+
+            $records = $dns->dnsListRecords(['domain' => $fields->domain])->response();
+
+            // Get a consistent format because XML parsing in PHP is inconsistent
+            if (isset($records->resource_record) && !is_array($records->resource_record)) {
+                $records->resource_record = (array)$records->resource_record;
+            }
+
+            $vars->selects = Configure::get('Namesilo.dns_records');
+            $vars->records = $records->resource_record;
             $this->view->set('vars', $vars);
             $this->view->set('client_id', $service->client_id);
             $this->view->set('service_id', $service->id);

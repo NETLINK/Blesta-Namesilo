@@ -1,22 +1,22 @@
 {
-	"version": "1.12.0",
+    "version": "1.12.0",
     "type": "registrar",
-	"name": "Namesilo.name",
-	"description": "Namesilo.description",
-	"authors": [
+    "name": "Namesilo.name",
+    "description": "Namesilo.description",
+    "authors": [
         {
-			"name": "Phillips Data Inc.",
-			"url": "https://www.blesta.com"
-		},
-		{
-			"name": "KnownHost LLC",
-			"url": "https://www.knownhost.com"
-		},
-		{
-			"name": "NETLINK IT SERVICES",
-			"url": "http://www.netlink.ie/"
-		}
-	],
+            "name": "Phillips Data Inc.",
+            "url": "https://www.blesta.com"
+        },
+        {
+            "name": "KnownHost LLC",
+            "url": "https://www.knownhost.com"
+        },
+        {
+            "name": "NETLINK IT SERVICES",
+            "url": "http://www.netlink.ie/"
+        }
+    ],
     "package": {
         "name_key": "domain"
     },
