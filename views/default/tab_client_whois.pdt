@@ -51,7 +51,7 @@
                                             <?php
                                             foreach ($tooltips as $tooltip) {
                                                 ?>
-                                                <a href="#" data-toggle="tooltip" title="<?php $this->Html->_($tooltip->params['message']); ?>"><i class="fa fa-question-circle text-primary"></i></a>
+                                                <a href="#" data-toggle="tooltip" title="<?php $this->Html->_($tooltip->params['message']); ?>"><i class="fas fa-question-circle text-primary"></i></a>
                                                 <?php
                                             }
                                             ?>
@@ -77,7 +77,7 @@
 
                                         foreach ($tooltips as $tooltip) {
                                             ?>
-                                            <a href="#" data-toggle="tooltip" title="<?php $this->Html->_($tooltip->params['message']); ?>"><i class="fa fa-question-circle text-primary"></i></a>
+                                            <a href="#" data-toggle="tooltip" title="<?php $this->Html->_($tooltip->params['message']); ?>"><i class="fas fa-question-circle text-primary"></i></a>
                                             <?php
                                         }
                                     }
@@ -95,7 +95,7 @@
         </div>
     </div>
     <button class="btn btn-default pull-right" type="submit">
-        <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_whois.field_submit'); ?>
+        <i class="fas fa-edit"></i> <?php $this->_('Namesilo.tab_whois.field_submit'); ?>
     </button>
     <?php
     $this->Form->end();

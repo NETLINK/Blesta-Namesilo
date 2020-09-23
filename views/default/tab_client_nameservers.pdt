@@ -15,7 +15,7 @@
         </div>
     </div>
     <button class="btn btn-default pull-right" type="submit">
-        <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_nameservers.field_submit'); ?>
+        <i class="fas fa-edit"></i> <?php $this->_('Namesilo.tab_nameservers.field_submit'); ?>
     </button>
 
     <?php $this->Form->end(); ?>

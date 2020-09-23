@@ -16,7 +16,7 @@
                         $this->Form->fieldHidden('resend_verification_email', $vars->registrant_verification_info->email_address);
                         ?>
                         <button class="btn btn-default pull-right" type="submit">
-                            <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_resend_verification_email'); ?>
+                            <i class="fas fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_resend_verification_email'); ?>
                         </button>
                         <?php
                         $this->Form->end();
@@ -72,7 +72,7 @@
             </div>
         </div>
         <button class="btn btn-default pull-right" type="submit">
-            <i class="fa fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_submit'); ?>
+            <i class="fas fa-edit"></i> <?php $this->_('Namesilo.tab_settings.field_submit'); ?>
         </button>
         <?php
         $this->Form->end();
