@@ -2366,6 +2366,8 @@ class Namesilo extends Module implements Registrar
      */
     public function getExpirationDate($domain, $format = 'Y-m-d H:i:s')
     {
+        Loader::loadHelpers($this, ['Date']);
+
         $row = $this->getModuleRow();
         $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
 
