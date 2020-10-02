@@ -2335,11 +2335,12 @@ class Namesilo extends Module implements Registrar
      * Verifies that the provided domain name is available
      *
      * @param string $domain The domain to lookup
+     * @param int $module_row_id The ID of the module row to fetch for the current module
      * @return bool True if the domain is available, false otherwise
      */
-    public function checkAvailability($domain)
+    public function checkAvailability($domain, $module_row_id = null)
     {
-        $row = $this->getModuleRow();
+        $row = $this->getModuleRow($module_row_id);
         $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
 
         $domains = new NamesiloDomains($api);
@@ -2362,13 +2363,14 @@ class Namesilo extends Module implements Registrar
      *
      * @param string $domain The domain to lookup
      * @param string $format The format to return the expiration date in
+     * @param int $module_row_id The ID of the module row to fetch for the current module
      * @return string The domain expiration date in UTC time in the given format
      */
-    public function getExpirationDate($domain, $format = 'Y-m-d H:i:s')
+    public function getExpirationDate($domain, $format = 'Y-m-d H:i:s', $module_row_id = null)
     {
         Loader::loadHelpers($this, ['Date']);
 
-        $row = $this->getModuleRow();
+        $row = $this->getModuleRow($module_row_id);
         $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
 
         $domains = new NamesiloDomains($api);
@@ -2392,12 +2394,13 @@ class Namesilo extends Module implements Registrar
     /**
      * Get a list of the TLDs supported by the registrar module
      *
+     * @param int $module_row_id The ID of the module row to fetch for the current module
      * @return array A list of all TLDs supported by the registrar module
      */
-    public function getTlds()
+    public function getTlds($module_row_id = null)
     {
-        $row = $this->getModuleRows();
-        $row = isset($row[0]) ? $row[0] : $this->getModuleRow();
+        $row = $this->getModuleRow($module_row_id);
+        $row = !empty($row) ? $row : $this->getModuleRows()[0];
 
         // Fetch the TLDs results from the cache, if they exist
         $cache = Cache::fetchCache(
