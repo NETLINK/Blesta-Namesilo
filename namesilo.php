@@ -1,4 +1,5 @@
 <?php
+use Blesta\Core\Util\Modules\Registrar;
 
 /**
  * Namesilo Module
@@ -10,7 +11,7 @@
  * @copyright Copyright (c) 2015-2018, NETLINK IT SERVICES
  * @link http://www.netlink.ie/ NETLINK
  */
-class Namesilo extends Module
+class Namesilo extends Module implements Registrar
 {
     /**
      * @var string Debug email address
