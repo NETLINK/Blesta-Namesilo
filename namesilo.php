@@ -1,4 +1,6 @@
 <?php
+use Blesta\Core\Util\Modules\Registrar;
+
 /**
  * Namesilo Module
  *
@@ -9,7 +11,7 @@
  * @copyright Copyright (c) 2015-2018, NETLINK IT SERVICES
  * @link http://www.netlink.ie/ NETLINK
  */
-class Namesilo extends Module
+class Namesilo extends Module implements Registrar
 {
     /**
      * @var string Debug email address
@@ -1057,7 +1059,7 @@ class Namesilo extends Module
         // Set all TLD checkboxes
         $tld_options = $fields->label(Language::_('Namesilo.package_fields.tld_options', true));
 
-        $tlds = $this->getTlds($module_row);
+        $tlds = $this->getTlds();
         sort($tlds);
 
         foreach ($tlds as $tld) {
@@ -2330,18 +2332,19 @@ class Namesilo extends Module
     }
 
     /**
-     * Performs a whois lookup on the given domain
+     * Verifies that the provided domain name is available
      *
      * @param string $domain The domain to lookup
-     * @return bool true if available, false otherwise
+     * @param int $module_row_id The ID of the module row to fetch for the current module
+     * @return bool True if the domain is available, false otherwise
      */
-    public function checkAvailability($domain)
+    public function checkAvailability($domain, $module_row_id = null)
     {
-        $row = $this->getModuleRow();
+        $row = $this->getModuleRow($module_row_id);
         $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
 
         $domains = new NamesiloDomains($api);
-        $result = $domains->check(['domains' => $domain ]);
+        $result = $domains->check(['domains' => $domain]);
         $this->processResponse($api, $result);
 
         if (self::$codes[$result->status()][1] == 'fail') {
@@ -2353,6 +2356,100 @@ class Namesilo extends Module
         $available = isset($response->available->{'domain'}) && $response->available->{'domain'} == $domain;
 
         return $available;
+    }
+
+    /**
+     * Gets the domain expiration date
+     *
+     * @param string $domain The domain to lookup
+     * @param string $format The format to return the expiration date in
+     * @param int $module_row_id The ID of the module row to fetch for the current module
+     * @return string The domain expiration date in UTC time in the given format
+     */
+    public function getExpirationDate($domain, $format = 'Y-m-d H:i:s', $module_row_id = null)
+    {
+        Loader::loadHelpers($this, ['Date']);
+
+        $row = $this->getModuleRow($module_row_id);
+        $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
+
+        $domains = new NamesiloDomains($api);
+        $result = $domains->getDomainInfo(['domain' => $domain]);
+        $this->processResponse($api, $result);
+
+        if (self::$codes[$result->status()][1] == 'fail') {
+            return false;
+        }
+
+        $response = $result->response();
+
+        return $this->Date->format(
+            $format,
+            isset($response->expires)
+                ? $response->expires
+                : date('c')
+        );
+    }
+
+    /**
+     * Get a list of the TLDs supported by the registrar module
+     *
+     * @param int $module_row_id The ID of the module row to fetch for the current module
+     * @return array A list of all TLDs supported by the registrar module
+     */
+    public function getTlds($module_row_id = null)
+    {
+        $row = $this->getModuleRow($module_row_id);
+        $row = !empty($row) ? $row : $this->getModuleRows()[0];
+
+        // Fetch the TLDs results from the cache, if they exist
+        $cache = Cache::fetchCache(
+            'tlds',
+            Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
+        );
+
+        if ($cache) {
+            return unserialize(base64_decode($cache));
+        }
+
+        // Fetch namesilo TLDs
+        $tlds = [];
+
+        if (empty($row)) {
+            return $tlds;
+        }
+
+        $result = $this->getApi(
+            $row->meta->user,
+            $row->meta->key,
+            $row->meta->sandbox == 'true'
+        )->submit('getPrices');
+
+        foreach ($result->response() as $tld => $v) {
+            if (!is_object($v)) {
+                continue;
+            }
+            $tlds[] = '.' . $tld;
+        }
+
+        // Save the TLDs results to the cache
+        if (count($tlds) > 0) {
+            if (Configure::get('Caching.on') && is_writable(CACHEDIR)) {
+                try {
+                    Cache::writeCache(
+                        'tlds',
+                        base64_encode(serialize($tlds)),
+                        strtotime(Configure::get('Blesta.cache_length')) - time(),
+                        Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
+                    );
+                } catch (Exception $e) {
+                    // Write to cache failed, so disable caching
+                    Configure::set('Caching.on', false);
+                }
+            }
+        }
+
+        return $tlds;
     }
 
     /**
@@ -2535,7 +2632,7 @@ class Namesilo extends Module
             $row = $this->getRow();
         }
 
-        $tlds = $this->getTlds($row);
+        $tlds = $this->getTlds();
         $domain = strtolower($domain);
 
         foreach ($tlds as $tld) {
@@ -2545,64 +2642,6 @@ class Namesilo extends Module
         }
 
         return strstr($domain, '.');
-    }
-
-    /**
-     * Retrieves the TLDs from the API
-     *
-     * @param stdClass $row The module row object
-     * @return array An array of TLDs
-     */
-    private function getTlds($row)
-    {
-        // Fetch the TLDs results from the cache, if they exist
-        $cache = Cache::fetchCache(
-            'tlds',
-            Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
-        );
-
-        if ($cache) {
-            return unserialize(base64_decode($cache));
-        }
-
-        // Fetch namesilo TLDs
-        $tlds = [];
-
-        if (empty($row)) {
-            return $tlds;
-        }
-
-        $result = $this->getApi(
-            $row->meta->user,
-            $row->meta->key,
-            $row->meta->sandbox == 'true'
-        )->submit('getPrices');
-
-        foreach ($result->response() as $tld => $v) {
-            if (!is_object($v)) {
-                continue;
-            }
-            $tlds[] = '.' . $tld;
-        }
-
-        // Save the TLDs results to the cache
-        if (count($tlds) > 0) {
-            if (Configure::get('Caching.on') && is_writable(CACHEDIR)) {
-                try {
-                    Cache::writeCache(
-                        'tlds',
-                        base64_encode(serialize($tlds)),
-                        strtotime(Configure::get('Blesta.cache_length')) - time(),
-                        Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
-                    );
-                } catch (Exception $e) {
-                    // Write to cache failed, so disable caching
-                    Configure::set('Caching.on', false);
-                }
-            }
-        }
-
-        return $tlds;
     }
 
     /**
