@@ -289,8 +289,7 @@
         $this->Widget->end();
         ?>
 
-        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/ckeditor.js';?>"></script>
-        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/adapters/jquery.js';?>"></script>
+        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/build/ckeditor.js';?>"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 // Toggle package name and description
@@ -312,7 +311,7 @@
                     });
                 }
 
-                $('textarea.wysiwyg').ckeditor(function() {}, {language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
+                $('textarea.wysiwyg').blestaBindWysiwygEditor({language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
                 $('div.tab_content').blestaTabbedContent();
 
                 // Update registration price
