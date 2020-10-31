@@ -3,9 +3,12 @@ Blesta Namesilo module
 
 This module interfaces with Namesilo's domain API to allow domain registrations, transfers and renewals through Blesta.
 
-www.blesta.com
+* www.blesta.com
+* www.namesilo.com
 
-www.namesilo.com
+**PLEASE NOTE**
+Blesta Developers are integrating this project directly into Blesta Core. Active development of this project will now be done here:
+https://github.com/blesta/module-namesilo
 
 **Installation**
 
