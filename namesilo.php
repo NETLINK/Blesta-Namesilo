@@ -2319,7 +2319,7 @@ class Namesilo extends Module implements Registrar
                 $registrant_verification->email = [$registrant_verification->email];
             }
             foreach ($registrant_verification->email as $registrant) {
-                if ($registrant->email_address == $registrant_email) {
+                if (isset($registrant->email_address) && $registrant->email_address == $registrant_email) {
                     $vars->registrant_verification_info = $registrant;
                 }
             }
