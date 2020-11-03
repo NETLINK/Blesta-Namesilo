@@ -1,19 +1,19 @@
     <div class="pad">
-		<ul>
+        <ul>
             <?php $this->Form->create(); ?>
-			<li>
-				<?php $this->Form->label( "What would you like to send?", "notice" ); ?>
-				<?php $this->Form->fieldSelect( "notice", $vars->options, $this->Html->ifSet( $test ) == "Yes", array ( 'id' => "notice" ) ); ?>
-                <div class="button_row"><a class="btn btn-primary submit" href="#"><?php $this->_( "Namesilo.tab_adminactions.field_submit" ); ?></a></div>
-			</li>
+            <li>
+                <?php $this->Form->label('What would you like to send?', 'notice'); ?>
+                <?php $this->Form->fieldSelect('notice', $vars->options, $this->Html->ifSet($test) == 'Yes', ['id' => 'notice']); ?>
+                <div class="button_row"><a class="btn btn-primary submit" href="#"><?php $this->_('Namesilo.tab_adminactions.field_submit'); ?></a></div>
+            </li>
             <?php
             $this->Form->end();
             $this->Form->create();
             ?>
             <li>
-                <?php $this->Form->fieldHidden("action", "sync_date"); ?>
-                <div class="button_row"><a class="btn btn-primary submit" href="#"><?php $this->_( "Namesilo.tab_adminactions.sync_date" ); ?></a></div>
+                <?php $this->Form->fieldHidden('action', 'sync_date'); ?>
+                <div class="button_row"><a class="btn btn-primary submit" href="#"><?php $this->_('Namesilo.tab_adminactions.sync_date'); ?></a></div>
             </li>
-		</ul>
+        </ul>
 
     </div>

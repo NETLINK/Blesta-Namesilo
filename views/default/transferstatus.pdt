@@ -1,5 +1,5 @@
-<div class="pad">
-	<p><?php $this->_("Namesilo.notice.TransferPending"); ?></p>
-    <p><strong>Status:</strong> <?php echo $this->Html->ifSet($transferstatus->status) ?></p>
-    <p><strong>Status Message:</strong> <?php echo $this->Html->ifSet($transferstatus->message) ?></p>
-</div>
+    <div class="pad">
+        <p><?php $this->_('Namesilo.notice.TransferPending'); ?></p>
+        <p><strong>Status:</strong> <?php echo $this->Html->ifSet($transferstatus->status) ?></p>
+        <p><strong>Status Message:</strong> <?php echo $this->Html->ifSet($transferstatus->message) ?></p>
+    </div>

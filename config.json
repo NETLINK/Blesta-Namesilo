@@ -1,15 +1,36 @@
 {
-	"version": "1.8.5",
-	"name": "NameSilo Domains Module",
-	"description": "Resell domains through NameSilo.",
-	"authors": [
-		{
-			"name": "KnownHost LLC &",
-			"url": "https://www.knownhost.com"
-		},
-		{
-			"name": "NETLINK IT SERVICES",
-			"url": "http://www.netlink.ie/"
-		}
-	]
+    "version": "1.13.0",
+    "type": "registrar",
+    "name": "Namesilo.name",
+    "description": "Namesilo.description",
+    "authors": [
+        {
+            "name": "Phillips Data Inc.",
+            "url": "https://www.blesta.com"
+        },
+        {
+            "name": "KnownHost LLC",
+            "url": "https://www.knownhost.com"
+        },
+        {
+            "name": "NETLINK IT SERVICES",
+            "url": "http://www.netlink.ie/"
+        }
+    ],
+    "package": {
+        "name_key": "domain"
+    },
+    "service": {
+        "name_key": "domain"
+    },
+    "module": {
+        "row": "Namesilo.module_row",
+        "rows": "Namesilo.module_row_plural",
+        "row_key": "user"
+    },
+    "email_tags": {
+        "module": [],
+        "package": [],
+        "service": ["domain", "transfer", "private", "ns1", "ns2", "ns3", "ns4", "ns5"]
+    }
 }
