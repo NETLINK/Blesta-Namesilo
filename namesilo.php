@@ -2283,7 +2283,7 @@ class Namesilo extends Module
                         );
                     }
 
-                    if (isset($post['whois_privacy_before']) || isset($post['whois_privacy'])) {
+                    if (isset($post['whois_privacy_before']) && isset($post['whois_privacy'])) {
                         if ($post['whois_privacy_before'] == 'No' && $post['whois_privacy'] == 'Yes') {
                             $response = $domains->addPrivacy(['domain' => $fields->domain]);
                             $this->processResponse($api, $response);
