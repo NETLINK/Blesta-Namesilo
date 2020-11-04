@@ -65,7 +65,7 @@
                         <?php
                         $this->Form->fieldHidden('whois_privacy_before', $this->Html->ifSet($vars->whois_privacy));
                         $this->Form->fieldCheckbox('whois_privacy', 'Yes', $this->Html->ifSet($vars->whois_privacy) == 'Yes', ['id' => 'whois_privacy']);
-                        $this->Form->label($this->_('Namesilo.domain.WhoisPrivacy', true), 'whois_privacy', ['class' => 'inline']);
+                        $this->_('Namesilo.domain.WhoisPrivacy');
                         ?>
                     </label>
                 </div>
