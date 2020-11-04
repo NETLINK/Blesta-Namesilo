@@ -2314,12 +2314,12 @@ class Namesilo extends Module implements Registrar
             $registrant_info = $domains->getContacts(['contact_id' => $registrant_id]);
             $registrant_email = $registrant_info->response()->contact->email;
 
-            $registrant_verification = $domains->registrantVerificationStatus()->response();
-            if (!is_array($registrant_verification->email)) {
-                $registrant_verification->email = [$registrant_verification->email];
+            $registrant_verification = $domains->registrantVerificationStatus()->response(true);
+            if (!is_array($registrant_verification['email'])) {
+                $registrant_verification['email'] = [$registrant_verification->email];
             }
-            foreach ($registrant_verification->email as $registrant) {
-                if (isset($registrant->email_address) && $registrant->email_address == $registrant_email) {
+            foreach ($registrant_verification['email'] as $key => $registrant) {
+                if (isset($registrant['email_address']) && $registrant['email_address'] == $registrant_email) {
                     $vars->registrant_verification_info = $registrant;
                 }
             }
