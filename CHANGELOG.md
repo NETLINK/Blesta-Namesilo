@@ -12,6 +12,7 @@
 ### Fixed
 
 -   Fixes #55. [6e4ac5f](https://github.com/NETLINK/Blesta-Namesilo/commit/6e4ac5f51aa224fe3df23ab93762d7be6ffb2f07) by [@julianmatz](https://github.com/julianmatz)
+-   Error on DNS Records page if there is only one DNS record. [#54](https://github.com/NETLINK/Blesta-Namesilo/issues/54) by [@julianmatz](https://github.com/julianmatz)
 
 ## [1.8.5] = 2018-11-19
 
