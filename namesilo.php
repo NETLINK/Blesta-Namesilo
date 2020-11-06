@@ -1090,24 +1090,24 @@ class Namesilo extends Module implements Registrar
         }
 
         $fields->setHtml("
-			<script type=\"text/javascript\">
-				$(document).ready(function() {
-					toggleTldOptions($('#namesilo_type').val());
+            <script type=\"text/javascript\">
+                $(document).ready(function() {
+                    toggleTldOptions($('#namesilo_type').val());
 
-					// Re-fetch module options
-					$('#namesilo_type').change(function() {
-						toggleTldOptions($(this).val());
-					});
+                    // Re-fetch module options
+                    $('#namesilo_type').change(function() {
+                        toggleTldOptions($(this).val());
+                    });
 
-					function toggleTldOptions(type) {
-						if (type == 'ssl')
-							$('.namesilo_tlds').hide();
-						else
-							$('.namesilo_tlds').show();
-					}
-				});
-			</script>
-		");
+                    function toggleTldOptions(type) {
+                        if (type == 'ssl')
+                            $('.namesilo_tlds').hide();
+                        else
+                            $('.namesilo_tlds').show();
+                    }
+                });
+            </script>
+        ");
 
         return $fields;
     }
@@ -1166,34 +1166,34 @@ class Namesilo extends Module implements Registrar
                 );
 
                 $module_fields->setHtml("
-					<script type=\"text/javascript\">
-						$(document).ready(function() {
-							$('#transfer_id_0').prop('checked', true);
-							$('#auth_id').closest('li').hide();
-							// Set whether to show or hide the ACL option
-							$('#auth').closest('li').hide();
-							if ($('input[name=\"transfer\"]:checked').val() == '1')
-								$('#auth_id').closest('li').show();
+                    <script type=\"text/javascript\">
+                        $(document).ready(function() {
+                            $('#transfer_id_0').prop('checked', true);
+                            $('#auth_id').closest('li').hide();
+                            // Set whether to show or hide the ACL option
+                            $('#auth').closest('li').hide();
+                            if ($('input[name=\"transfer\"]:checked').val() == '1')
+                                $('#auth_id').closest('li').show();
 
-							$('input[name=\"transfer\"]').change(function() {
-								if ($(this).val() == '1'){
-									$('#auth_id').closest('li').show();
-									$('#ns1_id').closest('li').hide();
-									$('#ns2_id').closest('li').hide();
-									$('#ns3_id').closest('li').hide();
-									$('#ns4_id').closest('li').hide();
-									$('#ns5_id').closest('li').hide();
-								}else{
-									$('#auth_id').closest('li').hide();
-									$('#ns1_id').closest('li').show();
-									$('#ns2_id').closest('li').show();
-									$('#ns3_id').closest('li').show();
-									$('#ns4_id').closest('li').show();
-									$('#ns5_id').closest('li').show();
-								}
-							});
-						});
-					</script>");
+                            $('input[name=\"transfer\"]').change(function() {
+                                if ($(this).val() == '1'){
+                                    $('#auth_id').closest('li').show();
+                                    $('#ns1_id').closest('li').hide();
+                                    $('#ns2_id').closest('li').hide();
+                                    $('#ns3_id').closest('li').hide();
+                                    $('#ns4_id').closest('li').hide();
+                                    $('#ns5_id').closest('li').hide();
+                                }else{
+                                    $('#auth_id').closest('li').hide();
+                                    $('#ns1_id').closest('li').show();
+                                    $('#ns2_id').closest('li').show();
+                                    $('#ns3_id').closest('li').show();
+                                    $('#ns4_id').closest('li').show();
+                                    $('#ns5_id').closest('li').show();
+                                }
+                            });
+                        });
+                    </script>");
 
                 // Build the domain fields
                 $fields = $this->buildDomainModuleFields($vars);
@@ -2199,15 +2199,22 @@ class Namesilo extends Module implements Registrar
                 }
             }
 
-            $records = $dns->dnsListRecords(['domain' => $fields->domain])->response();
+            $records = $dns->dnsListRecords(['domain' => $fields->domain])->response(true);
 
             // Get a consistent format because XML parsing in PHP is inconsistent
-            if (isset($records->resource_record) && !is_array($records->resource_record)) {
-                $records->resource_record = (array)$records->resource_record;
+            if (isset($records['resource_record']) && !is_array($records['resource_record'])) {
+                $records['resource_record'] = (array)$records['resource_record'];
+            }
+
+            // We are expecting a multidimensional array
+            if ( $this->isMultiArray( $records['resource_record'] ) === false )
+            {
+                $records['resource_record'] = [ 0 => $records['resource_record'] ];
             }
 
             $vars->selects = Configure::get('Namesilo.dns_records');
-            $vars->records = $records->resource_record;
+            $vars->records = $records['resource_record'];
+
             $this->view->set('vars', $vars);
             $this->view->set('client_id', $service->client_id);
             $this->view->set('service_id', $service->id);
@@ -2285,7 +2292,7 @@ class Namesilo extends Module implements Registrar
                         );
                     }
 
-                    if (isset($post['whois_privacy_before']) || isset($post['whois_privacy'])) {
+                    if (isset($post['whois_privacy_before']) && isset($post['whois_privacy'])) {
                         if ($post['whois_privacy_before'] == 'No' && $post['whois_privacy'] == 'Yes') {
                             $response = $domains->addPrivacy(['domain' => $fields->domain]);
                             $this->processResponse($api, $response);
@@ -2917,6 +2924,17 @@ class Namesilo extends Module implements Registrar
         }
 
         return $rows_options;
+    }
+
+    /**
+     * Check if array is multidimensional
+     *
+     * @return bool true|false
+     */
+    private function isMultiArray( array $array )
+    {
+        rsort( $array );
+        return isset( $array[0] ) && is_array( $array[0] );
     }
 
     /**
