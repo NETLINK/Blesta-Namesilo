@@ -65,17 +65,10 @@
         );
         ?>
         <div class="form-group">
-            <?php $this->Form->label($this->_('Namesilo.dnsrecord.record_type'), 'record_type');?>
-            <?php $this->Form->fieldSelect('record_type', $vars->selects['record_type']['options'], null, ['class' => 'form-control']);?>
-
-            <?php $this->Form->label($this->_('Namesilo.dnsrecord.host'), 'host');?>
-            <?php $this->Form->fieldText('host', null, ['class' => 'form-control']);?>
-
-            <?php $this->Form->label($this->_('Namesilo.dnsrecord.value'), 'value');?>
-            <?php $this->Form->fieldText('value', null, ['class' => 'form-control']);?>
-
-            <?php $this->Form->label($this->_('Namesilo.dnsrecord.ttl'), 'ttl');?>
-            <?php $this->Form->fieldText('ttl', 7207, ['class' => 'form-control']);?>
+            <label><?php $this->_('Namesilo.dnsrecord.record_type');?><?php $this->Form->fieldSelect('record_type', $vars->selects['record_type']['options'], null, ['class' => 'form-control']);?></label>
+            <label><?php $this->_('Namesilo.dnsrecord.host');?><?php $this->Form->fieldText('host', null, ['class' => 'form-control']);?></label>
+            <label><?php $this->_('Namesilo.dnsrecord.value');?><?php $this->Form->fieldText('value', null, ['class' => 'form-control']);?></label>
+            <label><?php $this->_('Namesilo.dnsrecord.ttl');?><?php $this->Form->fieldText('ttl', 7207, ['class' => 'form-control']);?></label>
         </div>
         <div class="button_row">
             <?php
