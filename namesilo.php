@@ -2213,15 +2213,22 @@ class Namesilo extends Module implements Registrar
                 }
             }
 
-            $records = $dns->dnsListRecords(['domain' => $fields->domain])->response();
+            $records = $dns->dnsListRecords(['domain' => $fields->domain])->response(true);
 
             // Get a consistent format because XML parsing in PHP is inconsistent
-            if (isset($records->resource_record) && !is_array($records->resource_record)) {
-                $records->resource_record = (array)$records->resource_record;
+            if (isset($records['resource_record']) && !is_array($records['resource_record'])) {
+                $records['resource_record'] = (array)$records['resource_record'];
+            }
+
+            // We are expecting a multidimensional array
+            if ( $this->isMultiArray( $records['resource_record'] ) === false )
+            {
+                $records['resource_record'] = [ 0 => $records['resource_record'] ];
             }
 
             $vars->selects = Configure::get('Namesilo.dns_records');
-            $vars->records = $records->resource_record;
+            $vars->records = $records['resource_record'];
+
             $this->view->set('vars', $vars);
             $this->view->set('client_id', $service->client_id);
             $this->view->set('service_id', $service->id);
@@ -2299,7 +2306,7 @@ class Namesilo extends Module implements Registrar
                         );
                     }
 
-                    if (isset($post['whois_privacy_before']) || isset($post['whois_privacy'])) {
+                    if (isset($post['whois_privacy_before']) && isset($post['whois_privacy'])) {
                         if ($post['whois_privacy_before'] == 'No' && $post['whois_privacy'] == 'Yes') {
                             $response = $domains->addPrivacy(['domain' => $fields->domain]);
                             $this->processResponse($api, $response);
@@ -2328,12 +2335,12 @@ class Namesilo extends Module implements Registrar
             $registrant_info = $domains->getContacts(['contact_id' => $registrant_id]);
             $registrant_email = $registrant_info->response()->contact->email;
 
-            $registrant_verification = $domains->registrantVerificationStatus()->response();
-            if (!is_array($registrant_verification->email)) {
-                $registrant_verification->email = [$registrant_verification->email];
+            $registrant_verification = $domains->registrantVerificationStatus()->response(true);
+            if (!is_array($registrant_verification['email'])) {
+                $registrant_verification['email'] = [$registrant_verification->email];
             }
-            foreach ($registrant_verification->email as $registrant) {
-                if ($registrant->email_address == $registrant_email) {
+            foreach ($registrant_verification['email'] as $key => $registrant) {
+                if (isset($registrant['email_address']) && $registrant['email_address'] == $registrant_email) {
                     $vars->registrant_verification_info = $registrant;
                 }
             }
@@ -2936,6 +2943,17 @@ class Namesilo extends Module implements Registrar
         }
 
         return $rows_options;
+    }
+
+    /**
+     * Check if array is multidimensional
+     *
+     * @return bool true|false
+     */
+    private function isMultiArray( array $array )
+    {
+        rsort( $array );
+        return isset( $array[0] ) && is_array( $array[0] );
     }
 
     /**

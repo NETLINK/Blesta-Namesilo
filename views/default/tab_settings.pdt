@@ -8,9 +8,9 @@
         <ul>
             <li>
                 <?php $this->_('Namesilo.tab_settings.verification_text');
-                echo $this->Html->ifSet($vars->registrant_verification_info->email_address); ?>:
+                echo $this->Html->ifSet($vars->registrant_verification_info['email_address']); ?>:
                 <?php
-                if ($this->Html->ifSet($vars->registrant_verification_info->verified) == 'Yes') {
+                if ($this->Html->ifSet($vars->registrant_verification_info['verified']) == 'Yes') {
                 ?>
                 <span style="color:green"><?php $this->_('Namesilo.tab_settings.verified'); ?></span>!
             </li>
@@ -21,14 +21,14 @@
                 </li>
                 <li><?php $this->_('Namesilo.tab_settings.not_verified_warning'); ?></li>
                 <li>
-                    <?php $this->Form->fieldHidden('resend_verification_email', $this->Html->ifSet($vars->registrant_verification_info->email_address)); ?>
+                    <?php $this->Form->fieldHidden('resend_verification_email', $this->Html->ifSet($vars->registrant_verification_info['email_address'])); ?>
                 </li>
                 <?php
             }
             ?>
         </ul>
     </div>
-    <?php if ($this->Html->ifSet($vars->registrant_verification_info->verified) == 'No') { ?>
+    <?php if ($this->Html->ifSet($vars->registrant_verification_info['verified']) == 'No') { ?>
         <div class="button_row">
             <a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_settings.field_resend_verification_email'); ?></a>
         </div>

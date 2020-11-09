@@ -60,17 +60,10 @@
         $this->Form->create($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientDnssec');
         ?>
         <div class="form-group">
-            <?php $this->Form->label( $this->_('Namesilo.dnssec.key_tag'), 'key_tag' ); ?>
-            <?php $this->Form->fieldText('key_tag', null, ['class' => 'form-control']); ?>
-
-            <?php $this->Form->label( $this->_('Namesilo.dnssec.algorithm'), 'algorithm' ); ?>
-            <?php $this->Form->fieldSelect('algorithm', $vars->selects['algorithm']['options'], null, ['class' => 'form-control']); ?>
-
-            <?php $this->Form->label( $this->_('Namesilo.dnssec.digest_type'), 'digest_type' ); ?>
-            <?php $this->Form->fieldSelect('digest_type', $vars->selects['digest_type']['options'], null, ['class' => 'form-control']); ?>
-
-            <?php $this->Form->label( $this->_('Namesilo.dnssec.digest'), 'digest' ); ?>
-            <?php $this->Form->fieldText('digest', null, ['class' => 'form-control']); ?>
+            <label><?php $this->_('Namesilo.dnssec.key_tag'); ?><?php $this->Form->fieldText('key_tag', null, ['class' => 'form-control short']); ?></label>
+            <label><?php $this->_('Namesilo.dnssec.algorithm'); ?><?php $this->Form->fieldSelect('algorithm', $vars->selects['algorithm']['options'], null, ['class' => 'form-control']); ?></label>
+            <label><?php $this->_('Namesilo.dnssec.digest_type'); ?><?php $this->Form->fieldSelect('digest_type', $vars->selects['digest_type']['options'], null, ['class' => 'form-control']); ?></label>
+            <label><?php $this->_('Namesilo.dnssec.digest'); ?><?php $this->Form->fieldText('digest', null, ['class' => 'form-control']); ?></label>
         </div>
         <div class="button_row">
             <?php
