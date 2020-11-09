@@ -20,10 +20,10 @@
                 foreach ($vars->records as $record) {
                     ?>
                     <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : ''?>>
-                        <td><?php echo $this->Html->ifSet($record->type);?></td>
-                        <td><?php echo $this->Html->ifSet($record->host);?></td>
-                        <td><?php echo $this->Html->ifSet($record->value);?></td>
-                        <td><?php echo $this->Html->ifSet($record->ttl);?></td>
+                        <td><?php echo $this->Html->ifSet($record['type']);?></td>
+                        <td><?php echo $this->Html->ifSet($record['host']);?></td>
+                        <td><?php echo $this->Html->ifSet($record['value']);?></td>
+                        <td><?php echo $this->Html->ifSet($record['ttl']);?></td>
                         <td>
                             <?php
                             $this->Form->create(
@@ -31,7 +31,7 @@
                                     $client_id
                                 ) . '/' . $this->Html->ifSet($service_id) . '/tabDnsRecords/'
                             );
-                            $this->Form->fieldHidden('record_id', $this->Html->ifSet($record->record_id));
+                            $this->Form->fieldHidden('record_id', $this->Html->ifSet($record['record_id']));
 
                             $button_attributes = [
                                 'class' => 'btn btn-sm',
