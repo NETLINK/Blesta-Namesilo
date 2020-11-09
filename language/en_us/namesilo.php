@@ -61,7 +61,7 @@ $lang['Namesilo.manage.manage_packages.save_packages_btn'] = 'Save Packages';
 
 // Sync renew dates
 $lang['Namesilo.manage.sync_renew_dates.box_title'] = 'Sync Domain Renewal Dates';
-$lang['Namesilo.manage.sync_renew_dates.description'] = "This tool synchronizes a service's renewal date with the domain's actual expiration date, taking into account the suspension threshold (as to ensure auto-renewal doesn't renew the domain if the customer hasn't paid).";
+$lang['Namesilo.manage.sync_renew_dates.description'] = "This tool synchronizes a service's renewal date with the domain's actual expiration date, taking into account the suspension threshold (as to ensure auto-renewal doesn't renew the domain if the customer hasn't paid). Highlighted rows have a difference greater than 9 months (270 days) and should be checked before syncing.";
 $lang['Namesilo.manage.sync_renew_dates.results'] = 'Synchronization Results';
 $lang['Namesilo.manage.sync_renew_dates.out_of_sync'] = 'Out Of Sync Renew Dates';
 $lang['Namesilo.manage.sync_renew_dates.errors'] = 'Errors';
