@@ -795,6 +795,10 @@ class Namesilo extends Module implements Registrar
             $vars['domains'] = [];
 
             if (!empty($domain_list)) {
+                if (!is_array($domain_list)) {
+                    $domain_list = [$domain_list];
+                }
+
                 foreach ($domain_list as $domain) {
                     $record = $this->Record->select()
                         ->from('services')
@@ -816,12 +820,9 @@ class Namesilo extends Module implements Registrar
 
             return $this->view->fetch();
         } elseif ($action == 'sync_renew_dates') {
-            if (isset($vars['sync_services'])) {
-                $post['sync_services'] = $vars['sync_services'];
-            }
-
             $module_row = $this->getRow();
 
+            // Get all the services for the module row.  This basically assumes there is only on Namesilo module row
             $services = $this->Record->select(['services.id'])
                 ->from('services')
                 ->where('module_row_id', '=', $module_row->id)
@@ -829,25 +830,24 @@ class Namesilo extends Module implements Registrar
                 ->fetchAll();
 
             $vars['service_ids'] = [];
-
             foreach ($services as $service) {
                 $vars['service_ids'][] = $service->id;
             }
 
             // Set view
-            $vars['renew_info_url'] = $this->base_uri . 'settings/company/modules/addrow/' . $module_row->id;
+            $vars['renew_info_url'] = $this->base_uri . 'settings/company/modules/addrow/' . $module_row->module_id;
             $this->view->set('vars', (object)$vars);
 
             return $this->view->fetch();
         } elseif  ($action == 'get_renew_info') {
-			$service_id = isset($_GET['service_id']) ? $_GET['service_id'] : null;
-			if (is_null($service_id)) {
+            $service_id = isset($_GET['service_id']) ? $_GET['service_id'] : null;
+            if (is_null($service_id)) {
                 // exit() to prevent any output other than json from being rendered
-				exit();
-			}
+               exit();
+            }
 
+            // Load the API
             $module_row = $this->getRow();
-
             $api = $this->getApi(
                 $module_row->meta->user,
                 $module_row->meta->key,
@@ -856,8 +856,10 @@ class Namesilo extends Module implements Registrar
                 true
             );
 
+            // Get the domain renewal details for the service
             $domains = new NamesiloDomains($api);
-            $vars = $this->getRenewInfo($service_id,$domains);
+            $vars = $this->getRenewInfo($service_id, $domains);
+
             exit(json_encode($vars));
         } else {
             // Set unspecified checkboxes
@@ -1102,24 +1104,24 @@ class Namesilo extends Module implements Registrar
         }
 
         $fields->setHtml("
-			<script type=\"text/javascript\">
-				$(document).ready(function() {
-					toggleTldOptions($('#namesilo_type').val());
+            <script type=\"text/javascript\">
+                $(document).ready(function() {
+                    toggleTldOptions($('#namesilo_type').val());
 
-					// Re-fetch module options
-					$('#namesilo_type').change(function() {
-						toggleTldOptions($(this).val());
-					});
+                    // Re-fetch module options
+                    $('#namesilo_type').change(function() {
+                        toggleTldOptions($(this).val());
+                    });
 
-					function toggleTldOptions(type) {
-						if (type == 'ssl')
-							$('.namesilo_tlds').hide();
-						else
-							$('.namesilo_tlds').show();
-					}
-				});
-			</script>
-		");
+                    function toggleTldOptions(type) {
+                        if (type == 'ssl')
+                            $('.namesilo_tlds').hide();
+                        else
+                            $('.namesilo_tlds').show();
+                    }
+                });
+            </script>
+        ");
 
         return $fields;
     }
@@ -1178,34 +1180,34 @@ class Namesilo extends Module implements Registrar
                 );
 
                 $module_fields->setHtml("
-					<script type=\"text/javascript\">
-						$(document).ready(function() {
-							$('#transfer_id_0').prop('checked', true);
-							$('#auth_id').closest('li').hide();
-							// Set whether to show or hide the ACL option
-							$('#auth').closest('li').hide();
-							if ($('input[name=\"transfer\"]:checked').val() == '1')
-								$('#auth_id').closest('li').show();
+                    <script type=\"text/javascript\">
+                        $(document).ready(function() {
+                            $('#transfer_id_0').prop('checked', true);
+                            $('#auth_id').closest('li').hide();
+                            // Set whether to show or hide the ACL option
+                            $('#auth').closest('li').hide();
+                            if ($('input[name=\"transfer\"]:checked').val() == '1')
+                                $('#auth_id').closest('li').show();
 
-							$('input[name=\"transfer\"]').change(function() {
-								if ($(this).val() == '1'){
-									$('#auth_id').closest('li').show();
-									$('#ns1_id').closest('li').hide();
-									$('#ns2_id').closest('li').hide();
-									$('#ns3_id').closest('li').hide();
-									$('#ns4_id').closest('li').hide();
-									$('#ns5_id').closest('li').hide();
-								}else{
-									$('#auth_id').closest('li').hide();
-									$('#ns1_id').closest('li').show();
-									$('#ns2_id').closest('li').show();
-									$('#ns3_id').closest('li').show();
-									$('#ns4_id').closest('li').show();
-									$('#ns5_id').closest('li').show();
-								}
-							});
-						});
-					</script>");
+                            $('input[name=\"transfer\"]').change(function() {
+                                if ($(this).val() == '1'){
+                                    $('#auth_id').closest('li').show();
+                                    $('#ns1_id').closest('li').hide();
+                                    $('#ns2_id').closest('li').hide();
+                                    $('#ns3_id').closest('li').hide();
+                                    $('#ns4_id').closest('li').hide();
+                                    $('#ns5_id').closest('li').hide();
+                                }else{
+                                    $('#auth_id').closest('li').hide();
+                                    $('#ns1_id').closest('li').show();
+                                    $('#ns2_id').closest('li').show();
+                                    $('#ns3_id').closest('li').show();
+                                    $('#ns4_id').closest('li').show();
+                                    $('#ns5_id').closest('li').show();
+                                }
+                            });
+                        });
+                    </script>");
 
                 // Build the domain fields
                 $fields = $this->buildDomainModuleFields($vars);

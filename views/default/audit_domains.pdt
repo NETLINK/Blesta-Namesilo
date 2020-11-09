@@ -8,11 +8,10 @@
                     <h3><?php $this->_('Namesilo.manage.audit_domains.results'); ?></h3>
                 </div>
                 <?php if (count($vars->domains) > 0) { ?>
-                    <table>
-
-                        <tr>
-                            <th><?php echo $this->_('Namesilo.domain.domain', true); ?></th>
-                            <th>Issue/Return</th>
+                    <table class="table">
+                        <tr class="heading_row">
+                            <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
+                            <td>Issue/Return</td>
                         </tr>
                         <?php
                         foreach ($vars->domains as $domain) {

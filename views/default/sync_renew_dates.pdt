@@ -1,57 +1,4 @@
-        <script>
-            var service_ids = JSON.parse('<?php echo json_encode($vars->service_ids); ?>');
-            var services_done = 0;
 
-            $(function() {
-                $('span#services_total').text(service_ids.length);
-                run_check();
-            });
-
-            /**
-             * run_check requests information about a service_id.
-             * As long as service_ids.pop() returns a service_id, it will
-             * continue to call run_check again after a 100 milisecond delay.
-             * The delay is to prevent the NameSilo API from ratelimiting requests
-             */
-            function run_check () {
-                var new_row;
-                var button;
-                var service_id = service_ids.pop();
-                if(service_id !== undefined) {
-                    $.getJSON(
-                        '<?php echo $this->Html->ifSet($vars->renew_info_url); ?>',
-                        {
-                            'service_id': service_id,
-                            'action': 'get_renew_info'
-                        }
-                    ).done(function (output) {
-                        if(output.hasOwnProperty("error") && !output.error){
-                            new_row = $('<tr></tr>');
-
-                            checkbox = $('<input type="checkbox" name="sync_services[]">').val(output.service_id);
-                            checkbox.prop("checked", output.checked);
-                            if (output.highlight) {
-                                new_row.css("background-color", "yellow");
-                            }
-
-                            new_row.append($('<td></td>').append(checkbox))
-                            new_row.append($('<td></td>').text(output.domain));
-                            new_row.append($('<td></td>').text(output.date_before));
-                            new_row.append($('<td></td>').text(output.date_after));
-                            $('tbody#domain_changes').append(new_row);
-                        } else if(output.hasOwnProperty("error") && output.error){
-                            new_row = $('<tr></tr>');
-                            new_row.append($('<td></td>').text(output.domain));
-                            new_row.append($('<td></td>').text(output.error.detail));
-                            $('tbody#domain_errors').append(new_row);
-                        }
-                        services_done++;
-                        $('span#services_done').text(services_done);
-                        setTimeout(run_check, 100);
-                    });
-                }
-            };
-        </script>  
         <?php
         if (isset($_REQUEST['msg'])) {
             if ($_REQUEST['msg'] == 'success') { ?>
@@ -103,3 +50,58 @@
         <?php
         $this->Widget->end();
         ?>
+        <script>
+            var service_ids = JSON.parse('<?php echo json_encode($vars->service_ids); ?>');
+            var services_done = 0;
+            $(document).on('ready', function () {
+                $(function() {
+                    $('span#services_total').text(service_ids.length);
+                    run_check();
+                });
+            });
+
+            /**
+             * run_check requests information about a service_id.
+             * As long as service_ids.pop() returns a service_id, it will
+             * continue to call run_check again after a 100 milisecond delay.
+             * The delay is to prevent the NameSilo API from ratelimiting requests
+             */
+            function run_check () {
+                var new_row;
+                var button;
+                var service_id = service_ids.pop();
+                if(service_id !== undefined) {
+                    $.getJSON(
+                        '<?php echo $this->Html->ifSet($vars->renew_info_url); ?>',
+                        {
+                            'service_id': service_id,
+                            'action': 'get_renew_info'
+                        }
+                    ).done(function (output) {
+                        if(output.hasOwnProperty("error") && !output.error){
+                            new_row = $('<tr></tr>');
+
+                            checkbox = $('<input type="checkbox" name="sync_services[]">').val(output.service_id);
+                            checkbox.prop("checked", output.checked);
+                            if (output.highlight) {
+                                new_row.css("background-color", "yellow");
+                            }
+
+                            new_row.append($('<td></td>').append(checkbox))
+                            new_row.append($('<td></td>').text(output.domain));
+                            new_row.append($('<td></td>').text(output.date_before));
+                            new_row.append($('<td></td>').text(output.date_after));
+                            $('tbody#domain_changes').append(new_row);
+                        } else if(output.hasOwnProperty("error") && output.error){
+                            new_row = $('<tr></tr>');
+                            new_row.append($('<td></td>').text(output.domain));
+                            new_row.append($('<td></td>').text(output.error.detail));
+                            $('tbody#domain_errors').append(new_row);
+                        }
+                        services_done++;
+                        $('span#services_done').text(services_done);
+                        setTimeout(run_check, 100);
+                    });
+                }
+            };
+        </script>
