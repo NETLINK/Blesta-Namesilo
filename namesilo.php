@@ -1341,7 +1341,9 @@ class Namesilo extends Module implements Registrar
                     if ($field['type'] == 'text') {
                         $type = $module_fields->fieldText(
                             $key,
-                            (isset($vars->{$key}) ? $vars->{$key} : ''),
+                            (isset($vars->{$key})
+                                ? $vars->{$key}
+                                : (isset($field['options']) ? $field['options'] : '')),
                             ['id' => $key]
                         );
                     } elseif ($field['type'] == 'select') {
@@ -1357,7 +1359,9 @@ class Namesilo extends Module implements Registrar
                     } elseif ($field['type'] == 'hidden') {
                         $type = $module_fields->fieldHidden(
                             $key,
-                            (isset($vars->{$key}) ? $vars->{$key} : ''),
+                            (isset($vars->{$key})
+                                ? $vars->{$key}
+                                : (isset($field['options']) ? $field['options'] : '')),
                             ['id' => $key]
                         );
                     }
