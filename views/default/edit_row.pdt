@@ -46,7 +46,7 @@
                 </ul>
             </div>
 
-            <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.edit_row.add_btn'); ?></a></div>
+            <div class="button_row"><a class="btn btn-primary float-right submit" href="#"><?php $this->_('Namesilo.edit_row.add_btn'); ?></a></div>
             <?php
             $this->Form->end();
             ?>
