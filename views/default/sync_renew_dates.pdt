@@ -32,7 +32,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.manage.sync_renew_dates.sync_btn'); ?></a></div>
+                <div class="button_row"><a class="btn btn-primary float-right submit" href="#"><?php $this->_('Namesilo.manage.sync_renew_dates.sync_btn'); ?></a></div>
                 <?php $this->Form->end(); ?>
 
                 <div class="title_row first" style="margin-top:15px !important">

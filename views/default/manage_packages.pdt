@@ -279,7 +279,7 @@
         <div class="inner">
             <div class="button_row">
                 <?php
-                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.manage_packages.save_packages_btn', true), ['class' => 'btn btn-primary pull-right']);
+                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.manage_packages.save_packages_btn', true), ['class' => 'btn btn-primary float-right']);
                 ?>
             </div>
         </div>

@@ -30,7 +30,7 @@
     </div>
     <?php if ($this->Html->ifSet($vars->registrant_verification_info['verified']) == 'No') { ?>
         <div class="button_row">
-            <a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_settings.field_resend_verification_email'); ?></a>
+            <a class="btn btn-primary float-right submit" href="#"><?php $this->_('Namesilo.tab_settings.field_resend_verification_email'); ?></a>
         </div>
         <?php
     }
@@ -72,7 +72,7 @@
             </li>
         </ul>
     </div>
-    <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_settings.field_submit'); ?></a></div>
+    <div class="button_row"><a class="btn btn-primary float-right submit" href="#"><?php $this->_('Namesilo.tab_settings.field_submit'); ?></a></div>
     <?php
     $this->Form->end();
     ?>

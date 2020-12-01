@@ -17,7 +17,7 @@
             ?>
         </ul>
     </div>
-    <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.tab_nameservers.field_submit'); ?></a></div>
+    <div class="button_row"><a class="btn btn-primary float-right submit" href="#"><?php $this->_('Namesilo.tab_nameservers.field_submit'); ?></a></div>
     <?php
     $this->Form->end();
     ?>
