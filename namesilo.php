@@ -2967,7 +2967,7 @@ class Namesilo extends Module implements Registrar
      */
     public function printJson($data = []) {
         header('Content-type: application/json');
-        echo $this->Json->encode($data);
+        echo json_encode($data);
         exit;
     }
 
