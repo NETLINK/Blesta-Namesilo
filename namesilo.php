@@ -995,7 +995,6 @@ class Namesilo extends Module
                     ];
                 }
             }
-			#die(var_export( $meta, true ) );
 
             return $meta;
         }
