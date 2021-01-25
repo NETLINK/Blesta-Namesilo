@@ -9,7 +9,7 @@
                     <article class="error_box<?php echo($type !== 'success' ? ' ' . $type : '');?>">
                         <a href="#" class="close">×</a>
                         <div class="icon-line fa-2x">
-                            <i class="fa fa-<?php echo($type == 'success' ? 'check' : ($type == 'alert' ? 'exclamation-triangle' : 'close'));?>"></i>
+                            <i class="fas fa-<?php echo($type == 'success' ? 'check' : ($type == 'alert' ? 'exclamation-triangle' : 'times'));?>"></i>
                             <?php
                             foreach ((array)$message['message'] as $field_message) {
                                 foreach ((array)$field_message as $text_message) {
@@ -99,7 +99,7 @@
                                                 <div><?php $this->Form->fieldText('names[' . $i . '][name]', $found ? $this->Html->ifSet($name->name) : null, ['id' => 'name_' . $this->Html->ifSet($lang->code)]);?></div>
                                             </li>
                                             <li>
-                                                <h4><a id="description_area_<?php $this->Html->_($lang->code)?>" href="#" class="show_content"><i class="fa fa-caret-down"></i> <?php $this->_('Namesilo.manage.manage_packages.field_description');?></a></h4>
+                                                <h4><a id="description_area_<?php $this->Html->_($lang->code)?>" href="#" class="show_content"><i class="fas fa-caret-down"></i> <?php $this->_('Namesilo.manage.manage_packages.field_description');?></a></h4>
                                                 <div id="description_content_<?php $this->Html->_($lang->code)?>" class="pad_top<?php echo !$show_description ? ' hidden' : ' show';?>">
                                                     <div>
                                                         <?php
@@ -279,7 +279,7 @@
         <div class="inner">
             <div class="button_row">
                 <?php
-                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.manage_packages.save_packages_btn', true), ['class' => 'btn btn-primary pull-right']);
+                $this->Form->fieldSubmit('save', $this->_('Namesilo.manage.manage_packages.save_packages_btn', true), ['class' => 'btn btn-primary float-right']);
                 ?>
             </div>
         </div>
@@ -289,8 +289,7 @@
         $this->Widget->end();
         ?>
 
-        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/ckeditor.js';?>"></script>
-        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/adapters/jquery.js';?>"></script>
+        <script type="text/javascript" src="<?php echo VENDORWEBDIR . 'blesta/ckeditor/build/ckeditor.js';?>"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 // Toggle package name and description
@@ -312,7 +311,7 @@
                     });
                 }
 
-                $('textarea.wysiwyg').ckeditor(function() {}, {language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
+                $('textarea.wysiwyg').blestaBindWysiwygEditor({language: '<?php echo substr(Configure::get('Blesta.language'), 0, 2);?>'});
                 $('div.tab_content').blestaTabbedContent();
 
                 // Update registration price

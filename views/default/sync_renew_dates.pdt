@@ -1,3 +1,4 @@
+
         <?php
         if (isset($_REQUEST['msg'])) {
             if ($_REQUEST['msg'] == 'success') { ?>
@@ -15,71 +16,92 @@
         $this->Widget->create($this->_('Namesilo.manage.sync_renew_dates.box_title', true));
         ?>
             <div class="inner">
+                <p>Services checked:<span id="services_done">0</span>/<span id="services_total">0</span></p>
                 <p><?php echo $this->_('Namesilo.manage.sync_renew_dates.description', true); ?></p>
-                <?php if (count($vars['changes']) > 0) { ?>
-                    <div class="title_row first">
-                        <h3><?php $this->_('Namesilo.manage.sync_renew_dates.out_of_sync'); ?></h3>
-                    </div>
-                    <?php $this->Form->create(); ?>
-                    <table class="table">
-                        <tbody>
-                        <tr class="heading_row">
-                            <td></td>
-                            <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
-                            <td>Old Renew Date</td>
-                            <td>New Renew Date</td>
-                        </tr>
-                        <?php
-                        foreach ($vars['changes'] as $change) {
-                            if (isset($change['error']) && !$change['error']) {
-                                ?>
-                                <tr>
-                                    <td>
-                                        <?php
-                                        $this->Form->fieldCheckbox('sync_services[]', $this->Html->ifSet($change['service_id']), 'true');
-                                        ?>
-                                    </td>
-                                    <td><?php echo $this->Html->ifSet($change['domain']); ?></td>
-                                    <td><?php echo $this->Html->ifSet($change['date_before']); ?></td>
-                                    <td><?php echo $this->Html->ifSet($change['date_after']); ?></td>
-                                </tr>
-                                <?php
-                            }
-                        }
-                        ?>
-                        </tbody>
-                    </table>
-                    <div class="button_row"><a class="btn btn-primary pull-right submit" href="#"><?php $this->_('Namesilo.manage.sync_renew_dates.sync_btn'); ?></a></div>
-                    <?php $this->Form->end(); ?>
-                <?php } ?>
+                <div class="title_row first">
+                    <h3><?php $this->_('Namesilo.manage.sync_renew_dates.out_of_sync'); ?></h3>
+                </div>
+                <?php $this->Form->create(); ?>
+                <table class="table">
+                    <tbody id="domain_changes">
+                    <tr class="heading_row">
+                        <td></td>
+                        <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
+                        <td>Old Renew Date</td>
+                        <td>New Renew Date</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="button_row"><a class="btn btn-primary float-right submit" href="#"><?php $this->_('Namesilo.manage.sync_renew_dates.sync_btn'); ?></a></div>
+                <?php $this->Form->end(); ?>
 
-                <?php if (count($vars['changes']) > 0) { ?>
-                    <div class="title_row first" style="margin-top:15px !important">
-                        <h3><?php $this->_('Namesilo.manage.sync_renew_dates.errors'); ?></h3>
-                    </div>
-                    <table class="table">
-                        <tbody>
-                        <tr class="heading_row">
-                            <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
-                            <td>Result</td>
-                        </tr>
-                        <?php
-                        foreach ($vars['changes'] as $change) {
-                            if (isset($change['error']) && $change['error']) {
-                                ?>
-                                <tr>
-                                    <td><?php echo $this->Html->ifSet($change['domain']); ?></td>
-                                    <td><?php echo $this->Html->ifSet($change['error']['detail']); ?></td>
-                                </tr>
-                                <?php
-                            }
-                        }
-                        ?>
-                        </tbody>
-                    </table>
-                <?php } ?>
-
+                <div class="title_row first" style="margin-top:15px !important">
+                    <h3><?php $this->_('Namesilo.manage.sync_renew_dates.errors'); ?></h3>
+                </div>
+                <table class="table">
+                    <tbody id="domain_errors">
+                    <tr class="heading_row">
+                        <td><?php echo $this->_('Namesilo.domain.domain', true); ?></td>
+                        <td>Result</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         <?php
         $this->Widget->end();
         ?>
+        <script>
+            var service_ids = JSON.parse('<?php echo json_encode($vars->service_ids); ?>');
+            var services_done = 0;
+            $(document).on('ready', function () {
+                $(function() {
+                    $('span#services_total').text(service_ids.length);
+                    run_check();
+                });
+            });
+
+            /**
+             * run_check requests information about a service_id.
+             * As long as service_ids.pop() returns a service_id, it will
+             * continue to call run_check again after a 100 milisecond delay.
+             * The delay is to prevent the NameSilo API from ratelimiting requests
+             */
+            function run_check () {
+                var new_row;
+                var button;
+                var service_id = service_ids.pop();
+                if(service_id !== undefined) {
+                    $.getJSON(
+                        '<?php echo $this->Html->ifSet($vars->renew_info_url); ?>',
+                        {
+                            'service_id': service_id,
+                            'action': 'get_renew_info'
+                        }
+                    ).done(function (output) {
+                        if(output.hasOwnProperty("error") && !output.error){
+                            new_row = $('<tr></tr>');
+
+                            checkbox = $('<input type="checkbox" name="sync_services[]">').val(output.service_id);
+                            checkbox.prop("checked", output.checked);
+                            if (output.highlight) {
+                                new_row.css("background-color", "yellow");
+                            }
+
+                            new_row.append($('<td></td>').append(checkbox))
+                            new_row.append($('<td></td>').text(output.domain));
+                            new_row.append($('<td></td>').text(output.date_before));
+                            new_row.append($('<td></td>').text(output.date_after));
+                            $('tbody#domain_changes').append(new_row);
+                        } else if(output.hasOwnProperty("error") && output.error){
+                            new_row = $('<tr></tr>');
+                            new_row.append($('<td></td>').text(output.domain));
+                            new_row.append($('<td></td>').text(output.error.detail));
+                            $('tbody#domain_errors').append(new_row);
+                        }
+                        services_done++;
+                        $('span#services_done').text(services_done);
+                        setTimeout(run_check, 100);
+                    });
+                }
+            };
+        </script>

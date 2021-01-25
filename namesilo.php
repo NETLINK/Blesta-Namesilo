@@ -1,4 +1,6 @@
 <?php
+use Blesta\Core\Util\Modules\Registrar;
+
 /**
  * Namesilo Module
  *
@@ -9,7 +11,7 @@
  * @copyright Copyright (c) 2015-2018, NETLINK IT SERVICES
  * @link http://www.netlink.ie/ NETLINK
  */
-class Namesilo extends Module
+class Namesilo extends Module implements Registrar
 {
     /**
      * @var string Debug email address
@@ -793,6 +795,10 @@ class Namesilo extends Module
             $vars['domains'] = [];
 
             if (!empty($domain_list)) {
+                if (!is_array($domain_list)) {
+                    $domain_list = [$domain_list];
+                }
+
                 foreach ($domain_list as $domain) {
                     $record = $this->Record->select()
                         ->from('services')
@@ -814,12 +820,34 @@ class Namesilo extends Module
 
             return $this->view->fetch();
         } elseif ($action == 'sync_renew_dates') {
-            if (isset($vars['sync_services'])) {
-                $post['sync_services'] = $vars['sync_services'];
-            }
-
             $module_row = $this->getRow();
 
+            // Get all the services for the module row.  This basically assumes there is only on Namesilo module row
+            $services = $this->Record->select(['services.id'])
+                ->from('services')
+                ->where('module_row_id', '=', $module_row->id)
+                ->where('status', '=', 'active')
+                ->fetchAll();
+
+            $vars['service_ids'] = [];
+            foreach ($services as $service) {
+                $vars['service_ids'][] = $service->id;
+            }
+
+            // Set view
+            $vars['renew_info_url'] = $this->base_uri . 'settings/company/modules/addrow/' . $module_row->module_id;
+            $this->view->set('vars', (object)$vars);
+
+            return $this->view->fetch();
+        } elseif  ($action == 'get_renew_info') {
+            $service_id = isset($_GET['service_id']) ? $_GET['service_id'] : null;
+            if (is_null($service_id)) {
+                // exit() to prevent any output other than json from being rendered
+               exit();
+            }
+
+            // Load the API
+            $module_row = $this->getRow();
             $api = $this->getApi(
                 $module_row->meta->user,
                 $module_row->meta->key,
@@ -827,24 +855,12 @@ class Namesilo extends Module
                 null,
                 true
             );
+
+            // Get the domain renewal details for the service
             $domains = new NamesiloDomains($api);
+            $vars = $this->getRenewInfo($service_id, $domains);
 
-            $services = $this->Record->select(['services.id', 'services.client_id'])
-                ->from('services')
-                ->where('module_row_id', '=', $module_row->id)
-                ->where('status', '=', 'active')
-                ->fetchAll();
-
-            $vars['changes'] = [];
-
-            foreach ($services as $service_id) {
-                $vars['changes'][] = $this->getRenewInfo($service_id->id, $domains);
-            }
-
-            // Set view
-            $this->view->set('vars', $vars);
-
-            return $this->view->fetch();
+            exit(json_encode($vars));
         } else {
             // Set unspecified checkboxes
             if (!empty($vars)) {
@@ -1057,7 +1073,7 @@ class Namesilo extends Module
         // Set all TLD checkboxes
         $tld_options = $fields->label(Language::_('Namesilo.package_fields.tld_options', true));
 
-        $tlds = $this->getTlds($module_row);
+        $tlds = $this->getTlds();
         sort($tlds);
 
         foreach ($tlds as $tld) {
@@ -1325,7 +1341,9 @@ class Namesilo extends Module
                     if ($field['type'] == 'text') {
                         $type = $module_fields->fieldText(
                             $key,
-                            (isset($vars->{$key}) ? $vars->{$key} : ''),
+                            (isset($vars->{$key})
+                                ? $vars->{$key}
+                                : (isset($field['options']) ? $field['options'] : '')),
                             ['id' => $key]
                         );
                     } elseif ($field['type'] == 'select') {
@@ -1341,7 +1359,9 @@ class Namesilo extends Module
                     } elseif ($field['type'] == 'hidden') {
                         $type = $module_fields->fieldHidden(
                             $key,
-                            (isset($vars->{$key}) ? $vars->{$key} : ''),
+                            (isset($vars->{$key})
+                                ? $vars->{$key}
+                                : (isset($field['options']) ? $field['options'] : '')),
                             ['id' => $key]
                         );
                     }
@@ -2337,18 +2357,19 @@ class Namesilo extends Module
     }
 
     /**
-     * Performs a whois lookup on the given domain
+     * Verifies that the provided domain name is available
      *
      * @param string $domain The domain to lookup
-     * @return bool true if available, false otherwise
+     * @param int $module_row_id The ID of the module row to fetch for the current module
+     * @return bool True if the domain is available, false otherwise
      */
-    public function checkAvailability($domain)
+    public function checkAvailability($domain, $module_row_id = null)
     {
-        $row = $this->getModuleRow();
+        $row = $this->getModuleRow($module_row_id);
         $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
 
         $domains = new NamesiloDomains($api);
-        $result = $domains->check(['domains' => $domain ]);
+        $result = $domains->check(['domains' => $domain]);
         $this->processResponse($api, $result);
 
         if (self::$codes[$result->status()][1] == 'fail') {
@@ -2360,6 +2381,100 @@ class Namesilo extends Module
         $available = isset($response->available->{'domain'}) && $response->available->{'domain'} == $domain;
 
         return $available;
+    }
+
+    /**
+     * Gets the domain expiration date
+     *
+     * @param string $domain The domain to lookup
+     * @param string $format The format to return the expiration date in
+     * @param int $module_row_id The ID of the module row to fetch for the current module
+     * @return string The domain expiration date in UTC time in the given format
+     */
+    public function getExpirationDate($domain, $format = 'Y-m-d H:i:s', $module_row_id = null)
+    {
+        Loader::loadHelpers($this, ['Date']);
+
+        $row = $this->getModuleRow($module_row_id);
+        $api = $this->getApi($row->meta->user, $row->meta->key, $row->meta->sandbox == 'true');
+
+        $domains = new NamesiloDomains($api);
+        $result = $domains->getDomainInfo(['domain' => $domain]);
+        $this->processResponse($api, $result);
+
+        if (self::$codes[$result->status()][1] == 'fail') {
+            return false;
+        }
+
+        $response = $result->response();
+
+        return $this->Date->format(
+            $format,
+            isset($response->expires)
+                ? $response->expires
+                : date('c')
+        );
+    }
+
+    /**
+     * Get a list of the TLDs supported by the registrar module
+     *
+     * @param int $module_row_id The ID of the module row to fetch for the current module
+     * @return array A list of all TLDs supported by the registrar module
+     */
+    public function getTlds($module_row_id = null)
+    {
+        $row = $this->getModuleRow($module_row_id);
+        $row = !empty($row) ? $row : $this->getModuleRows()[0];
+
+        // Fetch the TLDs results from the cache, if they exist
+        $cache = Cache::fetchCache(
+            'tlds',
+            Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
+        );
+
+        if ($cache) {
+            return unserialize(base64_decode($cache));
+        }
+
+        // Fetch namesilo TLDs
+        $tlds = [];
+
+        if (empty($row)) {
+            return $tlds;
+        }
+
+        $result = $this->getApi(
+            $row->meta->user,
+            $row->meta->key,
+            $row->meta->sandbox == 'true'
+        )->submit('getPrices');
+
+        foreach ($result->response() as $tld => $v) {
+            if (!is_object($v)) {
+                continue;
+            }
+            $tlds[] = '.' . $tld;
+        }
+
+        // Save the TLDs results to the cache
+        if (count($tlds) > 0) {
+            if (Configure::get('Caching.on') && is_writable(CACHEDIR)) {
+                try {
+                    Cache::writeCache(
+                        'tlds',
+                        base64_encode(serialize($tlds)),
+                        strtotime(Configure::get('Blesta.cache_length')) - time(),
+                        Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
+                    );
+                } catch (Exception $e) {
+                    // Write to cache failed, so disable caching
+                    Configure::set('Caching.on', false);
+                }
+            }
+        }
+
+        return $tlds;
     }
 
     /**
@@ -2542,7 +2657,7 @@ class Namesilo extends Module
             $row = $this->getRow();
         }
 
-        $tlds = $this->getTlds($row);
+        $tlds = $this->getTlds();
         $domain = strtolower($domain);
 
         foreach ($tlds as $tld) {
@@ -2552,64 +2667,6 @@ class Namesilo extends Module
         }
 
         return strstr($domain, '.');
-    }
-
-    /**
-     * Retrieves the TLDs from the API
-     *
-     * @param stdClass $row The module row object
-     * @return array An array of TLDs
-     */
-    private function getTlds($row)
-    {
-        // Fetch the TLDs results from the cache, if they exist
-        $cache = Cache::fetchCache(
-            'tlds',
-            Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
-        );
-
-        if ($cache) {
-            return unserialize(base64_decode($cache));
-        }
-
-        // Fetch namesilo TLDs
-        $tlds = [];
-
-        if (empty($row)) {
-            return $tlds;
-        }
-
-        $result = $this->getApi(
-            $row->meta->user,
-            $row->meta->key,
-            $row->meta->sandbox == 'true'
-        )->submit('getPrices');
-
-        foreach ($result->response() as $tld => $v) {
-            if (!is_object($v)) {
-                continue;
-            }
-            $tlds[] = '.' . $tld;
-        }
-
-        // Save the TLDs results to the cache
-        if (count($tlds) > 0) {
-            if (Configure::get('Caching.on') && is_writable(CACHEDIR)) {
-                try {
-                    Cache::writeCache(
-                        'tlds',
-                        base64_encode(serialize($tlds)),
-                        strtotime(Configure::get('Blesta.cache_length')) - time(),
-                        Configure::get('Blesta.company_id') . DS . 'modules' . DS . 'namesilo' . DS
-                    );
-                } catch (Exception $e) {
-                    // Write to cache failed, so disable caching
-                    Configure::set('Caching.on', false);
-                }
-            }
-        }
-
-        return $tlds;
     }
 
     /**
@@ -2706,13 +2763,18 @@ class Namesilo extends Module
         $target_date_obj = $expires->modify('- ' . (3 + $suspend_days) . ' days');
         $target_date = $target_date_obj->format('Y-m-d H:i:s');
 
-        if ($date_renews->diff($target_date_obj)->format('%a') > 0) {
+        $diff = $date_renews->diff($target_date_obj)->format('%a');
+        if ($diff > 0) {
+            // Highlight if its greater than 90 days
+            $highlight = $diff >= 90;
             $vars = [
                 'service_id' => $service_id,
                 'domain' => $service->name,
                 'date_before' => $date_renews->format('Y-m-d H:i:s'),
                 'date_after' => $target_date,
-                'error' => false
+                'error' => false,
+                'checked' => !$highlight,
+                'highlight' => $highlight
             ];
         }
 
@@ -2905,7 +2967,7 @@ class Namesilo extends Module
      */
     public function printJson($data = []) {
         header('Content-type: application/json');
-        echo $this->Json->encode($data);
+        echo json_encode($data);
         exit;
     }
 
