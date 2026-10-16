@@ -2665,7 +2665,15 @@ class Namesilo extends Module implements Registrar
             Loader::loadModels($this, ['Contacts']);
         }
 
-        return $this->Contacts->intlNumber($number, $country, '.');
+        $phone = $this->Contacts->intlNumber($number, $country, '.');
+        $phone_parts = explode('.', $phone, 2);
+        $formatted_phone = preg_replace('/[^0-9]+/', '', $phone_parts[1] ?? $phone);
+
+        if (in_array($country, ['US', 'CA'])) {
+            $formatted_phone = substr($formatted_phone, -10);
+        }
+
+        return $formatted_phone;
     }
 
     /**
